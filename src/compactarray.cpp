@@ -3,6 +3,7 @@
 
 void CompactArray::insert(unsigned int i,unsigned int p) {
 	//values per group: 3/e, groups per data: 
+	if(i>=valueCount) return;
 	int groupIndex=(int)floor(i/(double)(3/e));
 	int dataIndex=(int)floor(groupIndex/(double)dataWidth);
 	int groupOffset=(int)fmod(groupIndex,dataWidth/(double)groupWidth);
@@ -36,14 +37,19 @@ void CompactArray::insert(unsigned int i,unsigned int p) {
 
 CompactArray::CompactArray(unsigned int count) {
 	//the following is valid if the inserted values can have 3 states:
+	valueCount=count;
 	e=count%2==0?1.5:3; //assume that 3/e is an integer that divides n
 	valueWidth=(int)ceil(log(3)/log(2));
 	groupWidth=(int)ceil(3*(log(3)/log(2))/e); //bits for a group of 3/e (e.g. 2) consec. colors
-	groupCount=(int)ceil(count/(double)groupWidth);
+	groupCount=(int)ceil(count/(groupWidth/(double)valueWidth));
 	dataWidth=8*sizeof(unsigned int);
 	dataCount=(int)ceil((groupCount*groupWidth)/(double)dataWidth);
 	#ifdef COMPACTARRAY_DEBUG
 	printf("vw=%d, gw=%d, gc=%d, dc=%d\n",valueWidth,groupWidth,groupCount,dataCount);
 	#endif
 	data=new unsigned int[dataCount];
+}
+
+CompactArray::~CompactArray() {
+	delete[] data;
 }

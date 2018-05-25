@@ -16,12 +16,16 @@ class CompactArray {
 			group width: no. bits a group occupies
 			value width: no. bits a value needs (e.g. ld(3) for 3 possible states)
 		*/
-		int valueWidth,
+		unsigned int valueWidth,valueCount,
 			groupWidth,groupCount,
 			dataWidth,dataCount;
 	
 	public:
+		/* Create a new compact array.
+			@param count number of values this compact array can hold
+		*/
 		CompactArray(unsigned int count);
+		~CompactArray();
 		
 		/* Insert a value to the given index.
 			@param i the destination index
