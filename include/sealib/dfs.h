@@ -1,7 +1,10 @@
 #ifndef DFS_H
 #define DFS_H
+#include <stdio.h>
+#include <math.h>
 #include "sealib/graph.h"
 #include "sealib/stack.h"
+#include "sealib/compactarray.h"
 #define DFS_WHITE 0
 #define DFS_GRAY 1
 #define DFS_BLACK 2
@@ -25,7 +28,7 @@ class DFS {
 		*/
 		static void process_standard(Graph *g,UserFunc1 preProcess,UserFunc2 preExplore,
 			UserFunc2 postExplore,UserFunc1 postProcess,uint *color,uint u);
-			
+		
 	public:
 		
 		/* runStandardDFS:
@@ -36,6 +39,10 @@ class DFS {
 				to be executed before/after processing a node/exploring an edge
 		*/
 		static void runStandardDFS(Graph *g,UserFunc1 preprocess,
+			UserFunc2 preexplore,UserFunc2 postexplore,
+			UserFunc1 postprocess);
+		
+		static void runSmallDFS(Graph *g,UserFunc1 preprocess,
 			UserFunc2 preexplore,UserFunc2 postexplore,
 			UserFunc1 postprocess);
 		

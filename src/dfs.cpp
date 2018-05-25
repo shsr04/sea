@@ -1,5 +1,5 @@
 #include "sealib/dfs.h"
-#include <stdio.h>
+
 // starting point of the DFS algorithm: O(n+m) time, O(n*log n) bits
 // TODO step 1: O((n+m)*log(n)) time, O((ld(3)+e)*n) bits
 // TODO step 2: O(n+m) time, O(n*log log n) bits
@@ -44,11 +44,6 @@ void DFS::process_standard(Graph *g,
 	color[u]=DFS_BLACK;
 }
 
-/*uint DFS::getColor(Graph *g,uint u) { 
-	if(u>g->getOrder()) return -1;
-	else return color[u]; 
-}*/
-
 void DFS::nop() {}
 
 void DFS::runStandardDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(Node *,Node *),
@@ -63,4 +58,10 @@ void DFS::runStandardDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(
 		}
 	}
 	delete[] color;
+}
+void DFS::runSmallDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(Node *,Node *),
+			void (*postExplore)(Node *,Node *),void (*postProcess)(Node *)) { 
+	CompactArray *color=new CompactArray(g->getOrder());
+	for(uint a=0; a<g->getOrder(); a++) color->insert(a,DFS_WHITE);
+	printf("%p %p %p %p\n",(void*)preProcess,(void*)preExplore,(void*)postExplore,(void*)postProcess);
 }
