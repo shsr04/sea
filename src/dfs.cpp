@@ -62,6 +62,6 @@ void DFS::runStandardDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(
 void DFS::runSmallDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(Node *,Node *),
 			void (*postExplore)(Node *,Node *),void (*postProcess)(Node *)) { 
 	CompactArray *color=new CompactArray(g->getOrder());
-	for(uint a=0; a<g->getOrder(); a++) color->insert(a,DFS_WHITE);
+	for(uint a=0; a<g->getOrder(); a++) color->insert(a,DFS_GRAY);
 	printf("%p %p %p %p\n",(void*)preProcess,(void*)preExplore,(void*)postExplore,(void*)postProcess);
 }
