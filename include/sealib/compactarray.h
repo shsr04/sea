@@ -30,8 +30,11 @@ class CompactArray {
 	public:
 		/* Create a new compact array.
 			@param count number of values this compact array can hold
+			@param epsilon width parameter: 3/e must divide n
+		 * If you don't know what to use for epsilon: 1.5 if count is even, 3.0 if count is odd.
 		*/
-		CompactArray(unsigned int count);
+		CompactArray(unsigned int count,double epsilon);
+				
 		~CompactArray();
 		
 		/* Insert a value to the given index.

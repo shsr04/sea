@@ -37,21 +37,23 @@ void CompactArray::insert(unsigned int i,unsigned int p) {
 
 unsigned int CompactArray::get(unsigned int selector,unsigned int i) {
 	switch(selector) {
-		case COMPACTARRAY_DATA: 
+		case COMPACTARRAY_DATA:
 			if(i>dataCount) return COMPACTARRAY_FAULT;
 			else return data[i];
 		case COMPACTARRAY_GROUP:
 			//...
-			
+
 		default: return COMPACTARRAY_FAULT;
 	}
-	
+}
+unsigned int CompactArray::get(unsigned int i) {
+	return get(COMPACTARRAY_VALUE,i);
 }
 
-CompactArray::CompactArray(unsigned int count) {
+CompactArray::CompactArray(unsigned int count,double epsilon) {
+	e=epsilon;
 	//the following is valid if the inserted values can have 3 states:
 	valueCount=count;
-	e=count%2==0?1.5:3; //assume that 3/e is an integer that divides n
 	valueWidth=(int)ceil(log(3)/log(2));
 	groupWidth=(int)ceil(3*(log(3)/log(2))/e); //bits for a group of 3/e (e.g. 2) consec. colors
 	groupCount=(int)ceil(count/(groupWidth/(double)valueWidth));
