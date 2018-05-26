@@ -2,10 +2,10 @@
 #include <stdio.h>
 
 void CompactArray::insert(unsigned int i,unsigned int p) {
-	//values per group: 3/e, groups per data: 
+	//values per group: 3/e, groups per data: dataWidth/groupWidth
 	if(i>=valueCount) return;
 	int groupIndex=(int)floor(i/(double)(3/e));
-	int dataIndex=(int)floor(groupIndex/(double)dataWidth);
+	int dataIndex=(int)floor(groupIndex/(dataWidth/(double)groupWidth));
 	int groupOffset=(int)fmod(groupIndex,dataWidth/(double)groupWidth);
 	int valueOffset=(int)fmod(i,3/e);
 	//insert p into slot 'data X + group Y + value Z'
@@ -33,6 +33,19 @@ void CompactArray::insert(unsigned int i,unsigned int p) {
 	printf("after: %08x\n",data[dataIndex]);
 	printf("offs(%u)=%d.%d.%d\t%u\n",i,dataIndex,groupOffset,valueOffset, p);
 	#endif
+}
+
+unsigned int CompactArray::get(unsigned int selector,unsigned int i) {
+	switch(selector) {
+		case COMPACTARRAY_DATA: 
+			if(i>dataCount) return COMPACTARRAY_FAULT;
+			else return data[i];
+		case COMPACTARRAY_GROUP:
+			//...
+			
+		default: return COMPACTARRAY_FAULT;
+	}
+	
 }
 
 CompactArray::CompactArray(unsigned int count) {

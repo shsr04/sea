@@ -1,4 +1,11 @@
+#ifndef COMPACTARRAY_H
+#define COMPACTARRAY_H
 #include <math.h>
+//#define COMPACTARRAY_DEBUG
+#define COMPACTARRAY_DATA 100
+#define COMPACTARRAY_GROUP 10
+#define COMPACTARRAY_VALUE 1
+#define COMPACTARRAY_FAULT (unsigned)-99
 
 /*
 	This compact array tries to use the space of an unsigned int array as well as possible.
@@ -32,4 +39,19 @@ class CompactArray {
 			@param p the value to insert
 		*/
 		void insert(unsigned int i,unsigned int p);
+		
+		/* Get an element from the specified compartment.
+			@param selector level of the compact array to take the result from <br>
+		 		COMPACTARRAY_DATA, COMPACTARRAY_GROUP or COMPACTARRAY_VALUE
+			@param i index (depending on the selector, this will specify a data element,
+				a group or a value index)
+			@return the retrieved number
+		 */
+		unsigned int get(unsigned int selector,unsigned int i);
+		/* Get a value from the compact array.
+			@param i value index to get the value from
+			@return the found value
+		 */
+		unsigned int get(unsigned int i);
 };
+#endif
