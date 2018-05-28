@@ -1,7 +1,7 @@
 #ifndef STACK_H
 #define STACK_H
 #include "sealib/node.h"
-#define STACK_FAULT (unsigned int)0
+#define STACK_FAULT (unsigned int)-1
 
 /*
 	This stack data structure can hold a given number of elements.

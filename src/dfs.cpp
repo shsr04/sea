@@ -77,13 +77,22 @@ void DFS::process_small(uint node,
 	tryPush(node,s1,s2,st);
 	tryPush(1,k1,k2,kt);
 	uint u,k;
-	while(tryPop(s1,s2,st)!=STACK_FAULT) {
+	while(st->peek()!=STACK_FAULT) {
 		u=tryPop(s1,s2,st);
+		if(u==STACK_FAULT) {
+			#ifdef DFS_DEBUG
+			printf("no more nodes\n");
+			#endif
+			return;
+		}
 		k=tryPop(k1,k2,kt);
 		color->insert(u,DFS_GRAY);
 		Node *un=g->getNode(u);
 		preProcess(un);
-		if(k<=un->getDegree()) {
+		#ifdef DFS_DEBUG
+		printf("u: %u(%p), k: %u\n",u,(void*)un,k);
+		#endif
+		if(k<un->getDegree()) {
 			tryPush(u,s1,s2,st);
 			tryPush(k+1,k1,k2,kt);
 			uint v=g->head(u,k);
@@ -103,9 +112,19 @@ void DFS::process_small(uint node,
 	}
 }
 void DFS::tryPush(uint u,Stack *low,Stack *high,Stack *trailers) {
+	#ifdef DFS_DEBUG
+	printf("-> tryPush %u ",u);
+	#endif
 	if(!low->isFull()) {
+		#ifdef DFS_DEBUG
+		printf("(low segment)\n");
+		#endif
 		low->push(u);
-		trailers->pop(); trailers->push(u);
+		#ifdef DFS_DEBUG
+		printf(" trailer %u => %u\n",trailers->peek(),u);
+		#endif
+		trailers->pop();
+		trailers->push(u);
 	}
 	else if(!high->isFull()) {
 		high->push(u);
@@ -118,17 +137,33 @@ void DFS::tryPush(uint u,Stack *low,Stack *high,Stack *trailers) {
 		high->push(u);
 	}
 }
-uint DFS::tryPop(Stack *low, Stack *high,Stack *trailers) {
+uint DFS::tryPop(Stack *low, Stack *high,Stack *trailers) { //fix
+	#ifdef DFS_DEBUG
+	printf("-> tryPop ");
+	#endif
+	uint r=STACK_FAULT;
 	if(high->peek()!=STACK_FAULT) {
-		return high->pop();
+		r=high->pop();
 	} else if(low->peek()!=STACK_FAULT) {
-		return low->pop();
+		#ifdef DFS_DEBUG
+		printf("(low segment)\n");
+		#endif
+		r=low->pop();
 	} else {
 		if(trailers->peek()!=STACK_FAULT) {
-			// restore
-			return STACK_FAULT;
-		} else return STACK_FAULT;
+			#ifdef DFS_DEBUG
+			printf("(restoring ... ");
+			#endif
+			// TODO restore
+			#ifdef DFS_DEBUG
+			printf("done)\n");
+			#endif
+		} else r=STACK_FAULT;
 	}
+	#ifdef DFS_DEBUG
+	printf("<- tryPop = %u\n",r);
+	#endif
+	return r;
 }
 
 void DFS::nop() {}
@@ -151,7 +186,7 @@ void DFS::runSmallDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(Nod
 	unsigned n=g->getOrder();
 	double e=n%2==0?1.5:3; //assume that 3/e is an integer that divides n
 	CompactArray *color=new CompactArray(n,e);
-	for(uint a=1; a<=g->getOrder(); a++) color->insert(a,DFS_WHITE);
-	process_small(1,g,color,preProcess,preExplore,postExplore,postProcess,e);
+	for(uint a=0; a<g->getOrder(); a++) color->insert(a,DFS_WHITE);
+	process_small(0,g,color,preProcess,preExplore,postExplore,postProcess,e);
 	delete color;
 }

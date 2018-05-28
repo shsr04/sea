@@ -37,6 +37,7 @@ class DFS {
 
 		static void tryPush(uint u,Stack *low,Stack *high,Stack *trailers);
 		static uint tryPop(Stack *low,Stack *high,Stack *trailers);
+
 	public:
 
 		/* runStandardDFS:
