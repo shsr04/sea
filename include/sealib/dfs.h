@@ -32,7 +32,8 @@ class DFS {
 		static void process_small(uint node,
 				Graph *g,CompactArray *color,
 				UserFunc1 preProcess,UserFunc2 preExplore,
-				UserFunc2 postExplore,UserFunc1 postProcess);
+				UserFunc2 postExplore,UserFunc1 postProcess,
+				double epsilon);
 
 		static void tryPush(uint u,Stack *low,Stack *high,Stack *trailers);
 		static uint tryPop(Stack *low,Stack *high,Stack *trailers);

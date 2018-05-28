@@ -47,9 +47,10 @@ void DFS::process_standard(Graph *g,
 void DFS::process_small(uint node,
 	Graph *g,CompactArray *color,
 	UserFunc1 preProcess,UserFunc2 preExplore,
-	UserFunc2 postExplore,UserFunc1 postProcess) {
+	UserFunc2 postExplore,UserFunc1 postProcess,
+	double epsilon) {
 	unsigned n=g->getOrder();
-	unsigned q=(unsigned)ceil(n/log(n)); //TODO 2q entries on S shall take up at most (e/3)n bits
+	unsigned q=(unsigned)ceil(n/log(n)*epsilon/6); //2q entries on S shall take up at most (e/3)n bits
 	#ifdef DFS_DEBUG
 	printf("q=%u, n=%u, (e/3)n=%.0f\n",q,n,(1.5/3)*n);
 	#endif
@@ -151,6 +152,6 @@ void DFS::runSmallDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(Nod
 	double e=n%2==0?1.5:3; //assume that 3/e is an integer that divides n
 	CompactArray *color=new CompactArray(n,e);
 	for(uint a=1; a<=g->getOrder(); a++) color->insert(a,DFS_WHITE);
-	process_small(1,g,color,preProcess,preExplore,postExplore,postProcess);
+	process_small(1,g,color,preProcess,preExplore,postExplore,postProcess,e);
 	delete color;
 }
