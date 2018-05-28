@@ -44,20 +44,25 @@ void DFS::process_standard(Graph *g,
 	color[u]=DFS_BLACK;
 
 }
-void DFS::process_small(uint u,
+void DFS::process_small(uint node,
 	Graph *g,CompactArray *color,
 	UserFunc1 preProcess,UserFunc2 preExplore,
 	UserFunc2 postExplore,UserFunc1 postProcess) {
 	unsigned n=g->getOrder();
 	unsigned q=(unsigned)ceil(n/log(n)); //TODO 2q entries on S shall take up at most (e/3)n bits
+	#ifdef DFS_DEBUG
 	printf("q=%u, n=%u, (e/3)n=%.0f\n",q,n,(1.5/3)*n);
-	Stack *trailers=new Stack((unsigned)ceil(n/(double)q));
+	#endif
+	Stack *st=new Stack((unsigned)ceil(n/(double)q)),
+		*kt=new Stack((unsigned)ceil(n/(double)q));
 	Stack *s1=new Stack(q),*s2=new Stack(q);
-	for(uint a=1; a<=n; a++) {
+	Stack *k1=new Stack(q),*k2=new Stack(q);
+	/*for(uint a=1; a<=n; a++) {
 		if(a%(q+1)==q||a==n) trailers->push(a);
-		tryPush(a,s1,s2,trailers);
+		uint b=tryPush(a,s1,s2);
+		if(b!=STACK_FAULT) trailers->push(b);
 	}
-	/*while(trailers->peek()!=STACK_FAULT) {
+	while(trailers->peek()!=STACK_FAULT) {
 		printf(" %u \n",trailers->pop());
 	}
 	printf("Top segment:\n");
@@ -68,31 +73,60 @@ void DFS::process_small(uint u,
 	while(s1->peek()!=STACK_FAULT) {
 		printf(" %u \n",s1->pop());
 	}*/
-	tryPush(u,s1,s2,trailers);
-	//TODO push outgoing edge
-	color->insert(u,DFS_GRAY);
-	Node *un=g->getNode(u);
-	preProcess(un);
-	for(uint k=0; k<un->getDegree(); k++) { //TODO explicit stack
-		uint v=g->head(u,k);
-		Node *vn=g->getNode(v);
-		preExplore(un,vn);
-		if(color->get(v)==DFS_WHITE) process_small(u,g,color,
-			preProcess,preExplore,postExplore,postProcess);
-		postExplore(un,vn);
+	tryPush(node,s1,s2,st);
+	tryPush(1,k1,k2,kt);
+	uint u,k;
+	while(tryPop(s1,s2,st)!=STACK_FAULT) {
+		u=tryPop(s1,s2,st);
+		k=tryPop(k1,k2,kt);
+		color->insert(u,DFS_GRAY);
+		Node *un=g->getNode(u);
+		preProcess(un);
+		if(k<=un->getDegree()) {
+			tryPush(u,s1,s2,st);
+			tryPush(k+1,k1,k2,kt);
+			uint v=g->head(u,k);
+			if(color->get(v)==DFS_WHITE) {
+				Node *vn=g->getNode(v);
+				preExplore(un,vn);
+				if(color->get(v)==DFS_WHITE) {
+					tryPush(v,s1,s2,st);
+					tryPush(1,k1,k2,kt);
+				}
+				postExplore(un,vn);
+			}
+		} else {
+			color->insert(u,DFS_BLACK);
+		}
+		postProcess(un);
 	}
-	postProcess(un);
-	color->insert(u,DFS_BLACK);
 }
-void DFS::tryPush(uint u,Stack *low, Stack *high,Stack *t) {
-	t->peek();
-	if(!low->isFull()) low->push(u);
-	else if(!high->isFull()) high->push(u);
+void DFS::tryPush(uint u,Stack *low,Stack *high,Stack *trailers) {
+	if(!low->isFull()) {
+		low->push(u);
+		trailers->pop(); trailers->push(u);
+	}
+	else if(!high->isFull()) {
+		high->push(u);
+		trailers->pop(); trailers->push(u);
+	}
 	else {
 		delete low;
 		low=high;
 		high=new Stack(low->getSize());
 		high->push(u);
+	}
+}
+uint DFS::tryPop(Stack *low, Stack *high,Stack *trailers) {
+	if(high->peek()!=STACK_FAULT) {
+		return high->pop();
+	} else if(low->peek()!=STACK_FAULT) {
+		return low->pop();
+	} else {
+		if(trailers->peek()!=STACK_FAULT) {
+			// restore
+			return STACK_FAULT;
+		} else return STACK_FAULT;
 	}
 }
 
@@ -116,6 +150,7 @@ void DFS::runSmallDFS(Graph *g,void (*preProcess)(Node *),void (*preExplore)(Nod
 	unsigned n=g->getOrder();
 	double e=n%2==0?1.5:3; //assume that 3/e is an integer that divides n
 	CompactArray *color=new CompactArray(n,e);
-	for(uint a=0; a<g->getOrder(); a++) color->insert(a,DFS_WHITE);
-	printf("%p %p %p %p\n",(void*)preProcess,(void*)preExplore,(void*)postExplore,(void*)postProcess);
+	for(uint a=1; a<=g->getOrder(); a++) color->insert(a,DFS_WHITE);
+	process_small(1,g,color,preProcess,preExplore,postExplore,postProcess);
+	delete color;
 }

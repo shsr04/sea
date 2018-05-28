@@ -17,4 +17,5 @@ TEST(DFSTest,runSmall) {
 	for(int a=0; a<order-2; a++) nodes[a]=Node(new Adjacency(a+1),1);
 	nodes[order-1]=Node(new Adjacency(4),1);
 	DFS::runSmallDFS(new Graph(nodes,order),DFS_NOP_PROCESS,DFS_NOP_EXPLORE,DFS_NOP_EXPLORE,DFS_NOP_PROCESS);
+	free(nodes);
 }

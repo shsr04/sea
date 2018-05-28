@@ -29,12 +29,13 @@ class DFS {
 		static void process_standard(Graph *g,UserFunc1 preProcess,UserFunc2 preExplore,
 			UserFunc2 postExplore,UserFunc1 postProcess,uint *color,uint u);
 
-		static void process_small(uint u,
+		static void process_small(uint node,
 				Graph *g,CompactArray *color,
 				UserFunc1 preProcess,UserFunc2 preExplore,
 				UserFunc2 postExplore,UserFunc1 postProcess);
 
-		static void tryPush(uint u,Stack *low, Stack *high,Stack *t);
+		static void tryPush(uint u,Stack *low,Stack *high,Stack *trailers);
+		static uint tryPop(Stack *low,Stack *high,Stack *trailers);
 	public:
 
 		/* runStandardDFS:
