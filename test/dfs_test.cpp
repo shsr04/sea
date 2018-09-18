@@ -1,9 +1,10 @@
+#include "sealib/dfs.h"
 #include <gtest/gtest.h>
 #include <random>
-#include <vector>
 #include <stack>
-#include "sealib/dfs.h"
+#include <vector>
 #include "sealib/basicgraph.h"
+#include "sealib/graphexporter.h"
 
 using Sealib::DFS;
 using Sealib::CompactArray;
@@ -47,15 +48,17 @@ void e1(uint u, uint v) { printf("postexplore %u,%u\n", u, v); }
 std::random_device rnd;
 const unsigned GRAPHCOUNT = 10;  // how many random graphs to generate?
 const unsigned DEGREE = 5;       // how many outneighbours per node?
-const unsigned order = 200;
+const unsigned ORDER = 200;
 
-std::vector<Graph *> makeGraphs() {
+std::vector<Graph *> makeGraphs(unsigned count, unsigned order,
+                                unsigned degree) {
   std::vector<Graph *> g = std::vector<Graph *>();
-  for (uint c = 0; c < GRAPHCOUNT; c++) {
+  for (uint c = 0; c < count; c++) {
     Node *n = reinterpret_cast<Node *>(malloc(sizeof(Node) * order));
     for (unsigned int a = 0; a < order; a++) {
-      unsigned int ai = DEGREE;
-      Adjacency *ad = reinterpret_cast<Adjacency *>(malloc(sizeof(Adjacency) * ai));
+      unsigned int ai = degree;
+      Adjacency *ad =
+          reinterpret_cast<Adjacency *>(malloc(sizeof(Adjacency) * ai));
       for (unsigned int b = 0; b < ai; b++) {
         ad[b] = Adjacency(rnd() % order);
       }
@@ -66,7 +69,7 @@ std::vector<Graph *> makeGraphs() {
   return g;
 }
 
-std::vector<Graph *> graphs = makeGraphs();
+std::vector<Graph *> graphs = makeGraphs(GRAPHCOUNT, ORDER, DEGREE);
 class DFSTest : public ::testing::TestWithParam<Graph *> {
  protected:
   virtual void SetUp() { c1 = c2 = c3 = c4 = 0; }  // executed before each
@@ -78,25 +81,63 @@ INSTANTIATE_TEST_CASE_P(ParamTests, DFSTest, ::testing::ValuesIn(graphs), /**/);
 TEST_P(DFSTest, stdUserproc) {
   Graph *g = GetParam();
   DFS::standardDFS(g, incr1, incr2, incr3, incr4);
-  EXPECT_EQ(c1, order);
-  EXPECT_EQ(c2, DEGREE * order);
-  EXPECT_EQ(c3, DEGREE * order);
-  EXPECT_EQ(c4, order);
+  EXPECT_EQ(c1, ORDER);
+  EXPECT_EQ(c2, DEGREE * ORDER);
+  EXPECT_EQ(c3, DEGREE * ORDER);
+  EXPECT_EQ(c4, ORDER);
 }
 
 TEST_P(DFSTest, nBitUserproc) {
   Graph *g = GetParam();
   DFS::nBitDFS(g, incr1, incr2, incr3, incr4);
-  EXPECT_EQ(c1, order);
-  EXPECT_EQ(c2, DEGREE * order);
-  EXPECT_EQ(c3, DEGREE * order);
-  EXPECT_EQ(c4, order);
+  EXPECT_EQ(c1, ORDER);
+  EXPECT_EQ(c2, DEGREE * ORDER);
+  EXPECT_EQ(c3, DEGREE * ORDER);
+  EXPECT_EQ(c4, ORDER);
 }
 
-auto *graph = new unsigned int[19]{ 5, 9, 7, 9, 9, 7, 12, 1, 17, 2, 12,
-                                   14, 3, 14, 4, 12, 17, 5, 14 };
+static CompactArray color(30, 3);
+static Graph *vg;
+
+static std::string getNodeColor(unsigned u) {
+  uint c = color.get(u);
+  switch (c) {
+    case DFS_WHITE:
+      return "gray95";
+    case DFS_GRAY:
+      return "gray";
+    case DFS_BLACK:
+      return "black";
+    default:
+      return "blue";
+  }
+}
+static void vp0(unsigned u) {
+  color.insert(u, DFS_GRAY);
+  if ((u % 10) == 0) {
+    Sealib::GraphExporter::exportAsDot(vg, "graph2.dot", getNodeColor);
+    system("dot graph2.dot -Txlib");
+  }
+}
+static void vp1(unsigned u) {
+  color.insert(u, DFS_BLACK);
+  if ((u % 10) == 0) {
+    Sealib::GraphExporter::exportAsDot(vg, "graph2.dot", getNodeColor);
+    system("dot graph2.dot -Txlib");
+  }
+}
+
+TEST(DFSTest, visual) {
+  vg = makeGraphs(1, 30, 4).at(0);
+  DFS::standardDFS(vg, vp0, DFS_NOP_EXPLORE, DFS_NOP_EXPLORE, vp1);
+  // Sealib::GraphExporter::exportAsDot(vg,"graph2.dot",getNodeColor);
+  // system("dot graph2.dot -Tx11");
+}
+
+auto *graph = new unsigned int[19]{5,  9,  7, 9,  9, 7,  12, 1, 17, 2,
+                                   12, 14, 3, 14, 4, 12, 17, 5, 14};
 unsigned int controllSum = (2 * (1 + 2 + 3 + 4 + 5));
-stack <unsigned int> controllStack;
+stack<unsigned int> controllStack;
 void preTwo(unsigned int a) {
   controllSum = controllSum - a;
   controllStack.push(a);

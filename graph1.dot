@@ -1,0 +1,13 @@
+digraph g {
+	0 [color="gray"] 
+	1 [color="gray"]
+	2 [color="gray"]
+	3 [color="gray90"]
+	4 [color="gray90"]
+	0 -> 1 [color="gray"]
+	0 -> 2 [color="white"]
+	1 -> 2 [color="gray"]
+	1 -> 4 [color="gray90"]
+	2 -> 1 [color="gray90"]
+	2 -> 3 [color="gray90"]
+}
