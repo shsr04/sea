@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{graphdrawing}
+\usegdlibrary{layered,force}
+\tikzstyle{white}=[circle,draw=black,fill=white]
+\tikzstyle{gray}=[circle,draw=black,fill=gray]
+\tikzstyle{w}=[->,loosely dotted]
+\tikzstyle{g}=[->,gray]
+\begin{document}
+\begin{tikzpicture}[spring layout]
+\node (0) [white] {0};
+\node (1) [white] {1};
+\node (2) [white] {2};
+\path (0) edge[g] (1);
+\path (0) edge[w] (2);
+\path (1) edge[w] (2);
+\path (2) edge[w] (0);
+\end{tikzpicture}
+\end{document}
