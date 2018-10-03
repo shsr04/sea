@@ -17,7 +17,7 @@ This space-efficient variant
 
 ## Example
 ```cpp
-Graph *g=GraphCreator::createRandomFixed(500,10);
+Graph *g=GraphCreator::createRandomImbalanced(500);
 
 DFS::nloglognBitDFS(g,DFS_NOP_PROCESS,DFS_NOP_EXPLORE,DFS_NOP_EXPLORE,DFS_NOP_PROCESS);  // quiet run
 
