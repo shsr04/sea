@@ -123,7 +123,7 @@ void runTest(uint n, uint (*fm)(uint n)) {
 
 void runtime_dfs() {
   RuntimeTest t1, t2, t3;
-  for (uint n = 1e6; n <= 1e9; n += 100000) {
+  for (uint n = 1e6; n <= 1e9; n += 1000000) {
     Graph *g = GraphCreator::createRandomFixed(n, 5);
     t1.runTest(
         [g]() {
