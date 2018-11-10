@@ -10,7 +10,7 @@ set(EXECUTABLE_OUTPUT_PATH bin)                                 # generated bina
 set(CMAKE_INCLUDE_PATH include/)
 
 set(CMAKE_INCLUDE_CURRENT_DIR OFF)
-set(BUILD_FLAGS "-std=c++11 -O3 -Wall -Wextra -Wpedantic -Wswitch-default -Wswitch-enum \
+set(BUILD_FLAGS "-std=c++11 -O3 -fno-exceptions -fno-rtti -Wall -Wextra -Wpedantic -Wswitch-default -Wswitch-enum \
 -Wunreachable-code -Wwrite-strings -Wcast-align -Wshadow -Wundef -Wcast-qual -Wctor-dtor-privacy \
 -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs \
 -Woverloaded-virtual -Wredundant-decls -Wsign-conversion -Wsign-promo \
