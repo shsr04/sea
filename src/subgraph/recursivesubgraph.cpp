@@ -54,16 +54,12 @@ Sealib::RecursiveSubGraph::mate(uint64_t u, uint64_t k) const {
 }
 
 uint64_t Sealib::RecursiveSubGraph::phi(uint64_t u) const {
-    if (u == 0) {
-        throw std::invalid_argument("u needs to be > 0");
-    }
+    assert(u > 0);
     return select_v(u);
 }
 
 uint64_t Sealib::RecursiveSubGraph::phiInv(uint64_t u) const {
-    if (u == 0) {
-        throw std::invalid_argument("u needs to be > 0");
-    }
+    assert(u > 0);
     if (vSelect.getBitset()[u - 1]) {
         return rank_v(u);
     } else {
@@ -72,16 +68,12 @@ uint64_t Sealib::RecursiveSubGraph::phiInv(uint64_t u) const {
 }
 
 uint64_t Sealib::RecursiveSubGraph::psi(uint64_t a) const {
-    if (a == 0) {
-        throw std::invalid_argument("a needs to be > 0");
-    }
+    assert(a > 0);
     return select_a(a);
 }
 
 uint64_t Sealib::RecursiveSubGraph::psiInv(uint64_t a) const {
-    if (a == 0) {
-        throw std::invalid_argument("a needs to be > 0");
-    }
+    assert(a > 0);
     if (aSelect.getBitset()[a - 1]) {
         return rank_a(a);
     } else {

@@ -2,17 +2,16 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
-#include <stdexcept>
+#include <iostream>
 #include <vector>
 #include "sealib/graph/directedgraph.h"
 #include "sealib/graph/undirectedgraph.h"
 
 #define READ(s)                                                           \
     if (tok[index] != s) {                                                \
-        std::stringstream err;                                            \
-        err << "Input file is malformed: expected '" << (s) << "', got '" \
+        std::cerr << "Input file is malformed: expected '" << (s) << "', got '" \
             << tok[index] << "'";                                         \
-        throw std::runtime_error(err.str());                              \
+        std::abort();                             \
     }                                                                     \
     index++;
 #define READL(s)           \

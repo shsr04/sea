@@ -1,6 +1,6 @@
 #include "sealib/collection/compactarray.h"
-#include <math.h>
-#include <stdexcept>
+#include <cmath>
+#include <cassert>
 
 using Sealib::CompactArray;
 
@@ -24,7 +24,5 @@ CompactArray::CompactArray(uint size, uint values)
       valuesPerGroup(safeDiv(8 * sizeof(uint), valueWidth)),
       valueMask((1 << valueWidth) - 1),
       data(new uint[safeDiv(size, valuesPerGroup) + 1]) {
-  if (valueWidth >= sizeof(uint) * 8) {
-    throw std::domain_error("v is too big (max v = bitsize(uint))");
-  }
+  assert(valueWidth < sizeof(uint) * 8);
 }

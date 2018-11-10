@@ -2,7 +2,8 @@
 #define SRC_DFS_INPLACERUNNER_H_
 
 #include <utility>
-#include <stdexcept>
+#include <iostream>
+#include <cstdlib>
 
 #define GRADE_ZERO 0
 #define GRADE_ONE 1
@@ -78,10 +79,9 @@ class LinearTimeInplaceDFSRunner {
 
   inline uint name(uint i) {
     if (i == 0 || i == this->n + 1 || i > this->N) {
-      std::stringstream ostr;
-      ostr << "Never access 0 or n + 1, i = " << i << " n: " << n
+      std::cerr << "Never access 0 or n + 1, i = " << i << " n: " << n
            << " N: " << N;
-      throw std::invalid_argument(ostr.str());
+      std::abort();
     }
 
     auto x = A[i];
@@ -179,11 +179,10 @@ class LinearTimeInplaceDFSRunner {
   void visit(uint p) {
     auto v = name(p);
     if (v == 0) {
-      std::stringstream ostr;
-      ostr << "Position p: " << p
+      std::cerr << "Position p: " << p
            << " does not contain a vertex name, it contains the value: "
            << A[p];
-      throw std::invalid_argument(ostr.str());
+      std::abort();
     }
     this->m_preProcess(v);
 
@@ -277,10 +276,9 @@ class LinearTimeInplaceDFSRunner {
         return nextNeighbor(p, false);
       }
       default: {
-        std::stringstream ostr;
-        ostr << "Grade type calculation gone wrong, grade type: " << grade
+        std::cerr << "Grade type calculation gone wrong, grade type: " << grade
              << " found, only {0, 1, 2} allowed";
-        throw std::invalid_argument(ostr.str());
+        std::abort();
       }
     }
   }
@@ -366,10 +364,9 @@ class LinearTimeInplaceDFSRunner {
                 return visit(next);
               }
               default: {
-                std::stringstream ostr;
-                ostr << "Grade type calculation gone wrong, grade type: "
+                std::cerr << "Grade type calculation gone wrong, grade type: "
                      << grade << " found, only {0, 1, 2} allowed";
-                throw std::invalid_argument(ostr.str());
+                std::abort();
               }
             }
             grade = gradeAtPosition(next);
@@ -389,10 +386,9 @@ class LinearTimeInplaceDFSRunner {
         return visit(q);
       }
       default: {
-        std::stringstream ostr;
-        ostr << "Grade type calculation gone wrong, grade type: " << grade
+        std::cerr << "Grade type calculation gone wrong, grade type: " << grade
              << " found, only {0, 1, 2} allowed";
-        throw std::invalid_argument(ostr.str());
+        std::abort();
       }
     }
   }

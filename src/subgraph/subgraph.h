@@ -55,9 +55,7 @@ class SubGraph {
     }
 
     uint64_t degree(uint64_t u) const {
-        if (u == 0) {
-            throw std::invalid_argument("u needs to be > 0");
-        }
+        assert(u > 0);
         uint64_t a = select_p(rank_q(u));  //  pSelect.select(qSelect.rank(v));
         uint64_t b = select_p(rank_q(u - 1));  // pSelect.select(qSelect.rank(v - 1));
 
@@ -89,17 +87,10 @@ class SubGraph {
     }
 
     uint64_t g(uint64_t j, uint64_t k) const {
-        if (j == 0 || k == 0) {
-            throw std::invalid_argument(
-                "j and k need to be > 0! (j,k)=(" +
-                    std::to_string(j) + "," + std::to_string(k) + ")");
-        }
+        assert(j > 0 && k > 0);
 
         uint64_t deg = degree(j);
-        if (deg == 0 || k > deg) {
-            throw std::out_of_range("node j has a degree < k! (j,k)=(" +
-                std::to_string(j) + "," + std::to_string(k) + ")");
-        }
+        assert(deg >= k);
 
         uint64_t qRank = rank_q(j);  // qSelect.rank(j);
         uint64_t n = 0;
@@ -119,21 +110,13 @@ class SubGraph {
     }
 
     std::tuple<uint64_t, uint64_t> gInv(uint64_t r) const {
-        if (r == 0) {
-            throw std::invalid_argument("r needs to be > 0 (r = "
-                                            + std::to_string(r) + ")");
-        }
+        assert(r > 0);
         uint64_t j = r == 1 ? 0 : rank_p(r - 1);  // pSelect.rank(r - 1);
-        if (j == (uint64_t) -1) {
-            throw std::out_of_range("out of range - no arc r exists! (r = "
-                                        + std::to_string(r) + ")");
-        }
+        assert(j != (uint64_t) -1);
+
         j++;
         uint64_t a = select_q(j);  // qSelect.select(j);
-        if (a == (uint64_t) -1) {
-            throw std::out_of_range("out of range - no arc r exists! (r = "
-                                        + std::to_string(r) + ")");
-        }
+        assert(j != (uint64_t) -1);
         uint64_t b = select_p(j - 1);  // pSelect.select(j - 1);
         b = b == (uint64_t) -1 ? 0 : b;
         return std::tuple<uint64_t, uint64_t>(a, r - b);

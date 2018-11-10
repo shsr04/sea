@@ -1,5 +1,5 @@
 #include "sealib/iterator/bfs.h"
-#include <stdexcept>
+#include <cstdlib>
 #include <vector>
 
 using Sealib::BFS;
@@ -59,9 +59,10 @@ uint BFS::getGrayNode() {
       return a;
     }
   }
-  throw std::logic_error(
+  std::fprintf(stderr,
       "BFS: no more gray nodes found; did you forget to call "
       "nextComponent()?");
+  std::abort();
 }
 
 bool BFS::more() { return hasGrayNode(); }

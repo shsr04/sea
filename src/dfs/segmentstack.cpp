@@ -2,7 +2,7 @@
 #include <math.h>
 #include <sstream>
 #include <stack>
-#include <stdexcept>
+#include <cassert>
 
 using Sealib::SegmentStack;
 using Sealib::BasicSegmentStack;
@@ -73,12 +73,9 @@ void BasicSegmentStack::dropAll() {
 }
 
 void BasicSegmentStack::saveTrailer() {
-  if (tp > 0) {
-    savedTrailer = last;
-    alignTarget = tp == 1 ? 1 : 2;
-  } else {
-    throw std::logic_error("segmentstack: cannot save from empty trailers");
-  }
+  assert(tp > 0);
+  savedTrailer = last;
+  alignTarget = tp == 1 ? 1 : 2;
 }
 
 bool BasicSegmentStack::isAligned() {
@@ -135,7 +132,7 @@ void ExtendedSegmentStack::storeEdges() {
         trailers[tp].bc = 0;
       }
       big[bp++] = Pair(u, k - 1);  // another big vertex is stored
-      if (bp > q) throw std::out_of_range("big storage is full!");
+      assert(bp <= q);
     } else {  // store an approximation
       uint32_t f = approximateEdge(u, k);
       edges->insert(u, f);
@@ -182,16 +179,13 @@ uint ExtendedSegmentStack::retrieveEdge(uint u, uint32_t f) {
 
 uint ExtendedSegmentStack::getOutgoingEdge(uint u) {
   if (graph->getNodeDegree(u) > m / q) {
-    if (tp > 0) {  // tp>0 should be given in every restoration, which is
-                   // precisely when this method may be called
-      Trailer *t = trailers + (tp - 1);
-      Pair x = big[t->bi + t->bc];
-      t->bc += 1;
-      return x.tail();
-    } else {
-      throw std::logic_error(
-          "can't get edge from big vertex because there are no trailers");
-    }
+    assert(tp > 0);
+    // tp>0 should be given in every restoration,
+    // which is precisely when this method may be called
+    Trailer *t = trailers + (tp - 1);
+    Pair x = big[t->bi + t->bc];
+    t->bc += 1;
+    return x.tail();
   } else {
     return retrieveEdge(u, edges->get(u));
   }
