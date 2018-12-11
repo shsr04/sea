@@ -13,6 +13,7 @@
 #include "sealib/graph/graphcreator.h"
 #include "sealib/graph/graphrepresentations.h"
 #include "sealib/runtimetest.h"
+#include "sealib/graph/graphio.h"
 
 using std::cout;
 using std::stack;
@@ -122,20 +123,29 @@ void runTest(uint n, uint (*fm)(uint)) {
 
 void runtime_dfs() {
   RuntimeTest t1, t2, t3;
-  for (uint n = 1e6; n <= 1e7; n += 100000) {
+  for (uint n = 1e5; n <= 1e6; n += 10000) {
     DirectedGraph g = GraphCreator::createRandomKRegularGraph(n, 5);
-    t1.runTest(
+    int64_t r1=t1.runTest(
         [&g]() {
           DFS::nloglognBitDFS(&g, DFS_NOP_PROCESS, DFS_NOP_EXPLORE,
                               DFS_NOP_EXPLORE, DFS_NOP_PROCESS);
         },
         n, 0);
-    t3.runTest(
+    int64_t r3=t3.runTest(
         [&g]() {
           DFS::standardDFS(&g, DFS_NOP_PROCESS, DFS_NOP_EXPLORE, DFS_NOP_EXPLORE,
                            DFS_NOP_PROCESS);
         },
         n, 0);
+    if(r1<r3) {
+      std::stringstream filename;
+      filename << "faster-graph-" << n << ".gml";
+      std::ofstream out(filename.str());
+      std::cout << "ALERT: segment DFS was faster!\n"
+        << r1 << " vs. " << r3 << "ms\n"
+        << "Writing graph to " << filename.str() << "\n";
+      GraphExporter::exportGML(&g,true,filename.str());
+    }
     t1.saveCSV("segment-dfs-small.csv");
     t3.saveCSV("standard-dfs-small.csv");
   }

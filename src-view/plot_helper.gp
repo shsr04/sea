@@ -23,5 +23,5 @@ if (!exists("ratio")) {
 } else {
 	set xlabel "order"
 	set ylabel "factor"
-	plot "< paste ".infile1.".csv ".infile2.".csv" using 1:($3/$6) "%lf,%lf,%lf %lf,%lf,%lf" skip 1
+	plot "< paste ".infile1.".csv ".infile2.".csv" using 1:($3/$6) "%lf,%lf,%lf %lf,%lf,%lf" skip 1 title "".infile1." / ".infile2
 }

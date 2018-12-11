@@ -29,7 +29,7 @@ class RuntimeTest {
      * @param size size of the tested graph used for running the test
      */
     template<typename Testfunction>
-    void runTest(Testfunction testfunction, uint32_t order, uint32_t size);
+    int64_t runTest(Testfunction testfunction, uint32_t order, uint32_t size);
     /**
      * Prints the testresults to standard output
      */
@@ -43,7 +43,7 @@ class RuntimeTest {
 };
 
 template<typename Testfunction>
-void RuntimeTest::runTest(Testfunction testfunction, uint32_t order, uint32_t size) {
+int64_t RuntimeTest::runTest(Testfunction testfunction, uint32_t order, uint32_t size) {
     using clk = std::chrono::high_resolution_clock;
 
     std::tuple<uint32_t, uint32_t> funcParameters(order, size);
@@ -56,6 +56,7 @@ void RuntimeTest::runTest(Testfunction testfunction, uint32_t order, uint32_t si
                          (clk::now() - runStart).count();
 
     runtimes.push_back(runTime);
+    return runTime;
 }
 
 void RuntimeTest::printResults() {
