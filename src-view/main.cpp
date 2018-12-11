@@ -122,7 +122,7 @@ void runTest(uint n, uint (*fm)(uint)) {
 
 void runtime_dfs() {
   RuntimeTest t1, t2, t3;
-  for (uint n = 1e5; n <= 1e6; n += 10000) {
+  for (uint n = 1e6; n <= 1e7; n += 100000) {
     DirectedGraph g = GraphCreator::createRandomKRegularGraph(n, 5);
     t1.runTest(
         [&g]() {
@@ -136,7 +136,7 @@ void runtime_dfs() {
                            DFS_NOP_PROCESS);
         },
         n, 0);
-    t1.saveCSV("nloglogn-dfs-small.csv");
+    t1.saveCSV("segment-dfs-small.csv");
     t3.saveCSV("standard-dfs-small.csv");
   }
 }
