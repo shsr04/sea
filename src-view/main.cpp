@@ -123,7 +123,7 @@ void runTest(uint n, uint (*fm)(uint)) {
 
 void runtime_dfs() {
   RuntimeTest t1, t2, t3;
-  for (uint n = 1e5; n <= 1e6; n += 10000) {
+  for (uint n = 100000; n <= 1e7; n += 100000) {
     DirectedGraph g = GraphCreator::createRandomKRegularGraph(n, 5);
     int64_t r1=t1.runTest(
         [&g]() {
@@ -146,8 +146,8 @@ void runtime_dfs() {
         << "Writing graph to " << filename.str() << "\n";
       GraphExporter::exportGML(&g,true,filename.str());
     }
-    t1.saveCSV("segment-dfs-small.csv");
-    t3.saveCSV("standard-dfs-small.csv");
+    t1.saveCSV("runtime-segment-1e7.csv");
+    t3.saveCSV("runtime-standard-1e7.csv");
   }
 }
 
