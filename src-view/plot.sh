@@ -7,7 +7,8 @@ ScriptHome=$(dirname $(readlink -e "$0"))
 Title="Runtime test"
 Files=""
 Outfile="runtime-plot.jpg"
-Scale="ms"
+XLabel="order"
+YLabel="time (ms)"
 Ratio=F
 
 printHelp() {
@@ -15,7 +16,8 @@ printHelp() {
 	printf "Options:\n"
 	printf "\t-t <name>		Title for your plot\n"
 	printf "\t-o <file>		Output filename (default: $Outfile)\n"
-	printf "\t-s <unit>		Unit of time measure (default: $Scale)\n"
+	printf "\t-x <text>		Label for the x axis (default: '$XLabel')\n"
+	printf "\t-y <text>		Label for the y axis (default: '$YLabel')\n"
 	printf "\t-r			Enable ratio plotting of two data files\n"
 	printf "\n"
 	printf "Example:\nPlot data from standard.csv and efficient.csv in one plot\n"
@@ -26,7 +28,7 @@ if test $# -eq 0; then
 	printHelp
 fi
 
-while getopts "t:o:s:rh" opt; do
+while getopts "t:o:x:y:rh" opt; do
 	case $opt in
 	t) 
 		Title="$OPTARG" 
@@ -35,8 +37,13 @@ while getopts "t:o:s:rh" opt; do
 	o)
 		Outfile="$OPTARG"
 		;;
-	s)
-		Scale="$OPTARG"
+	x)
+		XLabel="$OPTARG"
+		printf "X label: $XLabel\n"
+		;;
+	y)
+		YLabel="$OPTARG"
+		printf "Y label: $YLabel\n"
 		;;
 	r)
 		Ratio=T 
@@ -51,13 +58,18 @@ shift $((OPTIND-1))
 
 printf "Output file: $Outfile\n"
 
+if test $# -lt 1; then
+	printf "Error: no input file(s) given.\n(see -h for help)\n"
+	exit 1
+fi
+
 if test $Ratio = F; then
 	for file in "$@"; do
 		Files="$Files$file "
 	done
 	printf "Plotting files: $Files\n"
-	gnuplot -e "infiles='$Files'; outfile='$Outfile'; title='$Title'; scale='$Scale'" -c "$ScriptHome/plot_helper.gp"
+	gnuplot -e "infiles='$Files'; outfile='$Outfile'; title='$Title'; xlabel='$XLabel'; ylabel='$YLabel'" -c "$ScriptHome/plot_helper.gp"
 else
 	printf "Plotting ratio: $1 / $2\n"
-	gnuplot -e "infile1='$1'; infile2='$2'; outfile='$Outfile'; title='$Title'; ratio='yes'" -c "$ScriptHome/plot_helper.gp"
+	gnuplot -e "infile1='$1'; infile2='$2'; outfile='$Outfile'; title='$Title'; xlabel='$XLabel'; ratio='yes'" -c "$ScriptHome/plot_helper.gp"
 fi
