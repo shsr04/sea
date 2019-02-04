@@ -88,11 +88,11 @@ bool BasicSegmentStack::isAligned() {
 ExtendedSegmentStack::ExtendedSegmentStack(uint size, Graph const *g,
                                            CompactArray *c)
     : SegmentStack(static_cast<uint32_t>(ceil(size / log2(size)))),
-      trailers(size / q + 1),
+      trailers(0),
       l(static_cast<uint32_t>(ceil(log2(size))) + 1),
       table(size, l),
       edges(size, l),
-      big(q),
+      big(0),
       bp(0),
       graph(g),
       n(graph->getOrder()),
@@ -111,12 +111,12 @@ void ExtendedSegmentStack::storeEdges() {
     for (uint c = 0; c < lp; c++) {
         uint u = low[c].first, k = low[c].second;
         if (graph->deg(u) > m / q) {
-            if (trailers[tp].bi == INVALID) {
-                trailers[tp].bi = bp;
-                trailers[tp].bc = 0;
+            if (trailers.back().bi == INVALID) {
+                trailers.back().bi = bp;
+                trailers.back().bc = 0;
             }
-            big[bp++] = std::pair<uint, uint>(
-                u, k - 1);  // another big vertex is stored
+            big.push_back({u, k - 1});  // another big vertex is stored
+            bp++;
             if (bp > q) throw std::out_of_range("big storage is full!");
         } else {  // store an approximation
             uint32_t f = approximateEdge(u, k);
@@ -134,7 +134,8 @@ void ExtendedSegmentStack::push(std::pair<uint, uint> p) {
         table.insert(pu, tp + 1);
         high[hp++] = p;
     } else {
-        trailers[tp].x = low[lp - 1];
+        trailers.push_back(Trailer());
+        trailers.back().x = low[lp - 1];
         storeEdges();
 
         tp++;
@@ -163,7 +164,7 @@ uint ExtendedSegmentStack::getOutgoingEdge(uint u) {
     if (graph->deg(u) > m / q) {
         if (tp > 0) {  // tp>0 should be given in every restoration, which is
                        // precisely when this method may be called
-            Trailer &t = trailers[tp - 1];
+            Trailer &t = trailers.back();
             std::pair<uint, uint> x = big[t.bi + t.bc];
             t.bc += 1;
             return x.second;
@@ -201,10 +202,11 @@ void ExtendedSegmentStack::recolorLow(unsigned v) {
 bool ExtendedSegmentStack::isAligned() {
     bool r = false;
     if (lp == q && tp > 0) {
-        Trailer t = trailers[tp - 1];
+        Trailer &t = trailers.back();
         r = low[lp - 1] == t.x;
         if (r) {
-            if (tp > 0) trailers[tp - 1].bi = INVALID;
+            if (tp > 0) t.bi = INVALID;
+            trailers.pop_back();
             tp--;
         }
     }
