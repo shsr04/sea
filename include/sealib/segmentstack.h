@@ -160,10 +160,10 @@ class ExtendedSegmentStack : public SegmentStack {
     uint retrieveEdge(uint u, unsigned f);
 
     uint64_t byteSize() const {
-        return (low.capacity() + high.capacity()) *
+        return (low.capacity() + high.capacity() + big.capacity()) *
                    sizeof(std::pair<uint, uint>) +
-               trailers.capacity() * sizeof(Trailer) + table.byteSize() +
-               edges.byteSize();
+               trailers.capacity() * sizeof(Trailer) + 
+               table.byteSize() + edges.byteSize();
     }
 
  private:
@@ -188,7 +188,6 @@ class ExtendedSegmentStack : public SegmentStack {
     unsigned m, n;
     CompactArray *color;
 
-    static constexpr unsigned INVALID = static_cast<unsigned>(-1);
     void storeEdges();
 
 #ifdef SEALIBVISUAL_EXAMPLES_H_

@@ -61,6 +61,7 @@ void tikz_example() {
 }
 
 int main() {
-    Sealib::AlgorithmComparison::spaceDFS("memory-dfs-std.csv",
-                                          "memory-dfs-seg.csv");
+    //Sealib::AlgorithmComparison::spaceDFS("memory-dfs-std.csv",
+    //                                      "memory-dfs-seg.csv");
+    Sealib::AlgorithmComparison::spaceSeg();
 }

@@ -4,6 +4,7 @@
 #include <sealib/graph/graphcreator.h>
 #include <sealib/iterator/dfs.h>
 #include <sealib/runtimetest.h>
+#include <sealib/graph/graphio.h>
 #include <cstdio>
 
 namespace Sealib {
@@ -66,6 +67,24 @@ class AlgorithmComparison {
         printf("-----\n");
         t2.printResults();
         t2.saveCSV(file2, "order,size,memory");
+    }
+
+    static void spaceSeg() {
+        DirectedGraph g=GraphCreator::createRandomKRegularGraph(1e6,20);
+        {
+            uint n=g.getOrder();
+            CompactArray color(n, 3);
+            ExtendedSegmentStack s(n, &g, &color);
+            for (uint a = 0; a < n; a++) color.insert(a, DFS_WHITE);
+            for (uint a = 0; a < n; a++) {
+                if (color.get(a) == DFS_WHITE)
+                    DFS::visit_nloglogn(a, &g, &color, &s, DFS::restore_top,
+                                        DFS_NOP_PROCESS, DFS_NOP_EXPLORE,
+                                        DFS_NOP_EXPLORE, DFS_NOP_PROCESS);
+            }
+            uint64_t usage = color.byteSize() + s.byteSize();
+            printf("Usage: %lu B\n",usage);
+        }
     }
 };
 
