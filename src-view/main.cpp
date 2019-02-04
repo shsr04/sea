@@ -1,6 +1,7 @@
 #include <sealib/_types.h>
 #include <sealib/graph/graphcreator.h>
 #include "./test_visual.h"
+#include "./test_algorithms.h"
 #include "sealibvisual/examples.h"
 #include "sealibvisual/tikzarray.h"
 #include "sealibvisual/tikzdocument.h"
@@ -59,4 +60,4 @@ void tikz_example() {
     doc.close();
 }
 
-int main() { SealibVisual::VisualTest::testBFS(); }
+int main() { Sealib::AlgorithmComparison::runtimeDFS("nop"); }
