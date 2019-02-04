@@ -1,7 +1,7 @@
 #include <sealib/_types.h>
 #include <sealib/graph/graphcreator.h>
-#include "./test_visual.h"
 #include "./test_algorithms.h"
+#include "./test_visual.h"
 #include "sealibvisual/examples.h"
 #include "sealibvisual/tikzarray.h"
 #include "sealibvisual/tikzdocument.h"
@@ -60,4 +60,7 @@ void tikz_example() {
     doc.close();
 }
 
-int main() { Sealib::AlgorithmComparison::spaceDFS("nop"); }
+int main() {
+    Sealib::AlgorithmComparison::spaceDFS("memory-dfs-std.csv",
+                                          "memory-dfs-seg.csv");
+}

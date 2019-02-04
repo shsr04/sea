@@ -46,7 +46,8 @@ class RuntimeTest {
      * Saves the test results to a CSV file.
      * @params filepath path to the output file (will be truncated)
      */
-    void saveCSV(std::string filepath);
+    void saveCSV(std::string filepath,
+                 std::string title = "order,size,runtime");
 };
 
 void RuntimeTest::runTest(std::function<void(void)> testfunction,
@@ -74,7 +75,7 @@ void RuntimeTest::addLine(uint32_t order, uint32_t size, uint64_t result) {
 }
 
 void RuntimeTest::printResults() {
-    std::cout << "order,size,runtime" << std::endl;
+    std::cout << "order,size,result" << std::endl;
     for (uint32_t i = 0; i < parameters.size(); ++i) {
         std::cout << std::get<0>(parameters[i]) << ",";
         std::cout << std::get<1>(parameters[i]) << ",";
@@ -82,12 +83,12 @@ void RuntimeTest::printResults() {
     }
 }
 
-void RuntimeTest::saveCSV(std::string filepath) {
+void RuntimeTest::saveCSV(std::string filepath, std::string title) {
     std::ofstream output;
     output.open(filepath,
                 std::ofstream::in | std::ofstream::out | std::ofstream::trunc);
     if (output.is_open()) {
-        output << "order,size,runtime" << std::endl;
+        output << title << std::endl;
         for (uint32_t i = 0; i < parameters.size(); ++i) {
             output << std::get<0>(parameters[i]) << ",";
             output << std::get<1>(parameters[i]) << ",";
