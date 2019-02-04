@@ -42,6 +42,8 @@ class CompactArray : public Sequence<uint> {
      */
     uint get(uint i) const override;
 
+    uint64_t byteSize() const { return data.capacity() * sizeof(uint); }
+
  private:
     uint valueWidth, singleMask;
     std::vector<uint> data;

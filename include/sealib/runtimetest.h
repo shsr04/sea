@@ -67,6 +67,8 @@ void RuntimeTest::runTest(std::function<void(void)> testfunction,
 }
 
 void RuntimeTest::addLine(uint32_t order, uint32_t size, uint64_t result) {
+    std::cout << "Adding result: " << parameters.size() << " n: " << order
+              << " w: " << size << std::endl;
     parameters.push_back({order, size});
     runtimes.push_back(result);
 }

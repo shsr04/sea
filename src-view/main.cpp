@@ -60,4 +60,4 @@ void tikz_example() {
     doc.close();
 }
 
-int main() { Sealib::AlgorithmComparison::runtimeDFS("nop"); }
+int main() { Sealib::AlgorithmComparison::spaceDFS("nop"); }

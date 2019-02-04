@@ -159,6 +159,13 @@ class ExtendedSegmentStack : public SegmentStack {
      */
     uint retrieveEdge(uint u, unsigned f);
 
+    uint64_t byteSize() const {
+        return (low.capacity() + high.capacity()) *
+                   sizeof(std::pair<uint, uint>) +
+               trailers.capacity() * sizeof(Trailer) + table.byteSize() +
+               edges.byteSize();
+    }
+
  private:
     /**
      * A Trailer struct additionally manages a sequence of big vertices.
