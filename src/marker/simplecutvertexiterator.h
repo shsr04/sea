@@ -1,5 +1,6 @@
 #ifndef SEALIB_MARKER_SIMPLECUTVERTEXITERATOR_H_
 #define SEALIB_MARKER_SIMPLECUTVERTEXITERATOR_H_
+#include <limits>
 #include <set>
 #include <vector>
 #include "sealib/iterator/dfs.h"
@@ -9,7 +10,10 @@ namespace Sealib {
 class SimpleCutVertexIterator : Iterator<uint> {
  public:
     SimpleCutVertexIterator(UndirectedGraph const *graph)
-        : g(graph), n(g->getOrder()), number(n), lowpt(n) {}
+        : g(graph),
+          n(g->getOrder()),
+          number(n, std::numeric_limits<uint>::max()),
+          lowpt(n) {}
 
     void init() override;
 

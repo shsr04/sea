@@ -1,38 +1,47 @@
 #include "./simplecutvertexiterator.h"
-#include <cstdio>
 
 namespace Sealib {
 
 void SimpleCutVertexIterator::init() {
-    CompactArray color = CompactArray(n);
-    StaticSpaceStorage s = StaticSpaceStorage(g);
+    std::vector<uint> tree;
     uint i = 0;
-    for (uint a = 0; a < n; a++) {
-        if (color.get(a) == DFS_WHITE) {
-            DFS::visit_nplusm(
-                a, g, &color, &s,
-                [&](uint u) {
-                    number[u] = lowpt[u] = i;
-                    i++;
-                },
-                [&](uint u, uint k) {
-                    uint v = g->head(u, k);
-                    if (color.get(v) == DFS_GRAY && number[v] < lowpt[u]) {
-                        printf("lowpt[%u] <- %u\n", u, number[v]);
-                        lowpt[u] = number[v];
-                    }
-                },
-                [&](uint u, uint k) {
-                    uint v = g->head(u, k);
-                    if (lowpt[v] < lowpt[u]) lowpt[u] = lowpt[v];
-                    if (lowpt[v] >= number[u]) {
-                        printf("cut + %u\n", u);
-                        cut.insert(u);
-                    }
-                },
-                DFS_NOP_PROCESS);
-        }
-    }
+    bool isRootProtected = true;  // root vertex is allowed one child cut vertex
+    DFS::nplusmBitDFS(
+        g,
+        [&](uint u) {
+            number[u] = lowpt[u] = i;
+            i++;
+        },
+        [&](uint u, uint k) {
+            uint v = g->head(u, k);
+            if (number[v] == INVALID) {
+                tree.push_back(v);
+            } else if (number[v] < number[u] && number[v] < lowpt[u]) {
+                lowpt[u] = number[v];
+            }
+        },
+        [&](uint u, uint k) {
+            uint v = g->head(u, k);
+            if (tree.back() == v) {
+                tree.pop_back();
+                if (lowpt[v] < lowpt[u]) lowpt[u] = lowpt[v];
+            }
+            if (number[u] != 0 && lowpt[v] >= number[u]) {
+                if (number[u] != 0 || !isRootProtected) {
+                    cut.insert(u);
+                } else {
+                    isRootProtected = false;
+                }
+            }
+        },
+        [&](uint u) {
+            if (number[u] == 0) {
+                // setup next spanning tree
+                i = 0;
+                isRootProtected = true;
+            }
+        });
+
     cutI = cut.begin();
 }
 

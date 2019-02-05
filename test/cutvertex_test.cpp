@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include "../src/marker/simplecutvertexiterator.h"
 #include "sealib/graph/graphcreator.h"
 #include "sealib/iterator/cutvertexiterator.h"
-#include "../src/marker/simplecutvertexiterator.h"
 
 namespace Sealib {
 
