@@ -118,7 +118,7 @@ class DFS {
      */
 
     static void visit_standard(uint u0, Graph const *g,
-                               std::vector<uint> *color,
+                               std::vector<uint8_t> *color,
                                std::vector<std::pair<uint, uint>> *s,
                                Consumer preProcess, BiConsumer preExplore,
                                BiConsumer postExplore, Consumer postProcess);

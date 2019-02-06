@@ -6,7 +6,7 @@
 
 namespace Sealib {
 
-void DFS::visit_standard(uint u0, Graph const *g, std::vector<uint> *color,
+void DFS::visit_standard(uint u0, Graph const *g, std::vector<uint8_t> *color,
                          std::vector<std::pair<uint, uint>> *s,
                          Consumer preprocess, BiConsumer preexplore,
                          BiConsumer postexplore, Consumer postprocess) {
@@ -211,7 +211,7 @@ void DFS::visit_nplusm(uint u0, UndirectedGraph const *g, CompactArray *color,
 void DFS::standardDFS(Graph const *g, Consumer preprocess,
                       BiConsumer preexplore, BiConsumer postexplore,
                       Consumer postprocess) {
-    std::vector<uint> color(g->getOrder());
+    std::vector<uint8_t> color(g->getOrder());
     std::vector<std::pair<uint, uint>> s;
     for (uint u = 0; u < g->getOrder(); u++) {
         if (color[u] == DFS_WHITE) {

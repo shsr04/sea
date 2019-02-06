@@ -56,8 +56,8 @@ class CutVertexIterator : Iterator<uint> {
     bool isCutVertex(uint u);
 
     uint64_t byteSize() const {
-        return cc.byteSize() + color.byteSize() + parent.byteSize() +
-               cut.byteSize();
+        return e->byteSize() + cc.byteSize() + color.byteSize() +
+               parent.byteSize() + cut.byteSize();
     }
 
  private:
