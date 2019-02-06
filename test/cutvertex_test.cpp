@@ -24,7 +24,7 @@ TEST(CutVertexIteratorTest, windmillGraph) {
 }
 
 TEST(SimpleCutVertexIteratorTest, windmillGraph) {
-    UndirectedGraph g = GraphCreator::createWindmill(3, 4);
+    UndirectedGraph g = GraphCreator::windmill(3, 4);
     SimpleCutVertexIterator c(&g);
     c.init();
     ASSERT_TRUE(c.more());

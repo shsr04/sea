@@ -1,5 +1,5 @@
-#ifndef SEALIB_MARKER_SIMPLECUTVERTEXITERATOR_H_
-#define SEALIB_MARKER_SIMPLECUTVERTEXITERATOR_H_
+#ifndef SRC_MARKER_SIMPLECUTVERTEXITERATOR_H_
+#define SRC_MARKER_SIMPLECUTVERTEXITERATOR_H_
 #include <limits>
 #include <set>
 #include <vector>
@@ -9,7 +9,7 @@
 namespace Sealib {
 class SimpleCutVertexIterator : Iterator<uint> {
  public:
-    SimpleCutVertexIterator(UndirectedGraph const *graph)
+    explicit SimpleCutVertexIterator(UndirectedGraph const *graph)
         : g(graph),
           n(g->getOrder()),
           number(n, std::numeric_limits<uint>::max()),
@@ -26,9 +26,10 @@ class SimpleCutVertexIterator : Iterator<uint> {
     uint n;
     std::vector<uint> number;
     std::vector<uint> lowpt;
+    std::vector<uint> tree;
     std::set<uint> cut;
     std::set<uint>::iterator cutI;
 };
 }  // namespace Sealib
 
-#endif  // SEALIB_MARKER_SIMPLECUTVERTEXITERATOR_H_
+#endif  // SRC_MARKER_SIMPLECUTVERTEXITERATOR_H_

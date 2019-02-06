@@ -3,25 +3,22 @@
 namespace Sealib {
 
 void SimpleCutVertexIterator::init() {
-    std::vector<uint> tree;
     uint i = 0;
     bool isRootProtected = true;  // root vertex is allowed one child cut vertex
-    DFS::nplusmBitDFS(
+    DFS::standardDFS(
         g,
         [&](uint u) {
             number[u] = lowpt[u] = i;
             i++;
         },
-        [&](uint u, uint k) {
-            uint v = g->head(u, k);
+        [&](uint u, uint v) {
             if (number[v] == INVALID) {
                 tree.push_back(v);
             } else if (number[v] < number[u] && number[v] < lowpt[u]) {
                 lowpt[u] = number[v];
             }
         },
-        [&](uint u, uint k) {
-            uint v = g->head(u, k);
+        [&](uint u, uint v) {
             if (tree.back() == v) {
                 tree.pop_back();
                 if (lowpt[v] < lowpt[u]) lowpt[u] = lowpt[v];
