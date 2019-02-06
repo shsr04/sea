@@ -15,8 +15,8 @@ namespace Sealib {
  */
 class AlgorithmComparison {
  public:
-    static void runtimeDFS(std::string file1, std::string file2,
-                           uint from = 1e5, uint to = 1e6) {
+    static void runtimeDDFS(std::string file1, std::string file2,
+                            uint from = 1e5, uint to = 1e6) {
         RuntimeTest t1, t2;
         for (uint n = from; n < to; n += from) {
             DirectedGraph g = GraphCreator::kOutdegree(n, 20);
@@ -30,14 +30,14 @@ class AlgorithmComparison {
         t2.saveCSV(file2);
     }
 
-    static void spaceDFS(std::string file1, std::string file2, uint from = 1e5,
-                         uint to = 1e6) {
+    static void spaceDDFS(std::string file1, std::string file2, uint from = 1e5,
+                          uint to = 1e6) {
         RuntimeTest t1, t2;
         for (uint n = from; n < to; n += from) {
             DirectedGraph g = GraphCreator::kOutdegree(n, 20);
 
             {
-                std::vector<uint> color(n);
+                std::vector<uint8_t> color(n);
                 std::vector<std::pair<uint, uint>> s;
                 for (uint u = 0; u < n; u++) {
                     if (color[u] == DFS_WHITE) {
@@ -47,7 +47,7 @@ class AlgorithmComparison {
                     }
                 }
                 uint64_t usageKB =
-                    (color.capacity() * sizeof(uint) +
+                    (color.capacity() * sizeof(uint8_t) +
                      s.capacity() * sizeof(std::pair<uint, uint>)) /
                     (1 << 10);
                 t1.addLine(n, 20 * n, usageKB);
@@ -78,7 +78,71 @@ class AlgorithmComparison {
         t2.saveCSV(file2, "order,size,memory");
     }
 
-    static void spaceSeg() {
+    static void runtimeUDFS(std::string file1, std::string file2,
+                            uint from = 1e5, uint to = 1e6) {
+        RuntimeTest t1, t2;
+        for (uint n = from; n < to; n += from) {
+            UndirectedGraph g = GraphCreator::sparseUndirected(n);
+            t1.runTest([&]() { DFS::standardDFS(&g); }, n, 0);
+            t2.runTest([&]() { DFS::nplusmBitDFS(&g); }, n, 0);
+        }
+        t1.printResults();
+        t1.saveCSV(file1);
+        printf("-----\n");
+        t2.printResults();
+        t2.saveCSV(file2);
+    }
+
+    static void spaceUDFS(std::string file1, std::string file2, uint from = 1e5,
+                          uint to = 1e6) {
+        RuntimeTest t1, t2;
+        for (uint n = from; n < to; n += from) {
+            UndirectedGraph g = GraphCreator::sparseUndirected(n);
+            {
+                std::vector<uint8_t> color(n);
+                std::vector<std::pair<uint, uint>> s;
+                for (uint u = 0; u < n; u++) {
+                    if (color[u] == DFS_WHITE) {
+                        DFS::visit_standard(u, &g, &color, &s, DFS_NOP_PROCESS,
+                                            DFS_NOP_EXPLORE, DFS_NOP_EXPLORE,
+                                            DFS_NOP_PROCESS);
+                    }
+                }
+                uint64_t usageKB =
+                    (color.capacity() * sizeof(uint8_t) +
+                     s.capacity() * sizeof(std::pair<uint, uint>)) /
+                    (1 << 10);
+                t1.addLine(n, 0, usageKB);
+            }
+            {
+                CompactArray color(n, 3);
+                for (uint a = 0; a < n; a++) color.insert(a, DFS_WHITE);
+                std::vector<bool> bits;
+                for (uint u = 0; u < n; u++) {
+                    bits.push_back(1);
+                    for (uint k = 0; k < ceil(log2(g.deg(u) + 1)); k++) {
+                        bits.push_back(0);
+                    }
+                }
+                StaticSpaceStorage back(bits);
+                for (uint a = 0; a < n; a++) {
+                    if (color.get(a) == DFS_WHITE)
+                        DFS::visit_nplusm(a, &g, &color, &back, DFS_NOP_PROCESS,
+                                            DFS_NOP_EXPLORE, DFS_NOP_EXPLORE,
+                                            DFS_NOP_PROCESS);                                            
+                }
+                uint64_t usageKB=(back.byteSize()+color.byteSize())/(1<<10);
+                t2.addLine(n,0,usageKB);
+            }
+        }
+        t1.printResults();
+        t1.saveCSV(file1);
+        printf("-----\n");
+        t2.printResults();
+        t2.saveCSV(file2);
+    }
+
+    static void spaceSegmentDFS() {
         DirectedGraph g = GraphCreator::kOutdegree(1e6, 20);
         {
             uint n = g.getOrder();
@@ -133,15 +197,15 @@ class AlgorithmComparison {
 
             {
                 SimpleCutVertexIterator c(&g);
-                    c.init();
-                    while (c.more()) c.next();
+                c.init();
+                while (c.more()) c.next();
                 uint64_t usageKB = c.byteSize() / (1 << 10);
                 t1.addLine(n, 20 * n, usageKB);
             }
             {
                 CutVertexIterator c(&g);
-                    c.init();
-                    while (c.more()) c.next();
+                c.init();
+                while (c.more()) c.next();
                 uint64_t usageKB = c.byteSize() / (1 << 10);
                 t2.addLine(n, 20 * n, usageKB);
             }
