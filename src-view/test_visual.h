@@ -22,8 +22,7 @@ class VisualTest {
 
     static void testDFS() {
         uint n = 50;
-        Sealib::DirectedGraph g =
-            Sealib::GraphCreator::kOutdegree(n, 1);
+        Sealib::DirectedGraph g = Sealib::GraphCreator::kOutdegree(n, 1);
         Sealib::CompactArray c(n, 3);
         VisualDFS d(&g, &c, "out-dfs.tex", "beamer");
         d.run();
@@ -40,8 +39,7 @@ class VisualTest {
     }
 
     static void testBCC() {
-        Sealib::UndirectedGraph g =
-            Sealib::GraphCreator::kRegular(20, 2);
+        Sealib::UndirectedGraph g = Sealib::GraphCreator::kRegular(20, 2);
         std::shared_ptr<VisualEdgeMarker> e(
             new VisualEdgeMarker(&g, "out-bcc.tex", "beamer", true));
         e->init();

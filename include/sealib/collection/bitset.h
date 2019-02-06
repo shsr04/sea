@@ -62,6 +62,10 @@ class Bitset : Sequence<bool, uint64_t> {
      */
     void insert(sizeType bit, bool value) override;
 
+    uint64_t byteSize() const {
+        return mbits.capacity()*sizeof(BlockType);
+    }
+
     /**
      * Proxy class to simulate lvalues of bit type.
      * Implementation taken from boost dynamic_bitset.

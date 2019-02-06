@@ -59,6 +59,10 @@ class EdgeMarker {
         return (getEdgeData(u, k) & TYPE_MASK) == FULL;
     }
 
+    uint64_t byteSize() const {
+        return parent.byteSize() + edges.byteSize() + offset.byteSize();
+    }
+
     virtual ~EdgeMarker() = default;
 
  protected:

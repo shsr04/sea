@@ -21,6 +21,10 @@ class SimpleCutVertexIterator : Iterator<uint> {
 
     uint next() override;
 
+    uint64_t byteSize() const {
+        return (number.capacity()+lowpt.capacity()+tree.capacity())*sizeof(uint)+cut.size();
+    }
+
  private:
     UndirectedGraph const *g;
     uint n;

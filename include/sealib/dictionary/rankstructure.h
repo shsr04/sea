@@ -59,6 +59,11 @@ class RankStructure {
      */
     const Sealib::Bitset<uint8_t>& getBitset() const;
 
+    uint64_t byteSize() const {
+        return bitset.byteSize()+
+            (setCountTable.capacity()+nonEmptySegments.capacity())*sizeof(uint32_t);
+    }
+
     ~RankStructure();
     uint32_t setBefore(uint64_t segment) const;
 };

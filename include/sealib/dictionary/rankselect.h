@@ -39,6 +39,10 @@ class RankSelect {
 
     uint64_t size() const;
 
+    uint64_t byteSize() const {
+        return rankStructure.byteSize()+firstInSegment.byteSize();
+    }
+
     ~RankSelect();
     const Bitset<uint8_t> &getBitset() const;
 };

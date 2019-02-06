@@ -10,12 +10,17 @@ CutVertexIterator::CutVertexIterator(UndirectedGraph const *graph)
 }
 
 CutVertexIterator::CutVertexIterator(std::shared_ptr<EdgeMarker> edges)
-    : e(edges), g(e->getGraph()), n(g->getOrder()), cc(n), cut(n), cutI(&cut) {}
+    : e(edges),
+      g(e->getGraph()),
+      n(g->getOrder()),
+      cc(n),
+      color(n, 3),
+      parent(g),
+      cut(n),
+      cutI(&cut) {}
 
 void CutVertexIterator::findCCs() {
-    CompactArray color(n, 3);
     for (uint a = 0; a < n; a++) color.insert(a, DFS_WHITE);
-    StaticSpaceStorage parent(g);
     for (uint a = 0; a < n; a++) {
         if (color.get(a) == DFS_WHITE) {
             cc.insert(a);

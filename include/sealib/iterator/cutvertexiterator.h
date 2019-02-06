@@ -55,11 +55,18 @@ class CutVertexIterator : Iterator<uint> {
      */
     bool isCutVertex(uint u);
 
+    uint64_t byteSize() const {
+        return cc.byteSize() + color.byteSize() + parent.byteSize() +
+               cut.byteSize();
+    }
+
  private:
     std::shared_ptr<EdgeMarker> e;
     UndirectedGraph const *g;
     uint n;
     ChoiceDictionary cc;
+    CompactArray color;
+    StaticSpaceStorage parent;
     ChoiceDictionary cut;
     ChoiceDictionaryIterator cutI;
 
