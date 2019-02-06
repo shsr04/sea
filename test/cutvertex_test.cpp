@@ -1,12 +1,13 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include "../src/marker/simplecutvertexiterator.h"
 #include "sealib/graph/graphcreator.h"
 #include "sealib/iterator/cutvertexiterator.h"
 
 namespace Sealib {
 
 TEST(CutVertexIteratorTest, windmillGraph) {
-    UndirectedGraph g = GraphCreator::createWindmill(3, 4);
+    UndirectedGraph g = GraphCreator::windmill(3, 4);
     CutVertexIterator c(&g);
     c.init();
 
@@ -20,6 +21,15 @@ TEST(CutVertexIteratorTest, windmillGraph) {
         EXPECT_FALSE(c.isCutVertex(a));
     }
     EXPECT_TRUE(c.isCutVertex(g.getOrder() - 1));
+}
+
+TEST(SimpleCutVertexIteratorTest, windmillGraph) {
+    UndirectedGraph g = GraphCreator::windmill(3, 4);
+    SimpleCutVertexIterator c(&g);
+    c.init();
+    ASSERT_TRUE(c.more());
+    EXPECT_EQ(c.next(), g.getOrder() - 1);
+    EXPECT_FALSE(c.more());
 }
 
 TEST(CutVertexIteratorTest, lineGraph) {
@@ -42,7 +52,7 @@ TEST(CutVertexIteratorTest, lineGraph) {
 }
 
 TEST(CutVertexIteratorTest, stability) {
-    UndirectedGraph g = GraphCreator::createRandomGeneratedUndirected(2000);
+    UndirectedGraph g = GraphCreator::sparseUndirected(2000);
     CutVertexIterator c(&g);
     c.init();
     while (c.more()) c.next();
