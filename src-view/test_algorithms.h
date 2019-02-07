@@ -2,11 +2,13 @@
 #define SRC_VIEW_TEST_ALGORITHMS_H_
 #include <cstdio>
 #include "../src/marker/simplecutvertexiterator.h"
+#include "../src/bfs/simplebfs.h"
 #include "sealib/_types.h"
 #include "sealib/graph/graphcreator.h"
 #include "sealib/graph/graphio.h"
 #include "sealib/iterator/cutvertexiterator.h"
 #include "sealib/iterator/dfs.h"
+#include "sealib/iterator/bfs.h"
 #include "sealib/runtimetest.h"
 
 namespace Sealib {
@@ -207,6 +209,57 @@ class AlgorithmComparison {
                 c.init();
                 while (c.more()) c.next();
                 uint64_t usageKB = c.byteSize() / (1 << 10);
+                t2.addLine(n, 20 * n, usageKB);
+            }
+        }
+        t1.printResults();
+        t1.saveCSV(file1, "order,size,memory");
+        printf("-----\n");
+        t2.printResults();
+        t2.saveCSV(file2, "order,size,memory");
+    }
+
+    static void runtimeBFS(std::string file1, std::string file2,
+                            uint from = 1e5, uint to = 1e6) {
+        RuntimeTest t1, t2;
+        for (uint n = from; n < to; n += from) {
+            DirectedGraph g = GraphCreator::kOutdegree(n, 20);
+            t1.runTest([&]() { 
+                SimpleBFS b(&g,BFS_NOP_PROCESS,BFS_NOP_EXPLORE); 
+                b.init();
+                b.forEach([&](std::pair<uint, uint>) {});
+            }, n, 20 * n);
+            t2.runTest([&]() {
+                BFS b(&g,BFS_NOP_PROCESS,BFS_NOP_EXPLORE); 
+                b.init();
+                b.forEach([&](std::pair<uint, uint>) {});
+            }, n, 20 * n);
+        }
+        t1.printResults();
+        t1.saveCSV(file1);
+        printf("-----\n");
+        t2.printResults();
+        t2.saveCSV(file2);
+    }
+
+    static void spaceBFS(std::string file1, std::string file2, uint from = 1e5,
+                        uint to = 1e6) {
+        RuntimeTest t1, t2;
+        for (uint n = from; n < to; n += from) {
+            DirectedGraph g = GraphCreator::kOutdegree(n,20);
+
+            {
+                SimpleBFS b(&g,BFS_NOP_PROCESS,BFS_NOP_EXPLORE); 
+                b.init();
+                b.forEach([&](std::pair<uint, uint>) {});
+                uint64_t usageKB = b.byteSize() / (1 << 10);
+                t1.addLine(n, 20 * n, usageKB);
+            }
+            {
+                BFS b(&g,BFS_NOP_PROCESS,BFS_NOP_EXPLORE); 
+                b.init();
+                b.forEach([&](std::pair<uint, uint>) {});
+                uint64_t usageKB = b.byteSize() / (1 << 10);
                 t2.addLine(n, 20 * n, usageKB);
             }
         }

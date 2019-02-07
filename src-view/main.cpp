@@ -67,7 +67,9 @@ int main() {
     // Sealib::AlgorithmComparison::runtimeCV("time-cv-std.csv","time-cv-mark.csv");
     // Sealib::AlgorithmComparison::spaceCV("memory-cv-std.csv",
     //                                     "memory-cv-mark.csv");
-    Sealib::AlgorithmComparison::runtimeUDFS("time-dfs-std.csv",
-                                             "time-dfs-mate.csv", 1e8, 2e8);
+    // Sealib::AlgorithmComparison::runtimeUDFS("time-dfs-std.csv",
+    //                                          "time-dfs-mate.csv", 1e8, 2e8);
     // Sealib::AlgorithmComparison::spaceUDFS("memory-dfs-std.csv","memory-dfs-mate.csv");
+    //Sealib::AlgorithmComparison::runtimeBFS("time-bfs-std.csv","time-bfs-choice.csv");
+    Sealib::AlgorithmComparison::spaceBFS("memory-bfs-std.csv","memory-bfs-choice.csv");
 }
