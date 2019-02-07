@@ -5,6 +5,7 @@
 #include "../src/bfs/simplebfs.h"
 #include "sealib/_types.h"
 #include "sealib/graph/graphcreator.h"
+#include "sealib/dictionary/choicedictionary.h"
 #include "sealib/graph/graphio.h"
 #include "sealib/iterator/cutvertexiterator.h"
 #include "sealib/iterator/dfs.h"
@@ -268,6 +269,24 @@ class AlgorithmComparison {
         printf("-----\n");
         t2.printResults();
         t2.saveCSV(file2, "order,size,memory");
+    }
+
+    static void runtimeCDIterate(std::string file,
+                            uint from = 1e5, uint to = 1e6) {
+        RuntimeTest t1;
+        for (uint n = from; n < to; n += from) {
+            ChoiceDictionary c(n);
+            ChoiceDictionaryIterator ci(&c);
+            t1.runTest([&](){
+                for(uint a=0; a<n; a+=5) {
+                    c.insert(a);
+                }
+                ci.init();
+                while(ci.more()) ci.next();
+            },n,0);
+        }
+        t1.printResults();
+        t1.saveCSV(file);
     }
 };
 
