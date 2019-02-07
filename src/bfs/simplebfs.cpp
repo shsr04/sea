@@ -3,12 +3,7 @@
 namespace Sealib {
 
 SimpleBFS::SimpleBFS(Graph const *graph, Consumer pp, BiConsumer pe)
-    : g(graph),
-      n(g->getOrder()),
-      color(n),
-      dist(n),
-      preprocess(pp),
-      preexplore(pe) {
+    : g(graph), n(g->getOrder()), color(n), preprocess(pp), preexplore(pe) {
     for (uint a = 0; a < n; a++) {
         color[a] = BFS_WHITE;
     }
@@ -44,6 +39,7 @@ std::pair<uint, uint> SimpleBFS::next() {
             queue.push({v, d + 1});
         }
     }
+    if (queue.size() > qmax) qmax = queue.size();
     color[u] = BFS_BLACK;
     return {u, d};
 }

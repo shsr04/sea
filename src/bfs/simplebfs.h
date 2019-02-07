@@ -23,12 +23,17 @@ class SimpleBFS : Iterator<std::pair<uint, uint>> {
         } while (nextComponent());
     }
 
+    uint64_t byteSize() const {
+        return color.capacity() * sizeof(uint8_t) +
+               qmax * sizeof(std::pair<uint, uint>);
+    }
+
  private:
     Graph const *g;
     uint n;
     std::vector<uint8_t> color;
-    std::vector<uint> dist;
     std::queue<std::pair<uint, uint>> queue;
+    uint64_t qmax = 0;
     Consumer preprocess;
     BiConsumer preexplore;
 };
