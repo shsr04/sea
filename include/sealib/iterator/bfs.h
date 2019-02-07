@@ -57,10 +57,10 @@ class BFS : Iterator<std::pair<uint, uint>> {
     bool more() override;
 
     /**
-     * Get the next node from the current component.
+     * Get the next node from the current component. 
+     * (Make sure that more() has returned true before calling this method.)
      * @return a tuple (u,d) where d is the distance of u to the component's
      * starting node
-     * @throws std::logic_error if no next node is available
      */
     std::pair<uint, uint> next() override;
 

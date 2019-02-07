@@ -2,6 +2,7 @@
 #define SEALIB_DICTIONARY_CHOICEDICTIONARY_H_
 #include <cstdint>
 #include <vector>
+#include "sealib/_types.h"
 
 #define SHIFT_OFFSET 1UL
 #define POINTER_OFFSET 1UL
@@ -88,21 +89,21 @@ class ChoiceDictionary {
     void insert(uint64_t index);
 
     /**
-     * Returns the bit at specified index.
+     * Gets the bit at specified index.
      * @param index Index to read.
+     * @return bit value
      */
     bool get(uint64_t index);
 
     /**
-     * Returns an arbitrary bit position that is set to 1.
-     * @throws std::exception if empty
+     * Gets an arbitrary bit position that is set to 1.
+     * @return index of a set bit, or INVALID if dictionary is empty
      */
     uint64_t choice();
 
     /**
-     * Sets a bit at specified index to 0.
-     * @param index Index of bit that should be set to 0.
-     * @throws std::exception if empty
+     * Sets a bit at specified index to 0 if the dictionary is not empty.
+     * @param index Index of bit that should be set to 0
      */
     void remove(uint64_t index);
 

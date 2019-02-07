@@ -24,7 +24,6 @@ class BasicSegmentStackTest : public ::testing::Test {
 
 TEST_F(BasicSegmentStackTest, isEmpty) {
     EXPECT_TRUE(s->isEmpty());
-    EXPECT_THROW(s->saveTrailer(), std::logic_error);
     pushn(0, 1);
     EXPECT_FALSE(s->isEmpty());
     popexp(1, 0);

@@ -2,7 +2,6 @@
 #define SRC_DFS_INPLACERUNNER_H_
 
 #include <utility>
-#include <stdexcept>
 
 #define GRADE_ZERO 0
 #define GRADE_ONE 1
@@ -78,10 +77,8 @@ class LinearTimeInplaceDFSRunner {
 
   inline uint name(uint i) {
     if (i == 0 || i == this->n + 1 || i > this->N) {
-      std::stringstream ostr;
-      ostr << "Never access 0 or n + 1, i = " << i << " n: " << n
-           << " N: " << N;
-      throw std::invalid_argument(ostr.str());
+      // Never access 0 or n + 1
+      return INVALID;
     }
 
     auto x = A[i];
@@ -179,11 +176,8 @@ class LinearTimeInplaceDFSRunner {
   void visit(uint p) {
     auto v = name(p);
     if (v == 0) {
-      std::stringstream ostr;
-      ostr << "Position p: " << p
-           << " does not contain a vertex name, it contains the value: "
-           << A[p];
-      throw std::invalid_argument(ostr.str());
+      // Position p does not contain a vertex name, it contains a value
+      return;
     }
     this->m_preProcess(v);
 
@@ -277,10 +271,8 @@ class LinearTimeInplaceDFSRunner {
         return nextNeighbor(p, false);
       }
       default: {
-        std::stringstream ostr;
-        ostr << "Grade type calculation gone wrong, grade type: " << grade
-             << " found, only {0, 1, 2} allowed";
-        throw std::invalid_argument(ostr.str());
+        // Grade type calculation gone wrong, only {0, 1, 2} allowed
+        return;
       }
     }
   }
@@ -366,10 +358,8 @@ class LinearTimeInplaceDFSRunner {
                 return visit(next);
               }
               default: {
-                std::stringstream ostr;
-                ostr << "Grade type calculation gone wrong, grade type: "
-                     << grade << " found, only {0, 1, 2} allowed";
-                throw std::invalid_argument(ostr.str());
+                // Grade type calculation gone wrong, only {0, 1, 2} allowed
+                return;
               }
             }
             grade = gradeAtPosition(next);
@@ -389,10 +379,8 @@ class LinearTimeInplaceDFSRunner {
         return visit(q);
       }
       default: {
-        std::stringstream ostr;
-        ostr << "Grade type calculation gone wrong, grade type: " << grade
-             << " found, only {0, 1, 2} allowed";
-        throw std::invalid_argument(ostr.str());
+        // Grade type calculation gone wrong, only {0, 1, 2} allowed
+        return;
       }
     }
   }

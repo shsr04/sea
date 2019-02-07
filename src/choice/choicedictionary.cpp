@@ -1,15 +1,7 @@
 #include "sealib/dictionary/choicedictionary.h"
-#include <exception>
 #include <iostream>
 
 using Sealib::ChoiceDictionary;
-
-class emptyChoiceDictionary : public std::exception {
-    const char* what() const noexcept {
-        return "Choice dictionary is empty. Operations \'choice()\'"
-               " and \'remove()\' are not possible";
-    }
-};
 
 ChoiceDictionary::ChoiceDictionary(uint64_t size)
     :   wordSize(sizeof(uint64_t) * 8),
@@ -63,7 +55,7 @@ uint64_t ChoiceDictionary::choice() {
     uint64_t secondaryWord;
     uint64_t primaryInnerIndex;
 
-    if (pointer == 0) throw emptyChoiceDictionary();
+    if (pointer == 0) return INVALID;
 
     uint64_t secondaryIndex = validator[pointer - POINTER_OFFSET] - TUPEL_OFFSET;
     secondaryWord = secondary[secondaryIndex];
@@ -85,7 +77,7 @@ void ChoiceDictionary::remove(uint64_t index) {
     uint64_t newPrimaryWord;
     uint64_t targetBit;
 
-    if (pointer == 0) throw emptyChoiceDictionary();
+    if (pointer == 0) return;
 
     uint64_t primaryIndex = index / (uint64_t)wordSize;
     uint64_t primaryInnerIndex = index % (uint64_t)wordSize;

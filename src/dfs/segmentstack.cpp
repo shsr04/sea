@@ -1,8 +1,7 @@
 #include "sealib/segmentstack.h"
 #include <math.h>
-#include <sstream>
+#include <cstdlib>
 #include <stack>
-#include <stdexcept>
 
 using Sealib::SegmentStack;
 using Sealib::BasicSegmentStack;
@@ -63,8 +62,6 @@ void BasicSegmentStack::saveTrailer() {
     if (tp > 0) {
         savedTrailer = last;
         alignTarget = tp == 1 ? 1 : 2;
-    } else {
-        throw std::logic_error("segmentstack: cannot save from empty trailers");
     }
 }
 
@@ -115,9 +112,9 @@ void ExtendedSegmentStack::storeEdges() {
                 trailers[tp].bi = bp;
                 trailers[tp].bc = 0;
             }
-            big[bp++] = std::pair<uint, uint>(
-                u, k - 1);  // another big vertex is stored
-            if (bp > q) throw std::out_of_range("big storage is full!");
+            big.push_back({u, k - 1});  // another big vertex is stored
+            bp++;
+            if (bp > q) std::exit(667371);
         } else {  // store an approximation
             uint32_t f = approximateEdge(u, k);
             edges.insert(u, f);
@@ -168,8 +165,7 @@ uint ExtendedSegmentStack::getOutgoingEdge(uint u) {
             t.bc += 1;
             return x.second;
         } else {
-            throw std::logic_error(
-                "can't get edge from big vertex because there are no trailers");
+            return INVALID;
         }
     } else {
         return retrieveEdge(u, edges.get(u));
