@@ -1,14 +1,12 @@
 #include "sealib/iterator/bfs.h"
 #include <gtest/gtest.h>
 #include <stdio.h>
+#include "../src/bfs/simplebfs.h"
 #include "sealib/_types.h"
 #include "sealib/graph/graph.h"
 #include "sealib/graph/graphcreator.h"
 
-using Sealib::uint;
-using Sealib::BFS;
-using Sealib::DirectedGraph;
-using Sealib::GraphCreator;
+using namespace Sealib;  // NOLINT
 
 static uint c1 = 0, c2 = 0;
 static void incr1(uint) { c1++; }
@@ -40,10 +38,29 @@ TEST_P(BFSTest, userproc) {
     EXPECT_EQ(c2, order * degree);
 }
 
+TEST_P(BFSTest, stdUserproc) {
+    DirectedGraph g = GetParam();
+    SimpleBFS bfs(&g, incr1, incr2);
+    bfs.init();
+    bfs.forEach([](std::pair<uint, uint>) {});
+    EXPECT_EQ(c1, order);
+    EXPECT_EQ(c2, order * degree);
+}
+
 TEST(BFSTest, nextComponent) {
-    c1 = c2 = 0;
     DirectedGraph g = GraphCreator::kOutdegree(order, 0);
     BFS bfs(&g, incr1, incr2);
+    uint rc = 0;
+    bfs.init();
+    bfs.forEach([&](std::pair<uint, uint>) { rc++; });
+    EXPECT_EQ(rc, order);
+    EXPECT_EQ(c1, order);
+    EXPECT_EQ(c2, 0);
+}
+
+TEST(SimpleBFSTest, nextComponent) {
+    DirectedGraph g = GraphCreator::kOutdegree(order, 0);
+    SimpleBFS bfs(&g, incr1, incr2);
     uint rc = 0;
     bfs.init();
     bfs.forEach([&](std::pair<uint, uint>) { rc++; });
