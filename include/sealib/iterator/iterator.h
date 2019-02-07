@@ -25,7 +25,6 @@ class Iterator {
     /**
      * Get the next element from this iterator.
      * @return the next element
-     * @throws std::logic_error if there are no more elements
      */
     virtual T next() = 0;
 

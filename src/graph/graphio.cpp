@@ -1,8 +1,8 @@
 #include "sealib/graph/graphio.h"
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include <sstream>
-#include <stdexcept>
 #include <vector>
 #include "sealib/graph/directedgraph.h"
 #include "sealib/graph/undirectedgraph.h"
@@ -11,8 +11,9 @@
     if (tok[index] != s) {                                                \
         std::stringstream err;                                            \
         err << "Input file is malformed: expected '" << (s) << "', got '" \
-            << tok[index] << "'";                                         \
-        throw std::runtime_error(err.str());                              \
+            << tok[index] << "'\n";                                       \
+        std::cerr << err.str();                                           \
+        return g;                                                         \
     }                                                                     \
     index++;
 #define READL(s)           \

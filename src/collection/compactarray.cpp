@@ -1,6 +1,6 @@
 #include "sealib/collection/compactarray.h"
 #include <math.h>
-#include <stdexcept>
+
 #include "sealib/_types.h"
 
 #define PRELUDE                                                              \
@@ -50,10 +50,6 @@ uint CompactArray::get(uint i) const {
 CompactArray::CompactArray(uint size, uint values)
     : valueWidth(static_cast<uint>(ceil(log2(values)))),
       singleMask((ONE << valueWidth) - 1),
-      data(size * valueWidth / BITSIZE + 1) {
-    if (valueWidth >= sizeof(uint) * 8) {
-        throw std::domain_error("v is too big (max v = bitsize(uint))");
-    }
-}
+      data(size * valueWidth / BITSIZE + 1) {}
 
 }  // namespace Sealib

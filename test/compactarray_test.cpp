@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <sealib/collection/compactarray.h>
-#include <stdexcept>
 
 using Sealib::CompactArray;
 

@@ -78,7 +78,8 @@ class BasicSegmentStack : public SegmentStack {
      */
     void dropAll();
     /**
-     * Save a trailer to survive a full restoration.
+     * Save a trailer to survive a full restoration if the trailer stack is not
+     * empty.
      */
     void saveTrailer();
 
@@ -112,16 +113,16 @@ class ExtendedSegmentStack : public SegmentStack {
 
     /**
      * Check if u is labeled with the top segment number (i.e. is table[u]=top?)
-     * @param u Node to check
+     * @param u Vertex to check
      * @param restoring Refer to the previous top segment? (used when restoring
-     * and
-     * values are actively pushed)
+     * and values are actively pushed)
      */
     bool isInTopSegment(uint u, bool restoring = false);
     /**
-     * Get the outgoing edge for a given node. Retrieve the approximation from
-     * the table if u is small, get the edge from the trailer stack if u is big.
-     * @param u Node to get the edge for
+     * Get the outgoing edge for a given vertex.
+     * @param u Vertex to get the edge for
+     * @return Approximation if u is small; edge index from big stack if u is
+     * big, INVALID if big stack is empty
      */
     uint getOutgoingEdge(uint u);
     /**
@@ -188,6 +189,10 @@ class ExtendedSegmentStack : public SegmentStack {
     unsigned m, n;
     CompactArray *color;
 
+    /**
+     * Stores a vertex on the big stack/small table.
+     * @exits with code 667371 ("BIG") if the big storage is full
+     */
     void storeEdges();
 
 #ifdef SEALIBVISUAL_EXAMPLES_H_

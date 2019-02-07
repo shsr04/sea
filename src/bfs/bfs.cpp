@@ -1,16 +1,9 @@
 #include "sealib/iterator/bfs.h"
-#include <stdexcept>
+
 #include <utility>
 #include <vector>
 
 namespace Sealib {
-
-class NoMoreGrayNodes : std::exception {
-    const char *what() const noexcept {
-        return "BFS: no more gray nodes found; did you forget to call "
-               "nextComponent()?";
-    }
-};
 
 void BFS::init() {
     u = 0;
@@ -38,33 +31,17 @@ bool BFS::nextComponent() {
     return found;
 }
 
-bool BFS::hasGrayNode() {
-    try {
-        isInner.choice();
-    } catch (std::exception e) {
-        try {
-            isOuter.choice();
-        } catch (std::exception e2) {
-            return false;
-        }
-    }
-    return true;
-}
 uint BFS::getGrayNode() {
-    uint64_t r = INVALID;
-    try {
-        r = isInner.choice();
-    } catch (std::exception e) {
-        try {
-            r = isOuter.choice();
-        } catch (std::exception e2) {
-            throw NoMoreGrayNodes();
-        }
+    uint64_t r = isInner.choice();
+    if (r == INVALID) {
+        r = isOuter.choice();
     }
     return static_cast<uint>(r);
 }
 
-bool BFS::more() { return hasGrayNode(); }
+bool BFS::more() {
+    return isInner.choice() != INVALID || isOuter.choice() != INVALID;
+}
 
 std::pair<uint, uint> BFS::next() {
     u = getGrayNode();

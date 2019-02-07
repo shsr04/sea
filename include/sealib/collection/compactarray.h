@@ -22,9 +22,7 @@ class CompactArray : public Sequence<uint> {
      * Create a new compact array.
      * @param size number of values the compact array should hold
      * @param v number of states for one value (e.g. v=2 for a binary array, v=4
-     * for states 0,1,2,3). Recommended: ld(v) should divide bitsize(uint) (e.g.
-     * groups of 4 bits fit into a 32 bit integer perfectly)
-     * @throws std::domain_error when ld(v) exceeds bitsize(uint)
+     * for states 0,1,2,3). Make sure that ld(v) does not exceed bitsize(uint)!
      */
     explicit CompactArray(uint count, uint v = 3);
 
