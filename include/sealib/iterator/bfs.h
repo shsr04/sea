@@ -72,6 +72,10 @@ class BFS : Iterator<std::pair<uint, uint>> {
      */
     void forEach(std::function<void(std::pair<uint, uint>)> f) override;
 
+    uint64_t byteSize() const {
+        return color.byteSize() + isInner.byteSize() + isOuter.byteSize();
+    }
+
  private:
     Graph const *g;
     uint n;
