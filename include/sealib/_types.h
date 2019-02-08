@@ -11,6 +11,20 @@ typedef std::function<void(uint)> Consumer;
 typedef std::function<void(uint, uint)> BiConsumer;
 
 static constexpr uint INVALID = static_cast<uint>(-1);
+
+template<class T>
+class Result {
+    public:
+    constexpr Result(): ok(false), value() {}
+    constexpr Result(T p): ok(true), value(p) {}
+
+    constexpr operator T() const { return value; }
+    constexpr bool ok() const { return ok; }
+
+    private:
+    bool ok;
+    T value;
+};
 }  // namespace Sealib
 
 /**
