@@ -2,6 +2,8 @@
 #include <iostream>
 #include <utility>
 
+using Sealib::Result;
+
 /**
  * deletion of the subgraphs will be in the subgraph stack
  * or with the deletion of the subgraph stack
@@ -48,27 +50,27 @@ Sealib::BaseSubGraph::mate(uint64_t u, uint64_t k) const {
             k2 + 1);
 }
 
-uint64_t Sealib::BaseSubGraph::phi(uint64_t u) const {
+Result<uint64_t> Sealib::BaseSubGraph::phi(uint64_t u) const {
     if (u == 0) {
-        return INVALID;
+        return {};
     }
     return u;
 }
-uint64_t Sealib::BaseSubGraph::psi(uint64_t a) const {
+Result<uint64_t> Sealib::BaseSubGraph::psi(uint64_t a) const {
     if (a == 0) {
-        return INVALID;
+        return {};
     }
     return a;
 }
-uint64_t Sealib::BaseSubGraph::phiInv(uint64_t u) const {
+Result<uint64_t> Sealib::BaseSubGraph::phiInv(uint64_t u) const {
     if (u == 0) {
-        return INVALID;
+        return {};
     }
     return u;
 }
-uint64_t Sealib::BaseSubGraph::psiInv(uint64_t a) const {
+Result<uint64_t> Sealib::BaseSubGraph::psiInv(uint64_t a) const {
     if (a == 0) {
-        return INVALID;
+        return {};
     }
     return a;
 }

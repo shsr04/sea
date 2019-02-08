@@ -1,6 +1,7 @@
 #ifndef SRC_DFS_INPLACERUNNER_H_
 #define SRC_DFS_INPLACERUNNER_H_
 
+#include <cassert>
 #include <utility>
 
 #define GRADE_ZERO 0
@@ -75,11 +76,9 @@ class LinearTimeInplaceDFSRunner {
     return A[i];
   }
 
-  inline uint name(uint i) {
-    if (i == 0 || i == this->n + 1 || i > this->N) {
-      // Never access 0 or n + 1
-      return INVALID;
-    }
+  inline Result<uint> name(uint i) {
+    // Never access 0 or n + 1
+    assert(i == 0 || i == this->n + 1 || i > this->N);
 
     auto x = A[i];
 

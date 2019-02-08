@@ -39,9 +39,7 @@ uint BFS::getGrayNode() {
     return static_cast<uint>(r);
 }
 
-bool BFS::more() {
-    return isInner.choice() != INVALID || isOuter.choice() != INVALID;
-}
+bool BFS::more() { return isInner.choice().ok() || isOuter.choice().ok(); }
 
 std::pair<uint, uint> BFS::next() {
     u = getGrayNode();

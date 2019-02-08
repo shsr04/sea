@@ -97,9 +97,9 @@ class ChoiceDictionary {
 
     /**
      * Gets an arbitrary bit position that is set to 1.
-     * @return index of a set bit, or INVALID if dictionary is empty
+     * @return index of a set bit, or empty result if dictionary is empty
      */
-    uint64_t choice();
+    Sealib::Result<uint64_t> choice();
 
     /**
      * Sets a bit at specified index to 0 if the dictionary is not empty.

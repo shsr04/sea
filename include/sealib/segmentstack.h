@@ -121,10 +121,10 @@ class ExtendedSegmentStack : public SegmentStack {
     /**
      * Get the outgoing edge for a given vertex.
      * @param u Vertex to get the edge for
-     * @return Approximation if u is small; edge index from big stack if u is
-     * big, INVALID if big stack is empty
+     * @return If u is small: approximation; if u is big: edge index on success,
+     * empty result when big stack is full
      */
-    uint getOutgoingEdge(uint u);
+    Result<uint> getOutgoingEdge(uint u);
     /**
      * Get the second-last trailer (the one that is needed to do a 1-segment
      * restoration).

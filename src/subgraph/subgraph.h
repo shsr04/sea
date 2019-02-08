@@ -43,9 +43,9 @@ class SubGraph {
 
     inline uint64_t getRidx() const { return ridx; }
 
-    uint64_t degree(uint64_t u) const {
+    Result<uint64_t> degree(uint64_t u) const {
         if (u == 0) {
-            return INVALID;
+            return {};
         }
         uint64_t a = select_p(rank_q(u));  //  pSelect.select(qSelect.rank(v));
         uint64_t b =
@@ -76,14 +76,14 @@ class SubGraph {
 
     inline uint64_t order() const { return qSelect->size(); }
 
-    uint64_t g(uint64_t j, uint64_t k) const {
+    Result<uint64_t> g(uint64_t j, uint64_t k) const {
         if (j == 0 || k == 0) {
-            return INVALID;
+            return {};
         }
 
         uint64_t deg = degree(j);
         if (deg == 0 || k > deg) {
-            return INVALID;
+            return {};
         }
 
         uint64_t qRank = rank_q(j);  // qSelect.rank(j);
@@ -101,31 +101,32 @@ class SubGraph {
         return g(std::get<0>(jk), std::get<1>(jk));
     }
 
-    std::tuple<uint64_t, uint64_t> gInv(uint64_t r) const {
+    Result<std::tuple<uint64_t, uint64_t>> gInv(uint64_t r) const {
         if (r == 0) {
-            return {INVALID, INVALID};
+            return {};
         }
         uint64_t j = r == 1 ? 0 : rank_p(r - 1);  // pSelect.rank(r - 1);
         if (j == (uint64_t)-1) {
-            return {INVALID, INVALID};
+            return {};
         }
         j++;
         uint64_t a = select_q(j);  // qSelect.select(j);
         if (a == (uint64_t)-1) {
-            return {INVALID, INVALID};
+            return {};
         }
         uint64_t b = select_p(j - 1);  // pSelect.select(j - 1);
         b = b == (uint64_t)-1 ? 0 : b;
         return std::tuple<uint64_t, uint64_t>(a, r - b);
     }
 
-    virtual uint64_t phi(uint64_t u) const = 0;
+    virtual Result<uint64_t> phi(uint64_t u) const = 0;
 
-    virtual uint64_t psi(uint64_t a) const = 0;
+    virtual Result<uint64_t> psi(uint64_t a) const = 0;
 
-    virtual uint64_t phiInv(uint64_t u) const = 0;
+    virtual Result<uint64_t> phiInv(uint64_t u) const = 0;
 
-    virtual uint64_t psiInv(uint64_t a) const = 0;
+    virtual Result<uint64_t> psiInv(uint64_t a) const = 0;
+
     virtual ~SubGraph() {
         delete pSelect;
         delete qSelect;

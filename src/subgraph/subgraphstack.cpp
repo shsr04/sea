@@ -166,7 +166,7 @@ void Sealib::SubGraphStack::push(const Sealib::Bitset<uint8_t> &a) {
     Sealib::Bitset<uint8_t> v(clientList[clientList.size() - 1]->order());
     for (uint64_t i = 0; i < a.size(); i++) {
         if (a[i]) {
-            uint64_t vi = std::get<0>(clientList[clientList.size() - 1]->gInv(i + 1));
+            uint64_t vi = std::get<0>(clientList[clientList.size() - 1]->gInv(i + 1)());
             v[vi - 1] = 1;
         }
     }

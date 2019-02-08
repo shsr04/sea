@@ -1,6 +1,8 @@
 #include "./recursivesubgraph.h"
 #include <iostream>
 
+using Sealib::Result;
+
 /**
  * deletion of the subgraphs will be in the subgraph stack
  * or with the deletion of the subgraph stack
@@ -53,16 +55,16 @@ Sealib::RecursiveSubGraph::mate(uint64_t u, uint64_t k) const {
     return gInv(psiInv(r->g(r->mate(r->gInv(psi(g(u, k)))))));
 }
 
-uint64_t Sealib::RecursiveSubGraph::phi(uint64_t u) const {
+Result<uint64_t> Sealib::RecursiveSubGraph::phi(uint64_t u) const {
     if (u == 0) {
-        return INVALID;
+        return {};
     }
     return select_v(u);
 }
 
-uint64_t Sealib::RecursiveSubGraph::phiInv(uint64_t u) const {
+Result<uint64_t> Sealib::RecursiveSubGraph::phiInv(uint64_t u) const {
     if (u == 0) {
-        return INVALID;
+        return {};
     }
     if (vSelect.getBitset()[u - 1]) {
         return rank_v(u);
@@ -71,16 +73,16 @@ uint64_t Sealib::RecursiveSubGraph::phiInv(uint64_t u) const {
     }
 }
 
-uint64_t Sealib::RecursiveSubGraph::psi(uint64_t a) const {
+Result<uint64_t> Sealib::RecursiveSubGraph::psi(uint64_t a) const {
     if (a == 0) {
-        return INVALID;
+        return {};
     }
     return select_a(a);
 }
 
-uint64_t Sealib::RecursiveSubGraph::psiInv(uint64_t a) const {
+Result<uint64_t> Sealib::RecursiveSubGraph::psiInv(uint64_t a) const {
     if (a == 0) {
-        return INVALID;
+        return {};
     }
     if (aSelect.getBitset()[a - 1]) {
         return rank_a(a);

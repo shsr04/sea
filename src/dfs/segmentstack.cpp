@@ -156,7 +156,7 @@ uint ExtendedSegmentStack::retrieveEdge(uint u, uint32_t f) {
     return f * g;
 }
 
-uint ExtendedSegmentStack::getOutgoingEdge(uint u) {
+Sealib::Result<uint> ExtendedSegmentStack::getOutgoingEdge(uint u) {
     if (graph->deg(u) > m / q) {
         if (tp > 0) {  // tp>0 should be given in every restoration, which is
                        // precisely when this method may be called
@@ -165,7 +165,7 @@ uint ExtendedSegmentStack::getOutgoingEdge(uint u) {
             t.bc += 1;
             return x.second;
         } else {
-            return INVALID;
+            return Sealib::Result<uint>();
         }
     } else {
         return retrieveEdge(u, edges.get(u));

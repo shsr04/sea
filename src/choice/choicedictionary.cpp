@@ -48,14 +48,14 @@ bool ChoiceDictionary::get(uint64_t index) {
     return (primaryWord & targetBit) != 0;
 }
 
-uint64_t ChoiceDictionary::choice() {
+Sealib::Result<uint64_t> ChoiceDictionary::choice() {
     uint64_t colorIndex;
     uint64_t primaryWord;
     uint64_t primaryIndex;
     uint64_t secondaryWord;
     uint64_t primaryInnerIndex;
 
-    if (pointer == 0) return INVALID;
+    if (pointer == 0) return {};
 
     uint64_t secondaryIndex = validator[pointer - POINTER_OFFSET] - TUPEL_OFFSET;
     secondaryWord = secondary[secondaryIndex];
