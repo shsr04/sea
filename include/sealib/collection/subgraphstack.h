@@ -80,20 +80,19 @@ class SubGraphStack {
     uint order(uint i) const;
 
     inline uint order() const {
-        return order(clientList.size() - 1);
+        return order((uint)clientList.size() - 1);
     }
 
     /**
      * @return - the degree of vertex u in G_i
      */
-    uint degree(uint i,
-                         uint u) const;
+    uint degree(uint i, uint u) const;
 
     /**
      * @return - the degree of vertex u for G_l = the top graph on the stack
      */
     inline uint degree(uint u) const {
-        return degree(clientList.size() - 1, u);
+        return degree((uint)clientList.size() - 1, u);
     }
 
     /**
@@ -108,7 +107,7 @@ class SubGraphStack {
      */
     inline uint head(uint u,
                               uint k) const {
-        return head(clientList.size() - 1, u, k);
+        return head((uint)clientList.size() - 1, u, k);
     }
 
     /**
@@ -123,7 +122,7 @@ class SubGraphStack {
      */
     inline std::tuple<uint, uint> mate(uint u,
                                                          uint k) const {
-        return mate(clientList.size() - 1, u, k);
+        return mate((uint)clientList.size() - 1, u, k);
     }
 
     /**
@@ -132,7 +131,7 @@ class SubGraphStack {
     uint g(uint i, uint u, uint k) const;
 
     inline uint g(uint u, uint k) const {
-        return g(clientList.size() - 1, u, k);
+        return g((uint)clientList.size() - 1, u, k);
     }
 
     /**
@@ -141,7 +140,7 @@ class SubGraphStack {
     uint gMax(uint i) const;
 
     inline uint gMax() const {
-        return gMax(clientList.size() - 1);
+        return gMax((uint)clientList.size() - 1);
     }
 
     /**
@@ -153,7 +152,7 @@ class SubGraphStack {
      * @return the (node, arc) pair beint32_ting to the r'th arc in G_l = the top graph on the stack
      */
     inline std::tuple<uint, uint> gInv(uint r) const {
-        return gInv(clientList.size() - 1, r);
+        return gInv((uint)clientList.size() - 1, r);
     }
 
     /**
@@ -170,42 +169,42 @@ class SubGraphStack {
      * @return translation of the u'th node in G_l = the top graph to the isomorph node in G_j
      */
     inline uint phi(uint j, uint u) const {
-        return phi(clientList.size() - 1, j, u);
+        return phi((uint)clientList.size() - 1, j, u);
     }
 
     /**
      * @return translation of the a'th arc in G_l = the top graph of to the isomorph arc in G_j
      */
     inline uint psi(uint j, uint a) const {
-        return psi(clientList.size() - 1, j, a);
+        return psi((uint)clientList.size() - 1, j, a);
     }
 
     /**
      * @return translation of the u'th node in G_l = the top graph to the isomorph node in G_0
      */
     inline uint phi(uint u) const {
-        return phi(clientList.size() - 1, 0, u);
+        return phi((uint)clientList.size() - 1, 0, u);
     }
 
     /**
      * @return translation of the a'th arc in G_l = the top graph of to the isomorph arc in G_0
      */
     inline uint psi(uint a) const {
-        return psi(clientList.size() - 1, 0, a);
+        return psi((uint)clientList.size() - 1, 0, a);
     }
 
     /**
      * @return  translation of the u'th node in G_0 to G_l = the top graph
      */
     inline uint phiInv(uint u) const {
-        return phi(0, clientList.size() - 1, u);
+        return phi(0, (uint)clientList.size() - 1, u);
     }
 
     /**
      * @return translation of the a'th arc in G_0 to G_l = the top graph
      */
     inline uint psiInv(uint a) const {
-        return psi(0, clientList.size() - 1, a);
+        return psi(0, (uint)clientList.size() - 1, a);
     }
 
     /**
@@ -214,7 +213,7 @@ class SubGraphStack {
      * This is done by creating rankSelect structures for the direct translation between G_0 and G_l and G_l and G_l - 1
      */
     inline void toptune() {
-        tune(clientList.size()-1);
+        tune((uint)clientList.size()-1);
     }
 
     /**
@@ -231,7 +230,7 @@ class SubGraphStack {
      * @return the number of graphs currently on the stack
      */
     inline uint size() const {
-        return clientList.size();
+        return (uint)clientList.size();
     }
 
     virtual ~SubGraphStack();

@@ -38,7 +38,7 @@ void Sealib::SubGraphStack::push(const Sealib::Bitset<uint8_t> &v,
     if (clientList.size() - 1 == Sealib::SubGraphStack::refs[currentRef + 1]) {
         currentRef++;
     }
-    SubGraph *g = new RecursiveSubGraph(this, clientList.size(), currentRef, v, a);
+    SubGraph *g = new RecursiveSubGraph(this, (uint)clientList.size(), currentRef, v, a);
     clientList.emplace_back(g);
 }
 

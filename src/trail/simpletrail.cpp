@@ -6,7 +6,7 @@ void Sealib::SimpleTrail::insertSubTrail(const SimpleTrail &subTrail, uint idx) 
     for (uint i = 0; i < subTrail.getTrail().size(); i++) {
         trail[i + idx] = subTrail.getTrail()[i];
     }
-    for (uint i = idx + subTrail.getTrail().size(); i < trail.size(); i++) {
+    for (uint i = idx + (uint)subTrail.getTrail().size(); i < trail.size(); i++) {
         std::tuple<uint, uint> oldVal = oldTrail[i - subTrail.getTrail().size()];
         trail[i] = oldVal;
     }
@@ -42,7 +42,7 @@ Sealib::SimpleTrail::getFirstIndexOf(std::tuple<uint, uint> arc) const {
 }
 
 void Sealib::SimpleTrail::pushBackSubTrail(const Sealib::SimpleTrail &subTrail) {
-    uint oldSize = trail.size();
+    uint oldSize = (uint)trail.size();
     trail.resize(trail.size() + subTrail.getTrail().size());
     for (uint i = oldSize; i < trail.size(); i++) {
         trail[i] = subTrail.getTrail()[i - oldSize];

@@ -21,7 +21,7 @@ uint Sealib::NaiveTrailStructure::enter(uint idx) {
     if (unusedEdges.empty()) {
         return (uint) -1;
     }
-    uint size = unusedEdges.size();
+    size_t size = unusedEdges.size();
     unusedEdges.remove(idx);
     if (size == unusedEdges.size()) {
         return (uint) -1;  // couldn't remove that idx
