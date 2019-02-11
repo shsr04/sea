@@ -46,7 +46,7 @@ TEST(BFSTest, nextComponent) {
     BFS bfs(&g, incr1, incr2);
     uint rc = 0;
     bfs.init();
-    bfs.forEach([&](std::pair<uint, uint>) { rc++; });
+    //bfs.forEach([&](std::pair<uint, uint>) { rc++; });
     EXPECT_EQ(rc, order);
     EXPECT_EQ(c1, order);
     EXPECT_EQ(c2, 0);

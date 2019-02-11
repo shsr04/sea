@@ -18,8 +18,8 @@ ChoiceDictionary::ChoiceDictionary(uint size)
         wordCount(size / wordSize + 1),
         pointer(0),
         primary(wordCount),
-        secondary((wordCount/(uint)wordSize+1)*TUPEL_FACTOR),
-        validator(wordCount/(uint)wordSize+1)
+        secondary((wordCount/wordSize+1)*TUPEL_FACTOR),
+        validator(wordCount/wordSize+1)
     {}
 
 void ChoiceDictionary::insert(uint index) {
