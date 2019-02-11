@@ -117,7 +117,7 @@ class EdgeMarker {
     CONSTEXPR_IF_CLANG uint edgeIndex(uint u) const {
         return static_cast<uint>(offset.select(u + 1) - u - 1U);
     }
-    CONSTEXPR_IF_CLANG uint64_t getEdgeData(uint u, uint k) const {
+    CONSTEXPR_IF_CLANG uint getEdgeData(uint u, uint k) const {
         return edges.get(edgeIndex(u) + k);
     }
 

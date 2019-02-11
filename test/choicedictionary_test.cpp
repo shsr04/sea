@@ -8,15 +8,15 @@
 using Sealib::ChoiceDictionary;
 
 TEST(ChoiceDictionaryTest, choicedictionary_integrity) {
-    const uint64_t size = 25000;
-    const uint64_t setSize = 5000;
+    const uint size = 25000;
+    const uint setSize = 5000;
     ChoiceDictionary *c = new ChoiceDictionary(size);
-    std::array<uint64_t, setSize> set;
+    std::array<uint, setSize> set;
 
-    uint64_t num = 0;
+    uint num = 0;
     uint seed = 0;
 
-    for (uint64_t i = 0; i < setSize; i++) {
+    for (uint i = 0; i < setSize; i++) {
         set[i] = num;
         num += 5;
     }
@@ -24,8 +24,8 @@ TEST(ChoiceDictionaryTest, choicedictionary_integrity) {
     std::shuffle(set.begin(), set.end(), std::default_random_engine(seed));
 
     // test zero initialization
-    std::vector<uint64_t> nonZero;
-    for (uint64_t i = 0; i < size; i++) {
+    std::vector<uint> nonZero;
+    for (uint i = 0; i < size; i++) {
         if (c->get(i) == 1) nonZero.push_back(i);
     }
     ASSERT_EQ(nonZero.size(), 0);
@@ -69,7 +69,7 @@ TEST(ChoiceDictionaryTest, choicedictionary_integrity) {
     ASSERT_FALSE(c->get(8));
     ASSERT_FALSE(c->get(111));
 
-    for (uint64_t number : set) {
+    for (uint number : set) {
         c->insert(number);
         ASSERT_TRUE(c->get(number));
     }

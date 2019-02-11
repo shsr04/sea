@@ -37,7 +37,7 @@ class RecursiveDyckMatchingStructure : public DyckMatchingStructure {
      * @param idx of the parenthesis b in word
      * @return idx of the match of b in word
      */
-    uint64_t getMatch(uint64_t idx) override;
+    uint getMatch(uint idx) override;
 
  private:
     static const uint8_t segmentLength = 7;

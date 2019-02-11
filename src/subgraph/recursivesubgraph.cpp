@@ -8,8 +8,8 @@
 Sealib::RecursiveSubGraph::~RecursiveSubGraph() = default;
 
 Sealib::RecursiveSubGraph::RecursiveSubGraph(stack_t *stack_,
-                                             uint64_t sidx_,
-                                             uint64_t ridx_,
+                                             uint sidx_,
+                                             uint ridx_,
                                              const bitset_t &v,
                                              const bitset_t &a) :
     SubGraph(sidx_, ridx_, stack_),
@@ -19,15 +19,15 @@ Sealib::RecursiveSubGraph::RecursiveSubGraph(stack_t *stack_,
     bitset_t p(rank_a(aSelect.size()));
     bitset_t q(rank_v(vSelect.size()));
 
-    uint64_t degRSum = 0;
-    uint64_t degSum = 0;
-    for (uint64_t uR = 1; uR <= vSelect.size(); uR++) {  // iterate all vertices of G_r
-        uint64_t u = phiInv(uR);
-        uint64_t degR = r->degree(uR);
+    uint degRSum = 0;
+    uint degSum = 0;
+    for (uint uR = 1; uR <= vSelect.size(); uR++) {  // iterate all vertices of G_r
+        uint u = phiInv(uR);
+        uint degR = r->degree(uR);
         if (u > 0) {  // if u exists in G_this
-            uint64_t deg = 0;
-            for (uint64_t i = degRSum; i < degRSum + degR; i++) {
-                uint64_t pinv = psiInv(i + 1);
+            uint deg = 0;
+            for (uint i = degRSum; i < degRSum + degR; i++) {
+                uint pinv = psiInv(i + 1);
                 deg += pinv == 0 ? 0 : 1;
             }
             degSum += deg;
@@ -42,25 +42,25 @@ Sealib::RecursiveSubGraph::RecursiveSubGraph(stack_t *stack_,
     qSelect = new RankSelect(q);
 }
 
-uint64_t Sealib::RecursiveSubGraph::head(uint64_t u, uint64_t k) const {
+uint Sealib::RecursiveSubGraph::head(uint u, uint k) const {
     SubGraph *r = stack->clientList[stack_t::refs[ridx]];
     return phiInv(r->head(r->gInv(psi(g(u, k)))));
 }
 
-std::tuple<uint64_t, uint64_t>
-Sealib::RecursiveSubGraph::mate(uint64_t u, uint64_t k) const {
+std::tuple<uint, uint>
+Sealib::RecursiveSubGraph::mate(uint u, uint k) const {
     SubGraph *r = stack->clientList[stack_t::refs[ridx]];
     return gInv(psiInv(r->g(r->mate(r->gInv(psi(g(u, k)))))));
 }
 
-uint64_t Sealib::RecursiveSubGraph::phi(uint64_t u) const {
+uint Sealib::RecursiveSubGraph::phi(uint u) const {
     if (u == 0) {
         throw std::invalid_argument("u needs to be > 0");
     }
     return select_v(u);
 }
 
-uint64_t Sealib::RecursiveSubGraph::phiInv(uint64_t u) const {
+uint Sealib::RecursiveSubGraph::phiInv(uint u) const {
     if (u == 0) {
         throw std::invalid_argument("u needs to be > 0");
     }
@@ -71,14 +71,14 @@ uint64_t Sealib::RecursiveSubGraph::phiInv(uint64_t u) const {
     }
 }
 
-uint64_t Sealib::RecursiveSubGraph::psi(uint64_t a) const {
+uint Sealib::RecursiveSubGraph::psi(uint a) const {
     if (a == 0) {
         throw std::invalid_argument("a needs to be > 0");
     }
     return select_a(a);
 }
 
-uint64_t Sealib::RecursiveSubGraph::psiInv(uint64_t a) const {
+uint Sealib::RecursiveSubGraph::psiInv(uint a) const {
     if (a == 0) {
         throw std::invalid_argument("a needs to be > 0");
     }
@@ -96,7 +96,7 @@ Sealib::SubGraph::bitset_t Sealib::RecursiveSubGraph::initializeVSelect(const bi
         auto *gL = reinterpret_cast<RecursiveSubGraph *>(stack->clientList[sidx - 1]);
         bitset_t vR(gL->vSelect.size());
 
-        for (uint64_t i = 0; i < v.size(); i++) {
+        for (uint i = 0; i < v.size(); i++) {
             if (v[i]) {
                 vR[gL->select_v(i + 1) - 1] = 1;
             }
@@ -112,7 +112,7 @@ Sealib::SubGraph::bitset_t Sealib::RecursiveSubGraph::initializeASelect(const bi
         auto *gL = reinterpret_cast<RecursiveSubGraph *>(stack->clientList[sidx - 1]);
         bitset_t aR(gL->aSelect.size());
 
-        for (uint64_t i = 0; i < a.size(); i++) {
+        for (uint i = 0; i < a.size(); i++) {
             if (a[i]) {
                 aR[gL->select_a(i + 1) - 1] = 1;
             }

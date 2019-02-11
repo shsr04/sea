@@ -151,7 +151,7 @@ Sealib::Bitset<BlockType, AllocatorType>::getShiftedBlock(Bitset::sizeType idx) 
 namespace Sealib {
 
 template
-class Bitset<uint64_t, std::allocator<uint64_t>>;
+class Bitset<uint, std::allocator<uint>>;
 template
 class Bitset<uint, std::allocator<uint>>;
 template

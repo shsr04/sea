@@ -22,7 +22,7 @@ class RankStructure {
     std::vector<uint> nonEmptySegments;
 
  public:
-    uint64_t size() const;
+    uint size() const;
     uint getMaxRank() const;
     const std::vector<uint> &getSetCountTable() const;
     const std::vector<uint> &getNonEmptySegments() const;
@@ -32,7 +32,7 @@ class RankStructure {
      * @param k idx
      * @return rank of k-th idx
      */
-    uint64_t rank(uint64_t k) const;
+    uint rank(uint k) const;
 
     /**
      * @param bitset used for Rank
@@ -60,7 +60,7 @@ class RankStructure {
     const Sealib::Bitset<uint8_t>& getBitset() const;
 
     ~RankStructure();
-    uint setBefore(uint64_t segment) const;
+    uint setBefore(uint segment) const;
 };
 }  // namespace Sealib
 #endif  // SEALIB_DICTIONARY_RANKSTRUCTURE_H_

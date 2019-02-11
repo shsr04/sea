@@ -22,7 +22,7 @@ uint Sealib::SmallDoubleLinkedList::remove(uint idx) {
 
     auto actualIdx = static_cast<int32_t>(idx * 2);
 
-    int32_t prevIdx = actualIdx - links[static_cast<uint64_t >(actualIdx)] * 2;
+    int32_t prevIdx = actualIdx - links[static_cast<uint >(actualIdx)] * 2;
     auto n = static_cast<int>(links.size());
     int32_t mod = prevIdx % n;
     if (prevIdx < 0) {
@@ -38,17 +38,17 @@ uint Sealib::SmallDoubleLinkedList::remove(uint idx) {
         return idx;
     }
 
-    int32_t val = links[static_cast<uint64_t >(prevIdx) + 1]
-        + links[static_cast<uint64_t >(actualIdx) + 1];
-    links[static_cast<uint64_t >(prevIdx) + 1] = static_cast<uint8_t>(val);
+    int32_t val = links[static_cast<uint >(prevIdx) + 1]
+        + links[static_cast<uint >(actualIdx) + 1];
+    links[static_cast<uint >(prevIdx) + 1] = static_cast<uint8_t>(val);
 
     int32_t nextIdx = actualIdx
-        + links[static_cast<uint64_t >(actualIdx) + 1] * 2;
+        + links[static_cast<uint >(actualIdx) + 1] * 2;
     nextIdx = nextIdx % n;
 
-    val = links[static_cast<uint64_t >(nextIdx)]
-        + links[static_cast<uint64_t >(actualIdx)];
-    links[static_cast<uint64_t >(nextIdx)] = static_cast<uint8_t>(val);
+    val = links[static_cast<uint >(nextIdx)]
+        + links[static_cast<uint >(actualIdx)];
+    links[static_cast<uint >(nextIdx)] = static_cast<uint8_t>(val);
 
     current = static_cast<uint8_t>(nextIdx / 2);
     return current;

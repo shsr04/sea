@@ -30,13 +30,13 @@ bool ChoiceDictionaryIterator::more() {
     return true;
 }
 
-uint64_t ChoiceDictionaryIterator::next() {
-    uint64_t newPrimaryValue;
-    uint64_t wordSize = choicedictionary->getWordSize();
+uint ChoiceDictionaryIterator::next() {
+    uint newPrimaryValue;
+    uint wordSize = choicedictionary->getWordSize();
 
-    uint64_t nextIndex = (uint64_t)__builtin_clzl(primaryWord);
+    uint nextIndex = (uint)__builtin_clzl(primaryWord);
 
-    uint64_t targetBit = wordSize - nextIndex - SHIFT_OFFSET;
+    uint targetBit = wordSize - nextIndex - SHIFT_OFFSET;
 
     newPrimaryValue = 1UL << targetBit;
     primaryWord = primaryWord & ~newPrimaryValue;
@@ -55,9 +55,9 @@ void ChoiceDictionaryIterator::setNextSecondaryWord() {
 }
 
 void ChoiceDictionaryIterator::setNextPrimaryWord() {
-    uint64_t targetBit;
-    uint64_t wordSize = choicedictionary->getWordSize();
-    uint64_t primaryInnerIndex = (uint64_t)__builtin_clzl(secondaryWord);
+    uint targetBit;
+    uint wordSize = choicedictionary->getWordSize();
+    uint primaryInnerIndex = (uint)__builtin_clzl(secondaryWord);
 
     primaryIndex = (secondaryIndex / 2) * wordSize + primaryInnerIndex;
 

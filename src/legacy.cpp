@@ -8,20 +8,20 @@
 
 namespace Sealib {
 
-void *Sealib_Graph_new(uint32_t **m, uint32_t order) {
+void *Sealib_Graph_new(uint **m, uint order) {
     return GraphCreator::createPointerFromAdjacencyMatrix(m, order);
 }
 void Sealib_Graph_delete(void *self) {
     delete static_cast<UndirectedGraph const *>(self);
 }
-void *Sealib_Graph_generateRandom(uint32_t order) {
+void *Sealib_Graph_generateRandom(uint order) {
     std::vector<SimpleNode> n(order);
     static std::random_device rng;
-    std::uniform_int_distribution<uint32_t> rnd(0, order - 1);
-    for (uint32_t a = 0; a < order; a++) {
-        uint32_t deg = rnd(rng);
+    std::uniform_int_distribution<uint> rnd(0, order - 1);
+    for (uint a = 0; a < order; a++) {
+        uint deg = rnd(rng);
         std::vector<uint> ad;
-        for (uint32_t b = 0; b < deg; b++) {
+        for (uint b = 0; b < deg; b++) {
             ad.emplace_back(rnd(rng));
         }
         n[a] = SimpleNode(ad);
@@ -29,19 +29,19 @@ void *Sealib_Graph_generateRandom(uint32_t order) {
     return new DirectedGraph(n);
 }
 
-void *Sealib_ChoiceDictionary_new(uint32_t size) {
+void *Sealib_ChoiceDictionary_new(uint size) {
     return new ChoiceDictionary(size);
 }
 void Sealib_ChoiceDictionary_delete(void *self) {
     delete static_cast<ChoiceDictionary *>(self);
 }
-void Sealib_ChoiceDictionary_set(void *self, uint64_t index) {
+void Sealib_ChoiceDictionary_set(void *self, uint index) {
     static_cast<ChoiceDictionary *>(self)->insert(index);
 }
-int Sealib_ChoiceDictionary_get(void *self, uint64_t index) {
+int Sealib_ChoiceDictionary_get(void *self, uint index) {
     return static_cast<ChoiceDictionary *>(self)->get(index);
 }
-uint64_t Sealib_ChoiceDictionary_choice(void *self) {
+uint Sealib_ChoiceDictionary_choice(void *self) {
     return static_cast<ChoiceDictionary *>(self)->choice();
 }
 
@@ -58,19 +58,19 @@ void Sealib_ChoiceDictionaryIterator_init(void *self) {
 int Sealib_ChoiceDictionaryIterator_more(void *self) {
     return static_cast<ChoiceDictionaryIterator *>(self)->more();
 }
-uint64_t Sealib_ChoiceDictionaryIterator_next(void *self) {
+uint Sealib_ChoiceDictionaryIterator_next(void *self) {
     return static_cast<ChoiceDictionaryIterator *>(self)->next();
 }
 
-void *Sealib_Bitset_new(uint64_t size) { return new Bitset<uint8_t>(size); }
+void *Sealib_Bitset_new(uint size) { return new Bitset<uint8_t>(size); }
 void Sealib_Bitset_delete(void *self) {
     delete static_cast<Bitset<uint8_t> *>(self);
 }
-void Sealib_Bitset_set(void *self, uint64_t index) {
+void Sealib_Bitset_set(void *self, uint index) {
     Bitset<uint8_t> &b = *static_cast<Bitset<uint8_t> *>(self);
     b[index] = 1;
 }
-int Sealib_Bitset_get(void *self, uint64_t index) {
+int Sealib_Bitset_get(void *self, uint index) {
     return static_cast<Bitset<uint8_t> *>(self)->get(index);
 }
 
@@ -80,20 +80,20 @@ void *Sealib_RankSelect_new(void *bitset) {
 void Sealib_RankSelect_delete(void *self) {
     delete static_cast<RankSelect *>(self);
 }
-uint64_t Sealib_RankSelect_rank(void *self, uint64_t index) {
+uint Sealib_RankSelect_rank(void *self, uint index) {
     return static_cast<RankSelect *>(self)->rank(index);
 }
-uint64_t Sealib_RankSelect_select(void *self, uint64_t bit) {
+uint Sealib_RankSelect_select(void *self, uint bit) {
     return static_cast<RankSelect *>(self)->select(bit);
 }
-uint64_t Sealib_RankSelect_size(void *self) {
+uint Sealib_RankSelect_size(void *self) {
     return static_cast<RankSelect *>(self)->size();
 }
 
-void Sealib_DFS_nloglognBitDFS(void *graph, void (*preprocess)(uint32_t),
-                               void (*preexplore)(uint32_t, uint32_t),
-                               void (*postexplore)(uint32_t, uint32_t),
-                               void (*postprocess)(uint32_t)) {
+void Sealib_DFS_nloglognBitDFS(void *graph, void (*preprocess)(uint),
+                               void (*preexplore)(uint, uint),
+                               void (*postexplore)(uint, uint),
+                               void (*postprocess)(uint)) {
     if (preprocess == nullptr) preprocess = [](uint) {};
     if (preexplore == nullptr) preexplore = [](uint, uint) {};
     if (postexplore == nullptr) postexplore = [](uint, uint) {};

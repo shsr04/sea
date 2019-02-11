@@ -16,136 +16,136 @@ class SubGraph {
     typedef Sealib::SubGraphStack stack_t;
 
  protected:
-    uint64_t sidx;
-    uint64_t ridx;
+    uint sidx;
+    uint ridx;
     stack_t *stack;
     rankselect_t *qSelect;
     rankselect_t *pSelect;
 
-    SubGraph(uint64_t sidx_, uint64_t ridx_, stack_t *stack_)
+    SubGraph(uint sidx_, uint ridx_, stack_t *stack_)
         : sidx(sidx_),
           ridx(ridx_),
           stack(stack_),
           qSelect(nullptr),
           pSelect(nullptr) {}
 
-    inline uint64_t select_q(uint64_t i) const {
+    inline uint select_q(uint i) const {
         return qSelect->select(i);
     }
 
-    inline uint64_t select_p(uint64_t i) const {
+    inline uint select_p(uint i) const {
         return pSelect->select(i);
     }
 
-    inline uint64_t rank_q(uint64_t i) const {
+    inline uint rank_q(uint i) const {
         return qSelect->rank(i);
     }
 
-    inline uint64_t rank_p(uint64_t i) const {
+    inline uint rank_p(uint i) const {
         return pSelect->rank(i);
     }
 
  public:
-    inline uint64_t getSidx() const {
+    inline uint getSidx() const {
         return sidx;
     }
 
-    inline uint64_t getRidx() const {
+    inline uint getRidx() const {
         return ridx;
     }
 
-    uint64_t degree(uint64_t u) const {
+    uint degree(uint u) const {
         if (u == 0) {
             throw std::invalid_argument("u needs to be > 0");
         }
-        uint64_t a = select_p(rank_q(u));  //  pSelect.select(qSelect.rank(v));
-        uint64_t b = select_p(rank_q(u - 1));  // pSelect.select(qSelect.rank(v - 1));
+        uint a = select_p(rank_q(u));  //  pSelect.select(qSelect.rank(v));
+        uint b = select_p(rank_q(u - 1));  // pSelect.select(qSelect.rank(v - 1));
 
         if (a == b) {
             return 0;
-        } else if (b == (uint64_t) -1) {
+        } else if (b == (uint) -1) {
             return a;
         } else {
             return a - b;
         }
     }
 
-    virtual uint64_t head(uint64_t u, uint64_t k) const = 0;
+    virtual uint head(uint u, uint k) const = 0;
 
-    inline uint64_t head(std::tuple<uint64_t, uint64_t> uk) const {
+    inline uint head(std::tuple<uint, uint> uk) const {
         return head(std::get<0>(uk), std::get<1>(uk));
     }
 
-    virtual std::tuple<uint64_t, uint64_t>
-    mate(uint64_t u, uint64_t k) const = 0;
+    virtual std::tuple<uint, uint>
+    mate(uint u, uint k) const = 0;
 
-    inline std::tuple<uint64_t, uint64_t>
-    mate(std::tuple<uint64_t, uint64_t> uk) const {
+    inline std::tuple<uint, uint>
+    mate(std::tuple<uint, uint> uk) const {
         return mate(std::get<0>(uk), std::get<1>(uk));
     }
 
-    inline uint64_t order() const {
+    inline uint order() const {
         return qSelect->size();
     }
 
-    uint64_t g(uint64_t j, uint64_t k) const {
+    uint g(uint j, uint k) const {
         if (j == 0 || k == 0) {
             throw std::invalid_argument(
                 "j and k need to be > 0! (j,k)=(" +
                     std::to_string(j) + "," + std::to_string(k) + ")");
         }
 
-        uint64_t deg = degree(j);
+        uint deg = degree(j);
         if (deg == 0 || k > deg) {
             throw std::out_of_range("node j has a degree < k! (j,k)=(" +
                 std::to_string(j) + "," + std::to_string(k) + ")");
         }
 
-        uint64_t qRank = rank_q(j);  // qSelect.rank(j);
-        uint64_t n = 0;
+        uint qRank = rank_q(j);  // qSelect.rank(j);
+        uint n = 0;
         if (qRank > 1) {
             n = select_p(qRank - 1);  // pSelect.select(qRank - 1) - 1;
         }
-        uint64_t arc = n + k;
+        uint arc = n + k;
         return arc;  // pSelect.rank(n + 1) != pSelect.rank(arc)
     }
 
-    inline uint64_t gMax() {
+    inline uint gMax() {
         return pSelect->size();
     }
 
-    inline uint64_t g(std::tuple<uint64_t, uint64_t> jk) const {
+    inline uint g(std::tuple<uint, uint> jk) const {
         return g(std::get<0>(jk), std::get<1>(jk));
     }
 
-    std::tuple<uint64_t, uint64_t> gInv(uint64_t r) const {
+    std::tuple<uint, uint> gInv(uint r) const {
         if (r == 0) {
             throw std::invalid_argument("r needs to be > 0 (r = "
                                             + std::to_string(r) + ")");
         }
-        uint64_t j = r == 1 ? 0 : rank_p(r - 1);  // pSelect.rank(r - 1);
-        if (j == (uint64_t) -1) {
+        uint j = r == 1 ? 0 : rank_p(r - 1);  // pSelect.rank(r - 1);
+        if (j == (uint) -1) {
             throw std::out_of_range("out of range - no arc r exists! (r = "
                                         + std::to_string(r) + ")");
         }
         j++;
-        uint64_t a = select_q(j);  // qSelect.select(j);
-        if (a == (uint64_t) -1) {
+        uint a = select_q(j);  // qSelect.select(j);
+        if (a == (uint) -1) {
             throw std::out_of_range("out of range - no arc r exists! (r = "
                                         + std::to_string(r) + ")");
         }
-        uint64_t b = select_p(j - 1);  // pSelect.select(j - 1);
-        b = b == (uint64_t) -1 ? 0 : b;
-        return std::tuple<uint64_t, uint64_t>(a, r - b);
+        uint b = select_p(j - 1);  // pSelect.select(j - 1);
+        b = b == (uint) -1 ? 0 : b;
+        return std::tuple<uint, uint>(a, r - b);
     }
 
-    virtual uint64_t phi(uint64_t u) const = 0;
+    virtual uint phi(uint u) const = 0;
 
-    virtual uint64_t psi(uint64_t a) const = 0;
+    virtual uint psi(uint a) const = 0;
 
-    virtual uint64_t phiInv(uint64_t u) const = 0;
+    virtual uint phiInv(uint u) const = 0;
 
-    virtual uint64_t psiInv(uint64_t a) const = 0;
+    virtual uint psiInv(uint a) const = 0;
     virtual ~SubGraph() {
         delete pSelect;
         delete qSelect;

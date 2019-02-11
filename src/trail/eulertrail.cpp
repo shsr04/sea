@@ -16,7 +16,7 @@ EulerTrail<TrailStructureType>::iterator::iterator(
 }
 
 template<class TrailStructureType>
-std::tuple<uint64_t, bool> EulerTrail<TrailStructureType>::iterator::operator*() const {
+std::tuple<uint, bool> EulerTrail<TrailStructureType>::iterator::operator*() const {
     return std::make_tuple(mIndex, ending);
 }
 

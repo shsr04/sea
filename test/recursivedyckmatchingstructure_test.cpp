@@ -9,8 +9,8 @@ TEST(RecursiveDyckMatchingStructureTest, testAllWordsLength10) {
             Sealib::DyckMatchingStructure d(word);
             Sealib::RecursiveDyckMatchingStructure dRec(word);
             for (uint j = 0; j < i; j++) {
-                uint64_t dMatch = d.getMatch(j);
-                uint64_t dRecMatch = dRec.getMatch(j);
+                uint dMatch = d.getMatch(j);
+                uint dRecMatch = dRec.getMatch(j);
                 ASSERT_NE(dMatch, j);
                 ASSERT_NE(dRecMatch, j);
                 ASSERT_EQ(dMatch, dRecMatch);

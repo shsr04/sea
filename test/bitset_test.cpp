@@ -4,7 +4,7 @@
 using Sealib::Bitset;
 
 TEST(BitsetTest, BitsetFunctionality_UnsignedLong) {
-    typedef uint64_t block;
+    typedef uint block;
 
     Bitset<> bs;
     ASSERT_EQ(bs.size(), 0);

@@ -29,17 +29,17 @@ TEST(SubGraphStackTest, pushPop) {
 
     SubGraphStack stack(bg);
 
-    for (uint64_t i = 0; i < 4; i++) {
+    for (uint i = 0; i < 4; i++) {
         bitset_t a(stack.gMax(i));
-        for (uint64_t j = 0; j < a.blocks(); j++) {
+        for (uint j = 0; j < a.blocks(); j++) {
             a.setBlock(j, (uint8_t) -1);
         }
-        for (uint64_t j = 0; j < a.size(); j++) {
+        for (uint j = 0; j < a.size(); j++) {
             if (j % 4 == 0) {
-                std::tuple<uint64_t, uint64_t> gInv = stack.gInv(j + 1);
-                std::tuple<uint64_t, uint64_t> mate
+                std::tuple<uint, uint> gInv = stack.gInv(j + 1);
+                std::tuple<uint, uint> mate
                     = stack.mate(std::get<0>(gInv), std::get<1>(gInv));
-                uint64_t mateArc = stack.g(std::get<0>(mate), std::get<1>(mate));
+                uint mateArc = stack.g(std::get<0>(mate), std::get<1>(mate));
                 a[j] = 0;
                 a[mateArc - 1] = 0;
             }
@@ -47,7 +47,7 @@ TEST(SubGraphStackTest, pushPop) {
         stack.push(a);
         ASSERT_EQ(stack.size(), i+2);
     }
-    for (uint64_t i = 4; i > 0; i--) {
+    for (uint i = 4; i > 0; i--) {
         stack.pop();
         ASSERT_EQ(stack.size(), i);
     }
@@ -87,17 +87,17 @@ TEST(SubGraphStackTest, orderDegree) {
 
     ASSERT_EQ(stack.gMax(), 26);
 
-    for (uint64_t i = 0; i < 4; i++) {
+    for (uint i = 0; i < 4; i++) {
         bitset_t a(stack.gMax(i));
-        for (uint64_t j = 0; j < a.blocks(); j++) {
+        for (uint j = 0; j < a.blocks(); j++) {
             a.setBlock(j, (uint8_t) -1);
         }
-        for (uint64_t j = 0; j < a.size(); j++) {
+        for (uint j = 0; j < a.size(); j++) {
             if (j % 4 == 0) {
-                std::tuple<uint64_t, uint64_t> gInv = stack.gInv(j + 1);
-                std::tuple<uint64_t, uint64_t> mate
+                std::tuple<uint, uint> gInv = stack.gInv(j + 1);
+                std::tuple<uint, uint> mate
                     = stack.mate(std::get<0>(gInv), std::get<1>(gInv));
-                uint64_t mateArc = stack.g(std::get<0>(mate), std::get<1>(mate));
+                uint mateArc = stack.g(std::get<0>(mate), std::get<1>(mate));
                 a[j] = 0;
                 a[mateArc - 1] = 0;
             }
@@ -128,7 +128,7 @@ TEST(SubGraphStackTest, orderDegree) {
     ASSERT_EQ(stack.psi(3, 4, 3), 2);
 
     // mate
-    std::tuple<uint64_t, uint64_t> m = stack.mate(4, 1, 1);
+    std::tuple<uint, uint> m = stack.mate(4, 1, 1);
     ASSERT_EQ(std::get<0>(m), 2);
     ASSERT_EQ(std::get<1>(m), 1);
 
@@ -140,7 +140,7 @@ TEST(SubGraphStackTest, orderDegree) {
     ASSERT_EQ(stack.head(4, 1, 1), 2);
     ASSERT_EQ(stack.head(4, 2, 1), 1);
 
-    for (uint64_t i = 4; i > 0; i--) {
+    for (uint i = 4; i > 0; i--) {
         stack.pop();
         ASSERT_EQ(stack.size(), i);
     }

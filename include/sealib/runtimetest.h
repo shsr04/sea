@@ -38,7 +38,7 @@ class RuntimeTest {
      * @param size Number of edges of the input graph
      * @param result The result (runtime/space usage/...) to store
      */
-    void addLine(uint order, uint size, uint64_t result);
+    void addLine(uint order, uint size, uint result);
 
     /**
      * Prints the test results to standard output.
@@ -70,7 +70,7 @@ void RuntimeTest::runTest(std::function<void(void)> testfunction,
     runtimes.push_back(runTime);
 }
 
-void RuntimeTest::addLine(uint order, uint size, uint64_t result) {
+void RuntimeTest::addLine(uint order, uint size, uint result) {
     std::cout << "Adding result: " << parameters.size() << " n: " << order
               << " m: " << size << std::endl;
     parameters.push_back({order, size});

@@ -4,11 +4,11 @@
 #include <cmath>
 #include <utility>
 
-uint64_t Sealib::SharedRankStructure::rank(uint64_t k) const {
+uint Sealib::SharedRankStructure::rank(uint k) const {
     if (k == 0 || k > maxRank) {
-        return (uint64_t) -1;
+        return (uint) -1;
     }
-    uint64_t segmentIdx = (k - 1) / segmentLength;
+    uint segmentIdx = (k - 1) / segmentLength;
     uint8_t segment = bitset->getBlock(segmentIdx);
     auto localIdx = static_cast<uint8_t>((k - 1) % segmentLength);
     return setBefore(segmentIdx) + LocalRankTable::getLocalRank(segment, localIdx);
@@ -39,7 +39,7 @@ Sealib::SharedRankStructure::SharedRankStructure(
     if (segmentCount != 0) {
         setCountTable.reserve(segmentCount);
         uint cnt = 0;
-        for (uint64_t i = 0; i < segmentCount - 1; i++) {
+        for (uint i = 0; i < segmentCount - 1; i++) {
             uint8_t segment = bitset->getBlock(i);
             cnt += LocalRankTable::getLocalRank(segment, 7);
             setCountTable.push_back(cnt);
@@ -54,7 +54,7 @@ uint Sealib::SharedRankStructure::getSegmentCount() const {
     return segmentCount;
 }
 
-uint Sealib::SharedRankStructure::setBefore(uint64_t segment) const {
+uint Sealib::SharedRankStructure::setBefore(uint segment) const {
     if (segment == 0) return 0;
     return setCountTable[segment - 1];
 }
@@ -62,7 +62,7 @@ uint Sealib::SharedRankStructure::setBefore(uint64_t segment) const {
 uint8_t Sealib::SharedRankStructure::getSegmentLength() const {
     return segmentLength;
 }
-uint64_t Sealib::SharedRankStructure::size() const {
+uint Sealib::SharedRankStructure::size() const {
     return bitset->size();
 }
 const Sealib::Bitset<uint8_t> &Sealib::SharedRankStructure::getBitset() const {

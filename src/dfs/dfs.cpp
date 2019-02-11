@@ -171,7 +171,7 @@ void DFS::restore_top(uint u0, Graph const *g, CompactArray *color,
 }
 
 void DFS::visit_nplusm(uint u0, UndirectedGraph const *g, CompactArray *color,
-                       Sequence<uint64_t> *back, Consumer preprocess,
+                       Sequence<uint> *back, Consumer preprocess,
                        BiConsumer preexplore, BiConsumer postexplore,
                        Consumer postprocess) {
     color->insert(u0, DFS_GRAY);

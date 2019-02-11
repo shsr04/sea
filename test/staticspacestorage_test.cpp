@@ -9,7 +9,7 @@ using Sealib::SimpleSequence;
 
 TEST(StaticSpaceStorageTest, boundary) {
     std::vector<uint> b = {59, 22, 55, 23, 3};
-    std::vector<uint64_t> values = {576646035, 3360686, 193508993, 3833501, 3};
+    std::vector<uint> values = {576646035, 3360686, 193508993, 3833501, 3};
     StaticSpaceStorage s(StaticSpaceStorage::makeBitVector(&b));
 
     for (uint a = 0; a < values.size(); a++) {
@@ -21,7 +21,7 @@ TEST(StaticSpaceStorageTest, boundary) {
 }
 
 TEST(StaticSpaceStorageTest, referenceTest) {
-    uint n = 100, d = sizeof(uint64_t) * 8;
+    uint n = 100, d = sizeof(uint) * 8;
     std::random_device rnd;
     std::uniform_int_distribution<uint> dist(0, d - 1), dist2(0, n - 1);
     std::vector<uint> sizes;
@@ -29,12 +29,12 @@ TEST(StaticSpaceStorageTest, referenceTest) {
         sizes.emplace_back(dist(rnd));
     }
     StaticSpaceStorage s(StaticSpaceStorage::makeBitVector(&sizes));
-    SimpleSequence<uint64_t> c(n);
+    SimpleSequence<uint> c(n);
     // insert random values < size[a]
     for (uint a = 0; a < n; a++) {
         if (sizes[a] > 0) {
-            uint64_t b =
-                static_cast<uint64_t>(fmod(rnd(), pow(2, sizes[a]) - 1));
+            uint b =
+                static_cast<uint>(fmod(rnd(), pow(2, sizes[a]) - 1));
             s.insert(a, b);
             c.insert(a, b);
         }

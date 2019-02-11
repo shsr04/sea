@@ -10,11 +10,11 @@ Sealib::RecursiveDyckMatchingStructure::RecursiveDyckMatchingStructure(
     lastSegment(static_cast<uint8_t>(word_.size() % segmentLength)),
     pioneerRankSelect(initializePioneerRankSelectBitset()),
     pioneerMatchingStructure(nullptr) {
-    uint64_t maxRank = pioneerRankSelect.rank(pioneerRankSelect.size());
+    uint maxRank = pioneerRankSelect.rank(pioneerRankSelect.size());
     if (maxRank > 0) {
         Sealib::Bitset<uint8_t> pioneerWord(maxRank);
-        for (uint64_t i = 0; i < maxRank; i++) {
-            uint64_t idx = pioneerRankSelect.select(i + 1);
+        for (uint i = 0; i < maxRank; i++) {
+            uint idx = pioneerRankSelect.select(i + 1);
             pioneerWord[i] = word[idx - 1];
         }
         if (recursions > 0) {
@@ -37,17 +37,17 @@ const Sealib::Bitset<uint8_t>
     Sealib::Bitset<uint8_t> pioneerRankSelectBitset(word.size());
 
     for (uint i = 0; i < segments; i++) {
-        uint64_t beg = segmentLength * i;
+        uint beg = segmentLength * i;
         uint8_t segment = word.getShiftedBlock(beg);
 
-        uint64_t leftPioneer = LocalDyckTable::getLocalData(segment).leftPioneer;
-        uint64_t rightPioneer = LocalDyckTable::getLocalData(segment).rightPioneer;
+        uint leftPioneer = LocalDyckTable::getLocalData(segment).leftPioneer;
+        uint rightPioneer = LocalDyckTable::getLocalData(segment).rightPioneer;
 
         if (leftPioneer != (uint8_t) -1) {
             if (!pioneerRankSelectBitset[beg + leftPioneer]) {
                 pioneerRankSelectBitset[beg + leftPioneer].flip();
 
-                uint64_t matchedPioneer =
+                uint matchedPioneer =
                     DyckMatchingStructure::getMatchNaive(word, beg + leftPioneer);
 
                 if (!pioneerRankSelectBitset[matchedPioneer]) {
@@ -59,7 +59,7 @@ const Sealib::Bitset<uint8_t>
             if (!pioneerRankSelectBitset[beg + rightPioneer]) {
                 pioneerRankSelectBitset[beg + rightPioneer].flip();
 
-                uint64_t matchedPioneer =
+                uint matchedPioneer =
                     DyckMatchingStructure::getMatchNaive(word, beg + rightPioneer);
 
                 if (!pioneerRankSelectBitset[matchedPioneer]) {
@@ -69,20 +69,20 @@ const Sealib::Bitset<uint8_t>
         }
     }
     if (lastSegment != 0) {
-        uint64_t beg = segmentLength * segments;
+        uint beg = segmentLength * segments;
         uint8_t segment = word.getShiftedBlock(beg);
 
         for (uint c = lastSegment; c < segmentLength; c += 2) {
             segment |= static_cast<uint8_t>(1 << c);
         }
 
-        uint64_t rightPioneer = LocalDyckTable::getLocalData(segment).rightPioneer;
+        uint rightPioneer = LocalDyckTable::getLocalData(segment).rightPioneer;
 
         if (rightPioneer != (uint8_t) -1) {
             if (!pioneerRankSelectBitset[beg + rightPioneer]) {
                 pioneerRankSelectBitset[beg + rightPioneer].flip();
 
-                uint64_t matchedPioneer =
+                uint matchedPioneer =
                     DyckMatchingStructure::getMatchNaive(word, beg + rightPioneer);
 
                 if (!pioneerRankSelectBitset[matchedPioneer]) {
@@ -95,12 +95,12 @@ const Sealib::Bitset<uint8_t>
     return pioneerRankSelectBitset;
 }
 
-uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
-    uint64_t segmentId = idx / segmentLength;
+uint Sealib::RecursiveDyckMatchingStructure::getMatch(uint idx) {
+    uint segmentId = idx / segmentLength;
     auto bSegmentIdx = static_cast<uint8_t>(idx % segmentLength);
 
     if (segmentId != segments || lastSegment == 0) {
-        uint64_t beg = segmentId * segmentLength;
+        uint beg = segmentId * segmentLength;
         uint8_t segment = word.getShiftedBlock(beg);
 
         uint8_t localMatch =
@@ -109,7 +109,7 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
             return beg + localMatch;
         }
     } else {
-        uint64_t beg = segments * segmentLength;
+        uint beg = segments * segmentLength;
         uint8_t segment = word.getShiftedBlock(beg);
 
         uint8_t localMatch =
@@ -121,15 +121,15 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
 
     // match is not local
     if (word[idx]) {  // opening global
-        uint64_t p_wp = pioneerRankSelect.rank(idx + 1);
-        uint64_t p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
-        uint64_t pMatch_wp = pioneerMatchingStructure->getMatch(p_wp - 1);
-        uint64_t pMatch = pioneerRankSelect.select(pMatch_wp + 1) - 1;
+        uint p_wp = pioneerRankSelect.rank(idx + 1);
+        uint p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
+        uint pMatch_wp = pioneerMatchingStructure->getMatch(p_wp - 1);
+        uint pMatch = pioneerRankSelect.select(pMatch_wp + 1) - 1;
 
-        uint64_t pSegment = p / segmentLength;
-        uint64_t pSegmentIdx = p % segmentLength;
+        uint pSegment = p / segmentLength;
+        uint pSegmentIdx = p % segmentLength;
 
-        uint64_t beg = pSegment * segmentLength;
+        uint beg = pSegment * segmentLength;
         uint8_t pSeg = word.getShiftedBlock(beg);
 
         int pDepth = LocalDyckTable::getLocalData(pSeg).localDepths[pSegmentIdx];
@@ -137,8 +137,8 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
 
         int depthDiff = bDepth - pDepth;
 
-        uint64_t pMatchSegment = static_cast<uint64_t>(pMatch / segmentLength);
-        uint64_t matchSegmentIdx = static_cast<uint64_t>(pMatch % segmentLength);
+        uint pMatchSegment = static_cast<uint>(pMatch / segmentLength);
+        uint matchSegmentIdx = static_cast<uint>(pMatch % segmentLength);
 
         // not last segment or last segment has normal size,
         // it is certain we can get a subword of length segmentLength
@@ -172,24 +172,24 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
             }
         }
     } else {  // closing global
-        uint64_t p_wp = pioneerRankSelect.rank(idx + 1);
-        uint64_t p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
+        uint p_wp = pioneerRankSelect.rank(idx + 1);
+        uint p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
         if (p < idx) {
             p_wp++;
             p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
         }
-        uint64_t pMatch_wp = pioneerMatchingStructure->getMatch(p_wp - 1);
-        uint64_t pMatch = pioneerRankSelect.select(pMatch_wp + 1) - 1;
+        uint pMatch_wp = pioneerMatchingStructure->getMatch(p_wp - 1);
+        uint pMatch = pioneerRankSelect.select(pMatch_wp + 1) - 1;
 
-        uint64_t pSegment = p / segmentLength;
-        uint64_t pSegmentIdx = p % segmentLength;
+        uint pSegment = p / segmentLength;
+        uint pSegmentIdx = p % segmentLength;
 
         int pDepth;
         int bDepth;
         int depthDiff;
 
         if (pMatch < segmentLength * segments) {  // not in last segment
-            uint64_t beg = pSegment * segmentLength;
+            uint beg = pSegment * segmentLength;
             uint8_t pSeg = word.getShiftedBlock(beg);
 
             pDepth = LocalDyckTable::getLocalData(pSeg).localDepths[pSegmentIdx];
@@ -197,7 +197,7 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
 
             depthDiff = pDepth - bDepth;
         } else {
-            uint64_t beg = segments * segmentLength;
+            uint beg = segments * segmentLength;
             uint8_t pSeg = word.getShiftedBlock(beg);
 
             for (uint c = lastSegment; c < segmentLength; c += 2) {
@@ -210,14 +210,14 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
             depthDiff = pDepth - bDepth;
         }
 
-        uint64_t pMatchSegment = pMatch / segmentLength;
-        uint64_t matchSegmentIdx = pMatch % segmentLength;
+        uint pMatchSegment = pMatch / segmentLength;
+        uint matchSegmentIdx = pMatch % segmentLength;
 
-        uint64_t beg = pMatchSegment * segmentLength;
+        uint beg = pMatchSegment * segmentLength;
         uint8_t pMatchSeg = word.getShiftedBlock(beg);
 
         int pMatchDepth = LocalDyckTable::getLocalData(pMatchSeg).localDepths[matchSegmentIdx];
-        for (uint64_t i = matchSegmentIdx; i < segmentLength; i++) {
+        for (uint i = matchSegmentIdx; i < segmentLength; i++) {
             int candidateDepth = LocalDyckTable::getLocalData(pMatchSeg).localDepths[i];
             int candidateDepthDifference = candidateDepth - pMatchDepth;
             if (candidateDepthDifference == depthDiff) {  // i is match

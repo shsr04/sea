@@ -38,86 +38,86 @@ class ChoiceDictionary {
      * @param pointer Points to the next available word in validator and
      * pointer-1 to the last linked word in validator.
      *
-     * @param wordSize 64 for uint64_t
+     * @param wordSize 64 for uint
      */
     uint wordSize;
-    uint64_t wordCount, pointer;
-    std::vector<uint64_t> primary, secondary, validator;
+    uint wordCount, pointer;
+    std::vector<uint> primary, secondary, validator;
 
-    void createDataStructure(uint64_t size);
+    void createDataStructure(uint size);
 
     void createPrimary();
 
-    void createSecondary(uint64_t secondarySize);
+    void createSecondary(uint secondarySize);
 
-    void createValidator(uint64_t validatorSize);
+    void createValidator(uint validatorSize);
 
     /**
      * Updates secondary to represent updates in primary.
      * @param primaryIndex Index of the updated Word in primary.
      */
-    void updateSecondary(uint64_t primaryIndex);
+    void updateSecondary(uint primaryIndex);
 
-    void removeFromSecondary(uint64_t primaryIndex);
+    void removeFromSecondary(uint primaryIndex);
 
     /**
      * Creates a link between a tupel in secondary and validator.
      *
      * @param secondaryIndex Index of the new secondary word.
      */
-    uint64_t makeLink(uint64_t secondaryIndex);
+    uint makeLink(uint secondaryIndex);
 
-    void breakLink(uint64_t secondaryIndex);
+    void breakLink(uint secondaryIndex);
 
-    void shrinkValidator(uint64_t startIndex);
+    void shrinkValidator(uint startIndex);
 
-    bool isInitialized(uint64_t primaryIndex);
+    bool isInitialized(uint primaryIndex);
 
-    bool hasColor(uint64_t primaryIndex);
+    bool hasColor(uint primaryIndex);
 
  public:
     /**
      * Creates choice dictionary with given size
      * @param length Length of the choice dictionary
      */
-    explicit ChoiceDictionary(uint64_t size);
+    explicit ChoiceDictionary(uint size);
 
     /**
      * Sets a bit at specified index to 1.
      * @param index Index of bit that should be set to 1.
      */
-    void insert(uint64_t index);
+    void insert(uint index);
 
     /**
      * Returns the bit at specified index.
      * @param index Index to read.
      */
-    bool get(uint64_t index);
+    bool get(uint index);
 
     /**
      * Returns an arbitrary bit position that is set to 1.
      * @throws std::exception if empty
      */
-    uint64_t choice();
+    uint choice();
 
     /**
      * Sets a bit at specified index to 0.
      * @param index Index of bit that should be set to 0.
      * @throws std::exception if empty
      */
-    void remove(uint64_t index);
+    void remove(uint index);
 
-    uint64_t getPrimaryWord(uint64_t primaryIndex);
+    uint getPrimaryWord(uint primaryIndex);
 
-    uint64_t getSecondaryWord(uint64_t secondaryIndex);
+    uint getSecondaryWord(uint secondaryIndex);
 
-    uint64_t getPointerTarget(uint64_t nextPointer);
+    uint getPointerTarget(uint nextPointer);
 
-    bool pointerIsValid(uint64_t nextPointer);
+    bool pointerIsValid(uint nextPointer);
 
     uint getWordSize();
 
-    uint64_t getSecondarySize();
+    uint getSecondarySize();
 };
 }  // namespace Sealib
 #endif  // SEALIB_DICTIONARY_CHOICEDICTIONARY_H_

@@ -28,16 +28,16 @@ class RankSelect {
      * @param k bit (in {1,...,B})
      * @return index of the k-th set bit (in {1,...,n})
      */
-    uint64_t select(uint64_t k) const;
+    uint select(uint k) const;
 
     /**
      * Rank of the k-th idx
      * @param k idx (in {1,...,n})
      * @return rank of k-th idx (in {0,...,B})
      */
-    uint64_t rank(uint64_t k) const;
+    uint rank(uint k) const;
 
-    uint64_t size() const;
+    uint size() const;
 
     ~RankSelect();
     const Bitset<uint8_t> &getBitset() const;

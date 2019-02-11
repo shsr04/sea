@@ -10,10 +10,10 @@ class SimpleTrail {
     std::vector<std::tuple<uint, uint>> trail;
  public:
     SimpleTrail();
-    void insertSubTrail(const SimpleTrail &subTrail, uint64_t idx);
+    void insertSubTrail(const SimpleTrail &subTrail, uint idx);
     void pushBackSubTrail(const SimpleTrail &subTrail);
     void addArc(std::tuple<uint, uint> arc);
-    uint64_t getFirstIndexOf(std::tuple<uint, uint> arc) const;
+    uint getFirstIndexOf(std::tuple<uint, uint> arc) const;
     const std::vector<std::tuple<uint, uint>> &getTrail() const;
 
     std::tuple<uint, uint> getOutgoingFrom(uint u) const;

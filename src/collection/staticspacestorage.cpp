@@ -3,20 +3,20 @@
 #include <numeric>
 #include "sealib/_types.h"
 #define PRELUDE                                                        \
-    uint64_t start = rankSelect.select(i + 1) - i - 1;                 \
-    uint64_t end = start + getSize(i) - 1;                             \
-    uint64_t startBlock = start / bitsize, startBit = start % bitsize, \
+    uint start = rankSelect.select(i + 1) - i - 1;                 \
+    uint end = start + getSize(i) - 1;                             \
+    uint startBlock = start / bitsize, startBit = start % bitsize, \
              endBlock = end / bitsize, endBit = end % bitsize;         \
-    uint64_t endGap = bitsize - endBit - 1;
+    uint endGap = bitsize - endBit - 1;
 
 #define IF_SINGLE_BLOCK           \
     if (startBlock == endBlock) { \
-        uint64_t mask = (one << (endBit - startBit + 1)) - 1;
+        uint mask = (one << (endBit - startBit + 1)) - 1;
 
 #define ELSE_IF_NOT_SINGLE_BLOCK                                \
     }                                                           \
     else { /*NOLINT*/                                           \
-        uint64_t startMask = (one << (bitsize - startBit)) - 1, \
+        uint startMask = (one << (bitsize - startBit)) - 1, \
                  endMask = (one << (endBit + 1)) - 1;
 
 #define END }
@@ -26,9 +26,9 @@ using Sealib::Bitset;
 using Sealib::RankSelect;
 using Sealib::StaticSpaceStorage;
 
-uint64_t StaticSpaceStorage::get(uint i) const {
+uint StaticSpaceStorage::get(uint i) const {
     PRELUDE
-    uint64_t r = 0;
+    uint r = 0;
     IF_SINGLE_BLOCK
     r = (storage[startBlock] >> endGap) & mask;
     ELSE_IF_NOT_SINGLE_BLOCK
@@ -37,7 +37,7 @@ uint64_t StaticSpaceStorage::get(uint i) const {
     END return r;
 }
 
-void StaticSpaceStorage::insert(uint i, uint64_t v) {
+void StaticSpaceStorage::insert(uint i, uint v) {
     PRELUDE
     IF_SINGLE_BLOCK
     storage[startBlock] &= ~(mask << endGap);
@@ -72,8 +72,8 @@ static inline uint countWhere(const std::vector<bool> *v, bool x) {
     return r;
 }
 
-static void checkSize(const std::vector<bool> *v, uint64_t maxBitsize) {
-    uint64_t bits = 0;
+static void checkSize(const std::vector<bool> *v, uint maxBitsize) {
+    uint bits = 0;
     for (bool b : *v) {
         if (b == 1)
             bits = 0;

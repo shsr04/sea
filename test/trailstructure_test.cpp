@@ -72,24 +72,24 @@ TEST(TrailStructureTest, enterLeaveCombination) {
 }
 
 TEST(SimpleTrailStructureTest, allEvenPossibilities) {
-    const uint64_t maxLen = 16;
+    const uint maxLen = 16;
     for (uint len = 2; len < maxLen; len += 2) {
         Sealib::DyckWordLexicon lex(len);
         for (const Sealib::Bitset<uint8_t> &word : lex.getLexicon()) {
-            std::vector<std::vector<uint64_t>> depths(len);
+            std::vector<std::vector<uint>> depths(len);
             for (uint j = 0; j < len; j++) {
                 if (word[j]) {
-                    uint64_t match =
+                    uint match =
                         Sealib::DyckMatchingStructure::getMatchNaive(word, j);
-                    uint64_t d = match - j;
+                    uint d = match - j;
                     depths[d].push_back(j);
                 }
             }
 
             for (uint k = 0; k < len; k++) {
-                std::vector<std::vector<uint64_t>> shiftedDepths(depths);
+                std::vector<std::vector<uint>> shiftedDepths(depths);
                 for (auto &shiftedDepth : shiftedDepths) {
-                    for (uint64_t &j : shiftedDepth) {
+                    for (uint &j : shiftedDepth) {
                         j = (j + k) % len;
                     }
                 }
@@ -97,9 +97,9 @@ TEST(SimpleTrailStructureTest, allEvenPossibilities) {
                 Sealib::SimpleTrailStructure simpleTrailStructure(len);
                 Sealib::TrailStructure trailStructure(len);
 
-                for (std::vector<uint64_t> &depthVector : shiftedDepths) {
+                for (std::vector<uint> &depthVector : shiftedDepths) {
                     if (!depthVector.empty()) {
-                        for (uint64_t &idx : depthVector) {
+                        for (uint &idx : depthVector) {
                             naiveTrailStructure.enter(static_cast<uint>(idx));
                             simpleTrailStructure.enter(static_cast<uint>(idx));
                             trailStructure.enter(static_cast<uint>(idx));

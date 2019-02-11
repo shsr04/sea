@@ -32,7 +32,7 @@ class SharedRankStructure {
      * @param k idx
      * @return rank of k-th idx
      */
-    uint64_t rank(uint64_t k) const;
+    uint rank(uint k) const;
 
     /**
      * @param shared_ptr managing the Sealib::Bitset used for Rank
@@ -57,7 +57,7 @@ class SharedRankStructure {
     /**
      * @return size of bitset
      */
-    uint64_t size() const;
+    uint size() const;
 
     /**
      * @return segment of the bitset
@@ -65,7 +65,7 @@ class SharedRankStructure {
     const Sealib::Bitset<uint8_t>& getBitset() const;
 
     ~SharedRankStructure();
-    uint setBefore(uint64_t segment) const;
+    uint setBefore(uint segment) const;
 };
 }  // namespace Sealib
 #endif  // SEALIB_DICTIONARY_SHAREDRANKSTRUCTURE_H_

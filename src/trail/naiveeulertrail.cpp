@@ -67,7 +67,7 @@ NaiveEulerTrail::NaiveEulerTrail(const shared_ptr<UndirectedGraph> &g) {
         } while (k != (uint) -1);
 
         if (aOld != nonArc) {
-            uint64_t idx = (*tOld).getFirstIndexOf(aOld);
+            uint idx = (*tOld).getFirstIndexOf(aOld);
             (*tOld).insertSubTrail(tempTrail, idx);
         } else {
             trails.insert(trails.end(), tempTrail);

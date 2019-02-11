@@ -13,8 +13,8 @@ namespace Sealib {
 class SimpleRankSelect {
  private:
     std::shared_ptr<const Bitset<uint8_t>> bitset;
-    std::vector<uint64_t> ranks;
-    std::vector<uint64_t> selects;
+    std::vector<uint> ranks;
+    std::vector<uint> selects;
 
  public:
     /**
@@ -22,14 +22,14 @@ class SimpleRankSelect {
      * @param k idx
      * @return k-th set bit
      */
-    uint64_t select(uint64_t k) const;
+    uint select(uint k) const;
 
     /**
      * Rank of the k-th idx
      * @param k idx
      * @return rank of k-th idx
      */
-    uint64_t rank(uint64_t k) const;
+    uint rank(uint k) const;
 
     explicit SimpleRankSelect(std::shared_ptr<const Bitset<uint8_t>> bitset);
 };

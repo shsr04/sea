@@ -33,7 +33,7 @@ class EulerTrail {
     class iterator {
      public:
         explicit iterator(const EulerTrail<TrailStructureType> &Container, uint index = 1);
-        std::tuple<uint64_t, bool> operator*() const;
+        std::tuple<uint, bool> operator*() const;
         iterator &operator++();
         iterator &operator++(int);
         bool operator!=(const iterator &) const;

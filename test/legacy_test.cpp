@@ -46,12 +46,12 @@ TEST(LegacyTest, bitsetAndRankSelect) {
     EXPECT_EQ(rank(rs, 21), 0);
     EXPECT_EQ(rank(rs, 22), 1);
     EXPECT_EQ(select(rs, 2), 41);
-    EXPECT_EQ(select(rs, 4), (uint64_t)-1);
+    EXPECT_EQ(select(rs, 4), (uint)-1);
     ASSERT_NO_FATAL_FAILURE(Sealib_RankSelect_delete(rs));
     ASSERT_NO_FATAL_FAILURE(Sealib_Bitset_delete(b));
 }
 
-static uint64_t c = 0;
+static uint c = 0;
 static void count(uint u) { c += u; }
 
 TEST(LegacyTest, dfs) {

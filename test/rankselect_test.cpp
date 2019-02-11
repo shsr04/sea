@@ -9,10 +9,10 @@ TEST(RankSelectTest, rankSelect) {
     Sealib::RankSelect rs(*bits_);
     ASSERT_EQ(1, rs.select(1));
     ASSERT_EQ(1, rs.rank(1));
-    ASSERT_EQ((uint64_t) -1, rs.select(0));
-    ASSERT_EQ((uint64_t) -1, rs.rank(0));
-    ASSERT_EQ((uint64_t) -1, rs.select(2));
-    ASSERT_EQ((uint64_t) -1, rs.rank(2));
+    ASSERT_EQ((uint) -1, rs.select(0));
+    ASSERT_EQ((uint) -1, rs.rank(0));
+    ASSERT_EQ((uint) -1, rs.select(2));
+    ASSERT_EQ((uint) -1, rs.rank(2));
 
     uint8_t c1 = 0;
     do {

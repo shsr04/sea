@@ -10,7 +10,7 @@
 
 namespace Sealib {
 
-template <typename BlockType = uint64_t,
+template <typename BlockType = uint,
     typename AllocatorType = std::allocator<BlockType> >
 class Bitset;
 }
@@ -24,8 +24,8 @@ namespace Sealib {
  * @author Johannes Meintrup
  */
 template<typename BlockType, typename AllocatorType>
-class Bitset final : Sequence<bool, uint64_t> {
-    typedef uint64_t sizeType;
+class Bitset final : Sequence<bool, uint> {
+    typedef uint sizeType;
     typedef bool bitType;
 
  private:
@@ -204,7 +204,7 @@ class Bitset final : Sequence<bool, uint64_t> {
      * resizes the bitset to hold up to size bits
      * @param size - size of the bitset after resizing
      */
-    void resize(uint64_t size);
+    void resize(uint size);
 };
 
 template <typename Block, typename Allocator>

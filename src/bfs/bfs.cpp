@@ -51,7 +51,7 @@ bool BFS::hasGrayNode() {
     return true;
 }
 uint BFS::getGrayNode() {
-    uint64_t r = INVALID;
+    uint r = INVALID;
     try {
         r = isInner.choice();
     } catch (std::exception e) {

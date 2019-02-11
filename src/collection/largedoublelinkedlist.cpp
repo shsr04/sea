@@ -25,7 +25,7 @@ uint Sealib::LargeDoubleLinkedList::remove(uint idx) {
 
     int32_t prevIdx = actualIdx;
 
-    prevIdx -= static_cast<int32_t>(links[static_cast<uint64_t >(actualIdx)] * 2);
+    prevIdx -= static_cast<int32_t>(links[static_cast<uint >(actualIdx)] * 2);
 
     auto n = static_cast<int32_t>(links.size());
     int32_t mod = prevIdx % n;
@@ -41,12 +41,12 @@ uint Sealib::LargeDoubleLinkedList::remove(uint idx) {
         current = (uint) -1;
         return idx;
     }
-    links[static_cast<uint64_t >(prevIdx) + 1] += links[static_cast<uint64_t >(actualIdx) + 1];
+    links[static_cast<uint >(prevIdx) + 1] += links[static_cast<uint >(actualIdx) + 1];
 
     int32_t nextIdx = actualIdx;
-    nextIdx += static_cast<int32_t>(links[static_cast<uint64_t >(actualIdx) + 1] * 2);
+    nextIdx += static_cast<int32_t>(links[static_cast<uint >(actualIdx) + 1] * 2);
     nextIdx = nextIdx % n;
-    links[static_cast<uint64_t >(nextIdx)] += links[static_cast<uint64_t >(actualIdx)];
+    links[static_cast<uint >(nextIdx)] += links[static_cast<uint >(actualIdx)];
 
     current = static_cast<uint>(nextIdx / 2);
     return current;

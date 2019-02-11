@@ -151,8 +151,8 @@ bool Sealib::TrailStructure::isEndingArc(uint i) const {
 
 inline void Sealib::TrailStructure::initDyckStructure() {
     //  only matched indices are part of the dyckword
-    uint64_t cnt = 0;
-    for (uint64_t i = 0; i < matched.size(); i++) {
+    uint cnt = 0;
+    for (uint i = 0; i < matched.size(); i++) {
         if (matched[i]) cnt++;
     }
 
@@ -253,7 +253,7 @@ uint Sealib::TrailStructure::getMatched(uint idx) const {
         s = (s == (inAndOut.size() - 1)) ? 0 : s + 1;
     }
 
-    uint64_t match = dyckMatchingStructure->getMatch(dyckIdx);
+    uint match = dyckMatchingStructure->getMatch(dyckIdx);
     if (match == dyckIdx) {
         return idx;
     }

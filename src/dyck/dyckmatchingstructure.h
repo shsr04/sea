@@ -19,16 +19,16 @@ class DyckMatchingStructure {
      * @param idx - idx of the parenthesis in word_ for which the match should be found
      * @return match of word_(idx_), or idx_ if there is no match. (if word_ is not valid)
      */
-    static uint64_t getMatchNaive(
+    static uint getMatchNaive(
         const Sealib::Bitset<uint8_t> &word_,
-        uint64_t idx);
+        uint idx);
 
     /**
      * Finds the match of a parenthesis in a dyck word.
      * @param idx - idx of the parenthesis in word_ for which the match should be found
      * @return match of word_(idx_), or idx_ if there is no match. (if word_ is not valid)
      */
-    virtual uint64_t getMatch(uint64_t idx);
+    virtual uint getMatch(uint idx);
 
     /**
      * constructs a matching structure for the given dyck word word_.

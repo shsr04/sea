@@ -130,7 +130,7 @@ class DFS {
                                BiConsumer postexplore, Consumer postprocess);
 
     static void visit_nplusm(uint u0, UndirectedGraph const *g,
-                             CompactArray *color, Sequence<uint64_t> *back,
+                             CompactArray *color, Sequence<uint> *back,
                              Consumer preprocess, BiConsumer preexplore,
                              BiConsumer postexplore, Consumer postprocess);
 

@@ -30,20 +30,20 @@ class SubGraphStack {
     friend class BaseSubGraph;
  private:
     static constexpr uint8_t rSize = 7;
-    static std::vector<uint64_t> refs;
+    static std::vector<uint> refs;
     std::vector<SubGraph *> clientList;
-    uint64_t currentRef;
-    uint64_t tuned;
+    uint currentRef;
+    uint tuned;
 
     RankSelect *tunedPhi0;
     RankSelect *tunedPsi0;
     RankSelect *tunedPhi;
     RankSelect *tunedPsi;
 
-    void tunephi0(uint64_t i);
-    void tunepsi0(uint64_t i);
-    void tunephi(uint64_t i);
-    void tunepsi(uint64_t i);
+    void tunephi0(uint i);
+    void tunepsi0(uint i);
+    void tunephi(uint i);
+    void tunepsi(uint i);
 
  public:
     explicit SubGraphStack(std::shared_ptr<UndirectedGraph> g_);
@@ -77,134 +77,134 @@ class SubGraphStack {
     /**
      * Returns the order of G_i
      */
-    uint64_t order(uint64_t i) const;
+    uint order(uint i) const;
 
-    inline uint64_t order() const {
+    inline uint order() const {
         return order(clientList.size() - 1);
     }
 
     /**
      * @return - the degree of vertex u in G_i
      */
-    uint64_t degree(uint64_t i,
-                         uint64_t u) const;
+    uint degree(uint i,
+                         uint u) const;
 
     /**
      * @return - the degree of vertex u for G_l = the top graph on the stack
      */
-    inline uint64_t degree(uint64_t u) const {
+    inline uint degree(uint u) const {
         return degree(clientList.size() - 1, u);
     }
 
     /**
      * @return - the head of u's k-th outgoing arc in G_i. i.e. head_i(u, k)
      */
-    uint64_t head(uint64_t i,
-                       uint64_t u,
-                       uint64_t k) const;
+    uint head(uint i,
+                       uint u,
+                       uint k) const;
 
     /**
      * @return - the head of u's k-th outgoing arc in G_l = the top graph on the stack
      */
-    inline uint64_t head(uint64_t u,
-                              uint64_t k) const {
+    inline uint head(uint u,
+                              uint k) const {
         return head(clientList.size() - 1, u, k);
     }
 
     /**
      * @return - the pair that represents the mate of u's kth outgoing arc in G_i, i.e. mate_i(u, k)
      */
-    std::tuple<uint64_t, uint64_t> mate(uint64_t i,
-                                                  uint64_t u,
-                                                  uint64_t k) const;
+    std::tuple<uint, uint> mate(uint i,
+                                                  uint u,
+                                                  uint k) const;
 
     /**
      * @return - the pair that represents the mate of u's kth outgoing arc in G_l = the top graph on the stack
      */
-    inline std::tuple<uint64_t, uint64_t> mate(uint64_t u,
-                                                         uint64_t k) const {
+    inline std::tuple<uint, uint> mate(uint u,
+                                                         uint k) const {
         return mate(clientList.size() - 1, u, k);
     }
 
     /**
      * @return the arc number of the k'th outgoing arc in vertex u in G_i.
      */
-    uint64_t g(uint64_t i, uint64_t u, uint64_t k) const;
+    uint g(uint i, uint u, uint k) const;
 
-    inline uint64_t g(uint64_t u, uint64_t k) const {
+    inline uint g(uint u, uint k) const {
         return g(clientList.size() - 1, u, k);
     }
 
     /**
      * @return the number of arcs the subgraph G_i has
      */
-    uint64_t gMax(uint64_t i) const;
+    uint gMax(uint i) const;
 
-    inline uint64_t gMax() const {
+    inline uint gMax() const {
         return gMax(clientList.size() - 1);
     }
 
     /**
      * @return the (node, arc) pair beint32_ting to the r'th arc in G_i
      */
-    std::tuple<uint64_t, uint64_t> gInv(uint64_t i, uint64_t r) const;
+    std::tuple<uint, uint> gInv(uint i, uint r) const;
 
     /**
      * @return the (node, arc) pair beint32_ting to the r'th arc in G_l = the top graph on the stack
      */
-    inline std::tuple<uint64_t, uint64_t> gInv(uint64_t r) const {
+    inline std::tuple<uint, uint> gInv(uint r) const {
         return gInv(clientList.size() - 1, r);
     }
 
     /**
      * @return translation of the u'th node in G_i to the isomorph node in G_j
      */
-    uint64_t phi(uint64_t i, uint64_t j, uint64_t u) const;
+    uint phi(uint i, uint j, uint u) const;
 
     /**
      * @return translation of the a'th arc in G_i to the isomorph arc in G_j
      */
-    uint64_t psi(uint64_t i, uint64_t j, uint64_t a)const;
+    uint psi(uint i, uint j, uint a)const;
 
     /**
      * @return translation of the u'th node in G_l = the top graph to the isomorph node in G_j
      */
-    inline uint64_t phi(uint64_t j, uint64_t u) const {
+    inline uint phi(uint j, uint u) const {
         return phi(clientList.size() - 1, j, u);
     }
 
     /**
      * @return translation of the a'th arc in G_l = the top graph of to the isomorph arc in G_j
      */
-    inline uint64_t psi(uint64_t j, uint64_t a) const {
+    inline uint psi(uint j, uint a) const {
         return psi(clientList.size() - 1, j, a);
     }
 
     /**
      * @return translation of the u'th node in G_l = the top graph to the isomorph node in G_0
      */
-    inline uint64_t phi(uint64_t u) const {
+    inline uint phi(uint u) const {
         return phi(clientList.size() - 1, 0, u);
     }
 
     /**
      * @return translation of the a'th arc in G_l = the top graph of to the isomorph arc in G_0
      */
-    inline uint64_t psi(uint64_t a) const {
+    inline uint psi(uint a) const {
         return psi(clientList.size() - 1, 0, a);
     }
 
     /**
      * @return  translation of the u'th node in G_0 to G_l = the top graph
      */
-    inline uint64_t phiInv(uint64_t u) const {
+    inline uint phiInv(uint u) const {
         return phi(0, clientList.size() - 1, u);
     }
 
     /**
      * @return translation of the a'th arc in G_0 to G_l = the top graph
      */
-    inline uint64_t psiInv(uint64_t a) const {
+    inline uint psiInv(uint a) const {
         return psi(0, clientList.size() - 1, a);
     }
 
@@ -225,12 +225,12 @@ class SubGraphStack {
      * If there are previously initialized tuning structures, they are destroyed.
      * @param i - idx of the Graph to be tuned
      */
-    void tune(uint64_t i);
+    void tune(uint i);
 
     /**
      * @return the number of graphs currently on the stack
      */
-    inline uint64_t size() const {
+    inline uint size() const {
         return clientList.size();
     }
 

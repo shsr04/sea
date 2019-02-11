@@ -4,11 +4,11 @@
 #include <cmath>
 #include <utility>
 
-uint64_t Sealib::RankStructure::rank(uint64_t k) const {
+uint Sealib::RankStructure::rank(uint k) const {
     if (k == 0 || k > maxRank) {
-        return (uint64_t) -1;
+        return (uint) -1;
     }
-    uint64_t segmentIdx = (k - 1) / segmentLength;
+    uint segmentIdx = (k - 1) / segmentLength;
     uint8_t segment = bitset.getBlock(segmentIdx);
     auto localIdx = static_cast<uint8_t>((k - 1) % segmentLength);
     return setBefore(segmentIdx) + LocalRankTable::getLocalRank(segment, localIdx);
@@ -39,7 +39,7 @@ Sealib::RankStructure::RankStructure(
     if (segmentCount != 0) {
         setCountTable.reserve(segmentCount);
         uint cnt = 0;
-        for (uint64_t i = 0; i < segmentCount - 1; i++) {
+        for (uint i = 0; i < segmentCount - 1; i++) {
             uint8_t segment = bitset.getBlock(i);
             cnt += LocalRankTable::getLocalRank(segment, 7);
             setCountTable.push_back(cnt);
@@ -54,7 +54,7 @@ uint Sealib::RankStructure::getSegmentCount() const {
     return segmentCount;
 }
 
-uint Sealib::RankStructure::setBefore(uint64_t segment) const {
+uint Sealib::RankStructure::setBefore(uint segment) const {
     if (segment == 0) return 0;
     return setCountTable[segment - 1];
 }
@@ -74,7 +74,7 @@ const std::vector<uint> &Sealib::RankStructure::getSetCountTable() const {
 const std::vector<uint> &Sealib::RankStructure::getNonEmptySegments() const {
     return nonEmptySegments;
 }
-uint64_t Sealib::RankStructure::size() const {
+uint Sealib::RankStructure::size() const {
     return bitset.size();
 }
 Sealib::RankStructure::~RankStructure() = default;

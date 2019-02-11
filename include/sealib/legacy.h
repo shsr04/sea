@@ -1,6 +1,6 @@
 #ifndef SEALIB_LEGACY_H_
 #define SEALIB_LEGACY_H_
-#include <stdint.h>
+#include "sealib/_types.h"
 
 /**
  * This class provides legacy functions that can be called from C code.
@@ -17,41 +17,41 @@ extern "C" {
  * @param order Size of the matrix
  * @return Pointer to the generated graph
  */
-void *Sealib_Graph_new(uint32_t **m, uint32_t order);
+void *Sealib_Graph_new(uint **m, uint order);
 void Sealib_Graph_delete(void *self);
 /**
  * Generate a random graph.
  * @param order Number of vertices
  * @return Pointer to the generated graph
  */
-void *Sealib_Graph_generateRandom(uint32_t order);
+void *Sealib_Graph_generateRandom(uint order);
 
 /**
  * Create a new choice dictionary.
  * @param size Number of entries
  * @return Pointer to the choice dictionary
  */
-void *Sealib_ChoiceDictionary_new(uint32_t size);
+void *Sealib_ChoiceDictionary_new(uint size);
 void Sealib_ChoiceDictionary_delete(void *self);
 /**
  * Set a bit to 1.
  * @param self Choice dictionary instance
  * @param index Index to be written to
  */
-void Sealib_ChoiceDictionary_set(void *self, uint64_t index);
+void Sealib_ChoiceDictionary_set(void *self, uint index);
 /**
  * Get a bit.
  * @param self Choice dictionary instance
  * @param index Index to be read from
  * @returns Bit value
  */
-int Sealib_ChoiceDictionary_get(void *self, uint64_t index);
+int Sealib_ChoiceDictionary_get(void *self, uint index);
 /**
  * Get index of a random set bit.
  * @param self Choice dictionary instance
  * @param Index of a set bit
  */
-uint64_t Sealib_ChoiceDictionary_choice(void *self);
+uint Sealib_ChoiceDictionary_choice(void *self);
 
 /**
  * Create a new choice dictionary iterator.
@@ -76,28 +76,28 @@ int Sealib_ChoiceDictionaryIterator_more(void *self);
  * @param self Choice dictionary iterator instance
  * @return Index of the next set bit
  */
-uint64_t Sealib_ChoiceDictionaryIterator_next(void *self);
+uint Sealib_ChoiceDictionaryIterator_next(void *self);
 
 /**
  * Create a new bitset.
  * @param size Number of entries
  * @return Pointer to the bitset
  */
-void *Sealib_Bitset_new(uint64_t size);
+void *Sealib_Bitset_new(uint size);
 void Sealib_Bitset_delete(void *self);
 /**
  * Set a bit to 1.
  * @param self bitset instance
  * @param index Index to be written to
  */
-void Sealib_Bitset_set(void *self, uint64_t index);
+void Sealib_Bitset_set(void *self, uint index);
 /**
  * Get a bit.
  * @param self bitset instance
  * @param index Index to be read from
  * @return Bit value
  */
-int Sealib_Bitset_get(void *self, uint64_t index);
+int Sealib_Bitset_get(void *self, uint index);
 
 /**
  * Create a new rank-select structure
@@ -112,20 +112,20 @@ void Sealib_RankSelect_delete(void *self);
  * @param index Index to get the rank for
  * @return Rank (no. set bits up to the index)
  */
-uint64_t Sealib_RankSelect_rank(void *self, uint64_t index);
+uint Sealib_RankSelect_rank(void *self, uint index);
 /**
  * Select a bit.
  * @param self rank-select instance
  * @param bit Which set bit to select
  * @return Index of the `bit`-th set bit
  */
-uint64_t Sealib_RankSelect_select(void *self, uint64_t bit);
+uint Sealib_RankSelect_select(void *self, uint bit);
 /**
  * Get the size.
  * @param self rank-select instance
  * @return Number of entries
  */
-uint64_t Sealib_RankSelect_size(void *self);
+uint Sealib_RankSelect_size(void *self);
 
 /**
  * Run a DFS in O(n log(log(n))) bits.
@@ -135,10 +135,10 @@ uint64_t Sealib_RankSelect_size(void *self);
  * @param postexplore user procedure to execute before exploring an edge u,v
  * @param postprocess user procedure to execute before processing a node u
  */
-void Sealib_DFS_nloglognBitDFS(void *graph, void (*preprocess)(uint32_t),
-                               void (*preexplore)(uint32_t, uint32_t),
-                               void (*postexplore)(uint32_t, uint32_t),
-                               void (*postprocess)(uint32_t));
+void Sealib_DFS_nloglognBitDFS(void *graph, void (*preprocess)(uint),
+                               void (*preexplore)(uint, uint),
+                               void (*postexplore)(uint, uint),
+                               void (*postprocess)(uint));
 
 #ifdef __cplusplus
 }
