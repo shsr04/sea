@@ -8,7 +8,10 @@ typedef uint32_t uint;
 #include <cstdint>
 
 namespace Sealib {
-// the standard numeric type (used mainly for node names)
+/**
+ * The standard numeric type. Used for anything that is indexed, read or written in this library.
+ * You can set `uint` to any integer type you want (e.g. for very small or large graphs)
+ */
 typedef uint32_t uint;
 
 typedef std::function<void(uint)> Consumer;

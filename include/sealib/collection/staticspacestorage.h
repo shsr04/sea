@@ -63,7 +63,7 @@ class StaticSpaceStorage : public Sequence<uint> {
     static constexpr uint one = 1;
 
     CONSTEXPR_IF_CLANG uint getEnd(uint k) const {
-        return (k < n) ? rankSelect.select(k + 1) : (n + storage.size() + 1);
+        return (k < n) ? rankSelect.select(k + 1) : static_cast<uint>(n + storage.size() + 1);
     }
 
     CONSTEXPR_IF_CLANG uint getSize(uint k) const {

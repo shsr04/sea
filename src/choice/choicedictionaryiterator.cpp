@@ -3,6 +3,8 @@
 
 using Sealib::ChoiceDictionaryIterator;
 
+static const uint ONE = 1;
+
 ChoiceDictionaryIterator::ChoiceDictionaryIterator(ChoiceDictionary *_choicedictionary)
     : choicedictionary(_choicedictionary) {}
 
@@ -38,7 +40,7 @@ uint ChoiceDictionaryIterator::next() {
 
     uint targetBit = wordSize - nextIndex - SHIFT_OFFSET;
 
-    newPrimaryValue = 1UL << targetBit;
+    newPrimaryValue = ONE << targetBit;
     primaryWord = primaryWord & ~newPrimaryValue;
 
     return primaryIndex * wordSize + nextIndex;
@@ -62,7 +64,7 @@ void ChoiceDictionaryIterator::setNextPrimaryWord() {
     primaryIndex = (secondaryIndex / 2) * wordSize + primaryInnerIndex;
 
     targetBit = wordSize - primaryInnerIndex - SHIFT_OFFSET;
-    targetBit = 1UL << targetBit;
+    targetBit = ONE << targetBit;
 
     secondaryWord = secondaryWord & ~targetBit;
     primaryWord = choicedictionary->getPrimaryWord(primaryIndex);

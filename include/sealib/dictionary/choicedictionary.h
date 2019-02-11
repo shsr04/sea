@@ -4,11 +4,6 @@
 #include <vector>
 #include "sealib/_types.h"
 
-#define SHIFT_OFFSET 1UL
-#define POINTER_OFFSET 1UL
-#define TUPEL_OFFSET 1UL
-#define TUPEL_FACTOR 2UL
-
 namespace Sealib {
 /**
  * A choice dictionary is a bitset containing n elements that supports reading
@@ -19,30 +14,41 @@ namespace Sealib {
  */
 class ChoiceDictionary {
  private:
+    static const uint SHIFT_OFFSET = 1,
+        POINTER_OFFSET = 1,
+        TUPEL_OFFSET = 1,
+        TUPEL_FACTOR = 2;
+        
     /**
-     * @param primary Array Structure where each word represents a subset of
-     * the entire bitset.
-     *
-     * @param secondary Tupel structure where the first word in a block
-     * contains a bitset where each bit that is set to 1 points to a subset
-     * in primary with atleast one bit set to 1.
-     * The second word is used for pointer validation with the validator
-     * array.
-     *
-     * @param validator Array used to validate entries in secondary with
-     * validator[i] pointing to a tupel in secondary that has atleast
-     * one bit set to 1.
-     *
-     * @param wordCount Stores the number of words in primary.
-     *
-     * @param pointer Points to the next available word in validator and
-     * pointer-1 to the last linked word in validator.
-     *
-     * @param wordSize 64 for uint
+     * Word size in bits
      */
     uint wordSize;
-    uint wordCount, pointer;
-    std::vector<uint> primary, secondary, validator;
+    /**
+     * Stores the number of words in primary.
+     */
+    uint wordCount;
+    /**
+     * Points to the next available word in validator and
+     * pointer-1 to the last linked word in validator.
+     */
+    uint pointer;
+    /**
+     * Array Structure where each word represents a subset of the entire bitset.
+     */
+    std::vector<uint> primary;
+    /**
+     * Tupel structure where the first word in a block contains a bitset 
+     * where each bit that is set to 1 points to a subset in primary 
+     * with at least one bit set to 1.
+     * The second word is used for pointer validation with the validator array.
+     */
+    std::vector<uint> secondary;
+    /**
+     * Array used to validate entries in secondary with
+     * validator[i] pointing to a tupel in secondary that has at least
+     * one bit set to 1.
+     */
+    std::vector<uint> validator;
 
     void createDataStructure(uint size);
 

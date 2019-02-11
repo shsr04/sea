@@ -4,6 +4,8 @@
 
 using Sealib::ChoiceDictionary;
 
+static const uint ONE = 1;
+
 class emptyChoiceDictionary : public std::exception {
     const char* what() const noexcept {
         return "Choice dictionary is empty. Operations \'choice()\'"
@@ -24,15 +26,15 @@ void ChoiceDictionary::insert(uint index) {
     uint primaryWord;
     uint targetBit;
 
-    uint primaryIndex = index / (uint)wordSize;
-    uint primaryInnerIndex = index % (uint)wordSize;
+    uint primaryIndex = index / wordSize;
+    uint primaryInnerIndex = index % wordSize;
 
     if (isInitialized(primaryIndex))
         primaryWord = primary[primaryIndex];
     else
         primaryWord = 0;
 
-    targetBit = 1UL << (wordSize - SHIFT_OFFSET - primaryInnerIndex);
+    targetBit = ONE << (wordSize - SHIFT_OFFSET - primaryInnerIndex);
     primary[primaryIndex] = primaryWord | targetBit;
 
     updateSecondary(primaryIndex);
@@ -51,7 +53,7 @@ bool ChoiceDictionary::get(uint index) {
     primaryInnerIndex = index % (uint)wordSize;
 
     primaryWord = primary[primaryIndex];
-    targetBit = 1UL << (wordSize - SHIFT_OFFSET - primaryInnerIndex);
+    targetBit = ONE << (wordSize - SHIFT_OFFSET - primaryInnerIndex);
 
     return (primaryWord & targetBit) != 0;
 }
@@ -93,7 +95,7 @@ void ChoiceDictionary::remove(uint index) {
     if (!isInitialized(primaryIndex)) return;
 
     primaryWord = primary[primaryIndex];
-    targetBit = 1UL << (wordSize - SHIFT_OFFSET - primaryInnerIndex);
+    targetBit = ONE << (wordSize - SHIFT_OFFSET - primaryInnerIndex);
     newPrimaryWord = primaryWord & ~targetBit;
 
     primary[primaryIndex] = newPrimaryWord;
@@ -147,7 +149,7 @@ void ChoiceDictionary::updateSecondary(uint primaryIndex) {
         secondary[secondaryIndex + TUPEL_OFFSET] = makeLink(secondaryIndex);
     }
 
-    targetBit = 1UL << (wordSize - SHIFT_OFFSET - primaryIndex);
+    targetBit = ONE << (wordSize - SHIFT_OFFSET - primaryIndex);
     secondary[secondaryIndex] = secondaryWord | targetBit;
 }
 
@@ -159,7 +161,7 @@ void ChoiceDictionary::removeFromSecondary(uint primaryIndex) {
     uint secondaryIndex = (primaryIndex / wordSize) * TUPEL_FACTOR;
 
     secondaryWord = secondary[secondaryIndex];
-    targetBit = 1UL << (wordSize - SHIFT_OFFSET - primaryIndex);
+    targetBit = ONE << (wordSize - SHIFT_OFFSET - primaryIndex);
     newSecondaryWord = secondaryWord & ~targetBit;
     secondary[secondaryIndex] = newSecondaryWord;
 
@@ -196,7 +198,7 @@ void ChoiceDictionary::shrinkValidator(uint validatorIndex) {
 bool ChoiceDictionary::isInitialized(uint primaryIndex) {
     uint secondaryIndex = (primaryIndex / wordSize) * TUPEL_FACTOR;
     uint secondaryWord = secondary[secondaryIndex];
-    uint targetBit = 1UL << (wordSize - SHIFT_OFFSET - primaryIndex);
+    uint targetBit = ONE << (wordSize - SHIFT_OFFSET - primaryIndex);
 
     return (secondaryWord & targetBit) != 0 && hasColor(primaryIndex) && pointer > 0;
 }
