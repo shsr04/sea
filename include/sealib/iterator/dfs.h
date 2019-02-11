@@ -108,9 +108,9 @@ class DFS {
      * @param startVertex startVertex The begin of the DFS tree.
      * @author Simon Schniedenharn
      */
-    static void runLinearTimeInplaceDFS(uint32_t *graph, Consumer preProcess,
+    static void runLinearTimeInplaceDFS(uint *graph, Consumer preProcess,
                                         Consumer postProcess,
-                                        uint32_t startVertex);
+                                        uint startVertex);
 
     /**
      * The following helper procedures are only for internal or experimental

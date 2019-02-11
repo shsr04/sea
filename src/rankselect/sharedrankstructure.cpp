@@ -17,7 +17,7 @@ uint64_t Sealib::SharedRankStructure::rank(uint64_t k) const {
 Sealib::SharedRankStructure::SharedRankStructure(
     std::shared_ptr<const Sealib::Bitset<uint8_t>> bitset_) :
     bitset(std::move(bitset_)),
-    segmentCount(static_cast<uint32_t>(bitset->size() / segmentLength)) {
+    segmentCount(static_cast<uint>(bitset->size() / segmentLength)) {
     auto lastSeg = static_cast<uint8_t>((bitset->size() % segmentLength));
 
     if ((lastSeg != 0) && bitset->size() != 0) {
@@ -29,7 +29,7 @@ Sealib::SharedRankStructure::SharedRankStructure(
         0 : segmentLength * (lastSeg == 0 ? segmentCount : segmentCount - 1) + lastSeg;
     nonEmptySegments.reserve(segmentCount);
 
-    for (uint32_t i = 0; i < segmentCount; i++) {
+    for (uint i = 0; i < segmentCount; i++) {
         uint8_t segment = bitset->getBlock(i);
         if (LocalRankTable::getLocalRank(segment, 7) != 0) {
             nonEmptySegments.push_back(i);
@@ -38,7 +38,7 @@ Sealib::SharedRankStructure::SharedRankStructure(
 
     if (segmentCount != 0) {
         setCountTable.reserve(segmentCount);
-        uint32_t cnt = 0;
+        uint cnt = 0;
         for (uint64_t i = 0; i < segmentCount - 1; i++) {
             uint8_t segment = bitset->getBlock(i);
             cnt += LocalRankTable::getLocalRank(segment, 7);
@@ -50,11 +50,11 @@ Sealib::SharedRankStructure::SharedRankStructure(
 Sealib::SharedRankStructure::SharedRankStructure() : bitset(0) {
 }
 
-uint32_t Sealib::SharedRankStructure::getSegmentCount() const {
+uint Sealib::SharedRankStructure::getSegmentCount() const {
     return segmentCount;
 }
 
-uint32_t Sealib::SharedRankStructure::setBefore(uint64_t segment) const {
+uint Sealib::SharedRankStructure::setBefore(uint64_t segment) const {
     if (segment == 0) return 0;
     return setCountTable[segment - 1];
 }
@@ -68,13 +68,13 @@ uint64_t Sealib::SharedRankStructure::size() const {
 const Sealib::Bitset<uint8_t> &Sealib::SharedRankStructure::getBitset() const {
     return (*bitset.get());
 }
-uint32_t Sealib::SharedRankStructure::getMaxRank() const {
+uint Sealib::SharedRankStructure::getMaxRank() const {
     return maxRank;
 }
-const std::vector<uint32_t> &Sealib::SharedRankStructure::getSetCountTable() const {
+const std::vector<uint> &Sealib::SharedRankStructure::getSetCountTable() const {
     return setCountTable;
 }
-const std::vector<uint32_t> &Sealib::SharedRankStructure::getNonEmptySegments() const {
+const std::vector<uint> &Sealib::SharedRankStructure::getNonEmptySegments() const {
     return nonEmptySegments;
 }
 

@@ -13,7 +13,7 @@ Sealib::BaseSubGraph::BaseSubGraph(stack_t *stack_, rgraph_t rGraph_) :
     rGraph(std::move(rGraph_)) {
     uint64_t dSum = 0;
     bitset_t q(rGraph->getOrder());
-    for (uint32_t i = 0; i < rGraph->getOrder(); i++) {
+    for (uint i = 0; i < rGraph->getOrder(); i++) {
         uint64_t deg = rGraph->deg(i);
         dSum += deg;
         if (deg > 0) {
@@ -23,7 +23,7 @@ Sealib::BaseSubGraph::BaseSubGraph(stack_t *stack_, rgraph_t rGraph_) :
 
     bitset_t p(dSum);
     uint64_t deg = 0;
-    for (uint32_t i = 0; i < rGraph->getOrder(); i++) {
+    for (uint i = 0; i < rGraph->getOrder(); i++) {
         if (rGraph->deg(i) > 0) {
             deg += rGraph->deg(i);
             p[deg - 1] = 1;

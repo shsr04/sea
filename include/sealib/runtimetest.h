@@ -18,7 +18,7 @@
  */
 class RuntimeTest {
  private:
-    std::vector<std::tuple<uint32_t, uint32_t>> parameters;
+    std::vector<std::tuple<uint, uint>> parameters;
     std::vector<double> runtimes;
 
  public:
@@ -29,8 +29,8 @@ class RuntimeTest {
      * @param order Order of the input graph
      * @param size Number of edges of the input graph
      */
-    void runTest(std::function<void(void)> testfunction, uint32_t order,
-                 uint32_t size);
+    void runTest(std::function<void(void)> testfunction, uint order,
+                 uint size);
 
     /**
      * Adds a result to the list of test results.
@@ -38,7 +38,7 @@ class RuntimeTest {
      * @param size Number of edges of the input graph
      * @param result The result (runtime/space usage/...) to store
      */
-    void addLine(uint32_t order, uint32_t size, uint64_t result);
+    void addLine(uint order, uint size, uint64_t result);
 
     /**
      * Prints the test results to standard output.
@@ -54,7 +54,7 @@ class RuntimeTest {
 };
 
 void RuntimeTest::runTest(std::function<void(void)> testfunction,
-                          uint32_t order, uint32_t size) {
+                          uint order, uint size) {
     struct tms t1, t2;
     parameters.push_back({order, size});
     std::cout << "Running test: " << parameters.size() << " n: " << order
@@ -70,7 +70,7 @@ void RuntimeTest::runTest(std::function<void(void)> testfunction,
     runtimes.push_back(runTime);
 }
 
-void RuntimeTest::addLine(uint32_t order, uint32_t size, uint64_t result) {
+void RuntimeTest::addLine(uint order, uint size, uint64_t result) {
     std::cout << "Adding result: " << parameters.size() << " n: " << order
               << " m: " << size << std::endl;
     parameters.push_back({order, size});
@@ -79,7 +79,7 @@ void RuntimeTest::addLine(uint32_t order, uint32_t size, uint64_t result) {
 
 void RuntimeTest::printResults() {
     std::cout << "order,size,result" << std::endl;
-    for (uint32_t i = 0; i < parameters.size(); ++i) {
+    for (uint i = 0; i < parameters.size(); ++i) {
         std::cout << std::get<0>(parameters[i]) << ",";
         std::cout << std::get<1>(parameters[i]) << ",";
         std::cout << runtimes[i] << std::endl;
@@ -92,7 +92,7 @@ void RuntimeTest::saveCSV(std::string filepath, std::string title) {
                 std::ofstream::in | std::ofstream::out | std::ofstream::trunc);
     if (output.is_open()) {
         output << title << std::endl;
-        for (uint32_t i = 0; i < parameters.size(); ++i) {
+        for (uint i = 0; i < parameters.size(); ++i) {
             output << std::get<0>(parameters[i]) << ",";
             output << std::get<1>(parameters[i]) << ",";
             output << runtimes[i];

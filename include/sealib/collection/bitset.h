@@ -29,7 +29,7 @@ class Bitset final : Sequence<bool, uint64_t> {
     typedef bool bitType;
 
  private:
-    static const uint32_t bitsPerBlock = sizeof(BlockType) * 8;
+    static const uint bitsPerBlock = sizeof(BlockType) * 8;
     static const BlockType BlockTypeOne = BlockType(1);
 
     sizeType bits;

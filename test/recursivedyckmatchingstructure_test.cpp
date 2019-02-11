@@ -3,12 +3,12 @@
 #include "../src/dyck/dyckwordlexicon.h"
 
 TEST(RecursiveDyckMatchingStructureTest, testAllWordsLength10) {
-    for (uint32_t i = 2; i < 23; i += 2) {
+    for (uint i = 2; i < 23; i += 2) {
         Sealib::DyckWordLexicon lex(i);
         for (const Sealib::Bitset<uint8_t> &word : lex.getLexicon()) {
             Sealib::DyckMatchingStructure d(word);
             Sealib::RecursiveDyckMatchingStructure dRec(word);
-            for (uint32_t j = 0; j < i; j++) {
+            for (uint j = 0; j < i; j++) {
                 uint64_t dMatch = d.getMatch(j);
                 uint64_t dRecMatch = dRec.getMatch(j);
                 ASSERT_NE(dMatch, j);
@@ -31,7 +31,7 @@ TEST(RecursiveDyckMatchingStructureTest, testWords) {
     ASSERT_EQ(d1.getMatch(1), 0);
 
     Sealib::Bitset<uint8_t> word2(10);
-    for (uint32_t i = 0; i < 5; i++) {
+    for (uint i = 0; i < 5; i++) {
         word2[i] = 1;
     }
     Sealib::RecursiveDyckMatchingStructure d2(word2);

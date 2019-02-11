@@ -2,7 +2,7 @@
 #include <sealib/dictionary/sharedrankstructure.h>
 
 Sealib::LocalRankTable::LocalRankTable() : localRankLookupTable(256) {
-    for (uint32_t i = 0; i <= (uint8_t) -1; i++) {
+    for (uint i = 0; i <= (uint8_t) -1; i++) {
         uint8_t rank = 0;
         localRankLookupTable[i] = std::vector<uint8_t>(8);
         for (uint8_t j = 0; j < 8; j++) {

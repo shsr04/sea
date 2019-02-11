@@ -69,7 +69,7 @@ bool BFS::more() { return hasGrayNode(); }
 std::pair<uint, uint> BFS::next() {
     u = getGrayNode();
     if (color.get(u) == outerGray) {
-        uint32_t tmp = innerGray;
+        uint tmp = innerGray;
         innerGray = outerGray;
         outerGray = tmp;
         std::swap(isInner, isOuter);

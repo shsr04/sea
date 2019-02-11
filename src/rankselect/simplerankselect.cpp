@@ -15,8 +15,8 @@ Sealib::SimpleRankSelect::SimpleRankSelect(
     bitset(std::move(bitset_)),
     ranks(bitset->size()),
     selects(bitset->size(), (uint64_t) -1) {
-    uint32_t rank = 0;
-    for (uint32_t i = 0; i < bitset->size(); i++) {
+    uint rank = 0;
+    for (uint i = 0; i < bitset->size(); i++) {
         if ((*bitset)[i]) {
             selects[rank++] = i + 1;
         }

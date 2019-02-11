@@ -38,13 +38,13 @@ void GraphExporter::exportGML(Graph const *g, bool directed,
                               std::string filename) {
     std::ofstream out(filename);
     out << "graph [\ndirected " << directed << "\n";
-    for (uint32_t u = 0; u < g->getOrder(); u++) {
+    for (uint u = 0; u < g->getOrder(); u++) {
         out << "node [\nid " << u << "\n";
         out << "]\n";
     }
-    uint32_t edgeId = g->getOrder();
-    for (uint32_t u = 0; u < g->getOrder(); u++) {
-        for (uint32_t k = 0; k < g->deg(u); k++) {
+    uint edgeId = g->getOrder();
+    for (uint u = 0; u < g->getOrder(); u++) {
+        for (uint k = 0; k < g->deg(u); k++) {
             out << "edge [\nid " << edgeId++ << "\n";
             out << "source " << u << "\n";
             out << "target " << g->head(u, k) << "\n";

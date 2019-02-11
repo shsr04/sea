@@ -153,7 +153,7 @@ namespace Sealib {
 template
 class Bitset<uint64_t, std::allocator<uint64_t>>;
 template
-class Bitset<uint32_t, std::allocator<uint32_t>>;
+class Bitset<uint, std::allocator<uint>>;
 template
 class Bitset<uint16_t, std::allocator<uint16_t>>;
 template

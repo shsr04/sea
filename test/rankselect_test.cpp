@@ -18,33 +18,33 @@ TEST(RankSelectTest, rankSelect) {
     do {
         uint8_t c2 = 0;
         do {
-            for (uint32_t e = 0; e < 8; e++) {
+            for (uint e = 0; e < 8; e++) {
                 std::shared_ptr<Sealib::Bitset<uint8_t>> bits(
                     new Sealib::Bitset<uint8_t>(16 + e));
                 bits->setBlock(0, c1);
                 bits->setBlock(1, c2);
-                for (uint32_t i = 0; i < e; i++) {
+                for (uint i = 0; i < e; i++) {
                     (*bits)[16 + i] = 1;
                 }
 
                 Sealib::SimpleRankSelect simpleRankSelect(bits);
                 Sealib::RankSelect rankSelect(*bits);
-                for (uint32_t i = 0; i <= bits->size(); i++) {
+                for (uint i = 0; i <= bits->size(); i++) {
                     ASSERT_EQ(rankSelect.select(i), simpleRankSelect.select(i));
                     ASSERT_EQ(rankSelect.rank(i), simpleRankSelect.rank(i));
                 }
             }
-            for (uint32_t e = 0; e < 8; e++) {
+            for (uint e = 0; e < 8; e++) {
                 std::shared_ptr<Sealib::Bitset<uint8_t>> bits(
                     new Sealib::Bitset<uint8_t>(16 + e));
                 bits->setBlock(0, c1);
                 bits->setBlock(1, c2);
-                for (uint32_t i = 0; i < e; i++) {
+                for (uint i = 0; i < e; i++) {
                     (*bits)[16 + i] = 0;
                 }
                 Sealib::SimpleRankSelect simpleRankSelect(bits);
                 Sealib::RankSelect rankSelect(*bits);
-                for (uint32_t i = 0; i <= bits->size(); i++) {
+                for (uint i = 0; i <= bits->size(); i++) {
                     ASSERT_EQ(rankSelect.select(i), simpleRankSelect.select(i));
                     ASSERT_EQ(rankSelect.rank(i), simpleRankSelect.rank(i));
                 }

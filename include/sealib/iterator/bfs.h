@@ -76,7 +76,7 @@ class BFS : Iterator<std::pair<uint, uint>> {
     uint n;
     CompactArray color;
     uint u, dist;
-    uint32_t innerGray, outerGray;
+    uint innerGray, outerGray;
     ChoiceDictionary isInner, isOuter;
     Consumer preprocess;
     BiConsumer preexplore;

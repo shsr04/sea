@@ -3,7 +3,7 @@
 #include <iostream>
 
 Sealib::LocalSelectTable::LocalSelectTable() : localSelectLookupTable(256) {
-    for (uint32_t i = 0; i <= (uint8_t) -1; i++) {
+    for (uint i = 0; i <= (uint8_t) -1; i++) {
         uint8_t rank = 0;
         localSelectLookupTable[i] = std::vector<uint8_t>(8, 255);
         for (uint8_t j = 0; j < 8; j++) {

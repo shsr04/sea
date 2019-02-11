@@ -39,7 +39,7 @@ const Sealib::Bitset<uint8_t> Sealib::RankSelect::generateFirstInBlockBitSet(
         uint8_t localFirst = LocalSelectTable::getLocalSelect(segment, 0);
         if (localFirst != (uint8_t) -1) {  // has a local first, i.e. is not an empty segment
             // setBefore gives us the index in firstInBlockBitset
-            uint32_t before = rs.setBefore(i);
+            uint before = rs.setBefore(i);
             firstInBlockBitSet[before] = 1;
         }
     }

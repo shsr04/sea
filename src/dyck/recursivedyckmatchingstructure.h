@@ -22,7 +22,7 @@ class RecursiveDyckMatchingStructure : public DyckMatchingStructure {
      */
     explicit RecursiveDyckMatchingStructure(
         const Sealib::Bitset<uint8_t> &word_,
-        uint32_t recursions);
+        uint recursions);
 
     /**
      * Constructs the matching structure for the given dyck word word_
@@ -41,7 +41,7 @@ class RecursiveDyckMatchingStructure : public DyckMatchingStructure {
 
  private:
     static const uint8_t segmentLength = 7;
-    uint32_t segments;
+    uint segments;
     uint8_t lastSegment;
     RankSelect pioneerRankSelect;
     DyckMatchingStructure *pioneerMatchingStructure;

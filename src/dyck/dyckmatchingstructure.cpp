@@ -4,9 +4,9 @@
 uint64_t Sealib::DyckMatchingStructure::getMatchNaive(
     const Sealib::Bitset<uint8_t> &word,
     uint64_t idx) {
-    uint32_t j = 0;
-    uint32_t p = 0;
-    std::vector<uint32_t> stack(word.size());
+    uint j = 0;
+    uint p = 0;
+    std::vector<uint> stack(word.size());
     do {
         if (word[j]) {  // '('
             stack[p++] = j;
@@ -14,7 +14,7 @@ uint64_t Sealib::DyckMatchingStructure::getMatchNaive(
             if (p == 0) {
                 return idx;
             }
-            uint32_t i = stack[--p];
+            uint i = stack[--p];
             if (idx == i) {
                 return j;
             }

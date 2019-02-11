@@ -2,6 +2,7 @@
 #define SEALIB_DICTIONARY_CHOICEDICTIONARY_H_
 #include <cstdint>
 #include <vector>
+#include "sealib/_types.h"
 
 #define SHIFT_OFFSET 1UL
 #define POINTER_OFFSET 1UL
@@ -39,7 +40,7 @@ class ChoiceDictionary {
      *
      * @param wordSize 64 for uint64_t
      */
-    uint32_t wordSize;
+    uint wordSize;
     uint64_t wordCount, pointer;
     std::vector<uint64_t> primary, secondary, validator;
 
@@ -114,7 +115,7 @@ class ChoiceDictionary {
 
     bool pointerIsValid(uint64_t nextPointer);
 
-    uint32_t getWordSize();
+    uint getWordSize();
 
     uint64_t getSecondarySize();
 };

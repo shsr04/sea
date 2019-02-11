@@ -1,8 +1,8 @@
 #ifndef SRC_DYCK_LOCALDYCKTABLE_H_
 #define SRC_DYCK_LOCALDYCKTABLE_H_
 
-#include <cstdint>
 #include <vector>
+#include "sealib/_types.h"
 
 namespace Sealib {
 /**
@@ -11,7 +11,7 @@ namespace Sealib {
  */
 class LocalDyckTable {
  public:
-    static constexpr const uint32_t kSegLen = 7;
+    static constexpr const uint kSegLen = 7;
     /**
      * Capsules the Data we want to lookup in the table in a single class.
      */

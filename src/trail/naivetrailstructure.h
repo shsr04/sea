@@ -7,20 +7,20 @@
 namespace Sealib {
 class NaiveTrailStructure {
  private:
-    std::map<uint32_t, uint32_t> pairedEdges;
-    std::list<uint32_t> unusedEdges;
-    uint32_t currentDegree;
+    std::map<uint, uint> pairedEdges;
+    std::list<uint> unusedEdges;
+    uint currentDegree;
     bool black;
     bool grey;
  public:
-    explicit NaiveTrailStructure(uint32_t degree_);
-    uint32_t leave();
-    uint32_t enter(uint32_t e);
+    explicit NaiveTrailStructure(uint degree_);
+    uint leave();
+    uint enter(uint e);
     bool isBlack();
     bool isWhite();
     bool isGrey();
     bool isEven();
-    uint32_t getMatched(uint32_t i);
+    uint getMatched(uint i);
 };
 }  // namespace Sealib
 #endif  // SRC_TRAIL_NAIVETRAILSTRUCTURE_H_

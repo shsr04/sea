@@ -4,9 +4,9 @@
 
 Sealib::RecursiveDyckMatchingStructure::RecursiveDyckMatchingStructure(
     const Sealib::Bitset<uint8_t> &word_,
-    uint32_t recursions) :
+    uint recursions) :
     DyckMatchingStructure(word_),
-    segments(static_cast<uint32_t>(word_.size() / segmentLength)),
+    segments(static_cast<uint>(word_.size() / segmentLength)),
     lastSegment(static_cast<uint8_t>(word_.size() % segmentLength)),
     pioneerRankSelect(initializePioneerRankSelectBitset()),
     pioneerMatchingStructure(nullptr) {
@@ -36,7 +36,7 @@ const Sealib::Bitset<uint8_t>
     Sealib::RecursiveDyckMatchingStructure::initializePioneerRankSelectBitset() {
     Sealib::Bitset<uint8_t> pioneerRankSelectBitset(word.size());
 
-    for (uint32_t i = 0; i < segments; i++) {
+    for (uint i = 0; i < segments; i++) {
         uint64_t beg = segmentLength * i;
         uint8_t segment = word.getShiftedBlock(beg);
 
@@ -72,7 +72,7 @@ const Sealib::Bitset<uint8_t>
         uint64_t beg = segmentLength * segments;
         uint8_t segment = word.getShiftedBlock(beg);
 
-        for (uint32_t c = lastSegment; c < segmentLength; c += 2) {
+        for (uint c = lastSegment; c < segmentLength; c += 2) {
             segment |= static_cast<uint8_t>(1 << c);
         }
 
@@ -122,7 +122,7 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
     // match is not local
     if (word[idx]) {  // opening global
         uint64_t p_wp = pioneerRankSelect.rank(idx + 1);
-        uint64_t p = pioneerRankSelect.select(static_cast<uint32_t>(p_wp)) - 1;
+        uint64_t p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
         uint64_t pMatch_wp = pioneerMatchingStructure->getMatch(p_wp - 1);
         uint64_t pMatch = pioneerRankSelect.select(pMatch_wp + 1) - 1;
 
@@ -151,14 +151,14 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
                 int candidateDepth = LocalDyckTable::getLocalData(pMatchSeg).localDepths[i];
                 int candidateDepthDifference = pMatchDepth - candidateDepth;
                 if (candidateDepthDifference == depthDiff) {  // i is match
-                    return (pMatchSegment * segmentLength) + static_cast<uint32_t >(i);
+                    return (pMatchSegment * segmentLength) + static_cast<uint >(i);
                 }
             }
         } else {
             beg = segments * segmentLength;
             uint8_t pMatchSeg = word.getShiftedBlock(beg);
 
-            for (uint32_t c = lastSegment; c < segmentLength; c += 2) {
+            for (uint c = lastSegment; c < segmentLength; c += 2) {
                 pMatchSeg |= static_cast<uint8_t>(1 << c);
             }
 
@@ -167,16 +167,16 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
                 int candidateDepth = LocalDyckTable::getLocalData(pMatchSeg).localDepths[i];
                 int candidateDepthDifference = pMatchDepth - candidateDepth;
                 if (candidateDepthDifference == depthDiff) {  // i is match
-                    return (pMatchSegment * segmentLength) + static_cast<uint32_t >(i);
+                    return (pMatchSegment * segmentLength) + static_cast<uint >(i);
                 }
             }
         }
     } else {  // closing global
         uint64_t p_wp = pioneerRankSelect.rank(idx + 1);
-        uint64_t p = pioneerRankSelect.select(static_cast<uint32_t>(p_wp)) - 1;
+        uint64_t p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
         if (p < idx) {
             p_wp++;
-            p = pioneerRankSelect.select(static_cast<uint32_t>(p_wp)) - 1;
+            p = pioneerRankSelect.select(static_cast<uint>(p_wp)) - 1;
         }
         uint64_t pMatch_wp = pioneerMatchingStructure->getMatch(p_wp - 1);
         uint64_t pMatch = pioneerRankSelect.select(pMatch_wp + 1) - 1;
@@ -200,7 +200,7 @@ uint64_t Sealib::RecursiveDyckMatchingStructure::getMatch(uint64_t idx) {
             uint64_t beg = segments * segmentLength;
             uint8_t pSeg = word.getShiftedBlock(beg);
 
-            for (uint32_t c = lastSegment; c < segmentLength; c += 2) {
+            for (uint c = lastSegment; c < segmentLength; c += 2) {
                 pSeg |= static_cast<uint8_t>(1 << c);
             }
 

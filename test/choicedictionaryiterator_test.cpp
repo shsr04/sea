@@ -16,9 +16,9 @@ TEST(ChoiceDictionaryIteratorTest, iterator_integrity) {
 
     std::array<uint64_t, setSize> set;
 
-    uint32_t count = 0;
+    uint count = 0;
     uint64_t num = 0;
-    uint32_t seed = 0;
+    uint seed = 0;
 
     for (uint64_t i = 0; i < setSize; i++) {
         set[i] = num;

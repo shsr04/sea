@@ -6,7 +6,7 @@
 #define CHECK_BIT(var, pos) (((var)>>(pos)) & 1)
 
 Sealib::LocalDyckTable::LocalDyckTable() : table(256) {
-    for (uint32_t i = 0; i < 256; i++) {
+    for (uint i = 0; i < 256; i++) {
         table[i] = Sealib::LocalDyckTable::Data((uint8_t) i);
     }
 }

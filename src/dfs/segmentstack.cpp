@@ -10,7 +10,7 @@ using Sealib::ExtendedSegmentStack;
 
 //  -- SUPERCLASS --
 
-SegmentStack::SegmentStack(uint32_t segmentSize)
+SegmentStack::SegmentStack(uint segmentSize)
     : q(segmentSize), low(q), high(q), lp(0), hp(0), tp(0) {}
 
 uint8_t SegmentStack::pop(std::pair<uint, uint> *r) {
@@ -36,7 +36,7 @@ bool SegmentStack::isEmpty() {
 
 //  -- BASIC --
 
-BasicSegmentStack::BasicSegmentStack(uint32_t segmentSize)
+BasicSegmentStack::BasicSegmentStack(uint segmentSize)
     : SegmentStack(segmentSize) {}
 
 void BasicSegmentStack::push(std::pair<uint, uint> u) {
@@ -87,9 +87,9 @@ bool BasicSegmentStack::isAligned() {
 
 ExtendedSegmentStack::ExtendedSegmentStack(uint size, Graph const *g,
                                            CompactArray *c)
-    : SegmentStack(static_cast<uint32_t>(ceil(size / log2(size)))),
+    : SegmentStack(static_cast<uint>(ceil(size / log2(size)))),
       trailers(size / q + 1),
-      l(static_cast<uint32_t>(ceil(log2(size))) + 1),
+      l(static_cast<uint>(ceil(log2(size))) + 1),
       table(size, l),
       edges(size, l),
       big(q),
@@ -101,9 +101,9 @@ ExtendedSegmentStack::ExtendedSegmentStack(uint size, Graph const *g,
     for (uint a = 0; a < n; a++) m += g->deg(a);
 }
 
-uint32_t ExtendedSegmentStack::approximateEdge(uint u, uint k) {
+uint ExtendedSegmentStack::approximateEdge(uint u, uint k) {
     double g = ceil(graph->deg(u) / static_cast<double>(l));
-    uint32_t f = static_cast<uint32_t>(floor((k - 1) / g));
+    uint f = static_cast<uint>(floor((k - 1) / g));
     return f;
 }
 
@@ -119,7 +119,7 @@ void ExtendedSegmentStack::storeEdges() {
                 u, k - 1);  // another big vertex is stored
             if (bp > q) throw std::out_of_range("big storage is full!");
         } else {  // store an approximation
-            uint32_t f = approximateEdge(u, k);
+            uint f = approximateEdge(u, k);
             edges.insert(u, f);
         }
     }
@@ -147,15 +147,15 @@ void ExtendedSegmentStack::push(std::pair<uint, uint> p) {
 
 bool ExtendedSegmentStack::isInTopSegment(uint u, bool restoring) {
     bool r = false;
-    uint32_t top = hp > 0 ? tp + 1 : lp > 0 ? tp : tp - 1;
+    uint top = hp > 0 ? tp + 1 : lp > 0 ? tp : tp - 1;
     if (restoring && lp > 0) top--;
     r = table.get(u) == top;
     return r;
 }
 
-uint ExtendedSegmentStack::retrieveEdge(uint u, uint32_t f) {
-    uint32_t g =
-        static_cast<uint32_t>(ceil(graph->deg(u) / static_cast<double>(l)));
+uint ExtendedSegmentStack::retrieveEdge(uint u, uint f) {
+    uint g =
+        static_cast<uint>(ceil(graph->deg(u) / static_cast<double>(l)));
     return f * g;
 }
 

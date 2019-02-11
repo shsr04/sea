@@ -26,39 +26,39 @@ class Graphrepresentations {
      * representation used for inplace DFS and BFS
      * @param g Graph to be transformed.
      */
-    //  static uint32_t* graphToStandard(Graph* g);
+    //  static uint* graphToStandard(Graph* g);
     /**
      * Copies a graph from standard representation to a graph object
      * declared in graph.h
      * @param g graph in standard representation
      */
-    // static Graph* standardToGraph(uint32_t* g);
+    // static Graph* standardToGraph(uint* g);
     /**
      * Transforms a graph inplace from standard to crosspointer representation
      * @param g graph in standard representation
      * TODO: handle cases of nodes with degree 0 and 1
      */
-    static void standardToCrosspointer(uint32_t *g);
+    static void standardToCrosspointer(uint *g);
 
     /**
      * Transforms a graph inplace from standard to beginpointer representation
      * @param g graph in standard representation
      */
-    static void standardToBeginpointer(uint32_t *g);
+    static void standardToBeginpointer(uint *g);
 
     /**
      * Transforms graph inplace from beginpointer to
      * standard representation
      * @param g graph in standard representation
      */
-    static void swappedBeginpointerToStandard(uint32_t *g);
+    static void swappedBeginpointerToStandard(uint *g);
 
     /**
      * Transforms graph inplace from cross or beginpointer to
      * a swapped cross or beginpointer representation
      * @param g graph in cross or beginpointer representation
      */
-    static void swapRepresentation(uint32_t *g);
+    static void swapRepresentation(uint *g);
 };
 }  // namespace Sealib
 #endif  // SEALIB_GRAPH_GRAPHREPRESENTATIONS_H_

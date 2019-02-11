@@ -5,7 +5,7 @@ Sealib::SmallDoubleLinkedList::SmallDoubleLinkedList(uint8_t size) :
     current(size == 0 ? (uint8_t) -1 : static_cast<uint8_t>(0)) {
 }
 
-uint32_t Sealib::SmallDoubleLinkedList::get() {
+uint Sealib::SmallDoubleLinkedList::get() {
     if (current != (uint8_t) -1) {
         uint8_t retVal = current;
         remove(current);
@@ -15,7 +15,7 @@ uint32_t Sealib::SmallDoubleLinkedList::get() {
     }
 }
 
-uint32_t Sealib::SmallDoubleLinkedList::remove(uint32_t idx) {
+uint Sealib::SmallDoubleLinkedList::remove(uint idx) {
     if (current == (uint8_t) -1) {  // empty
         return current;
     }

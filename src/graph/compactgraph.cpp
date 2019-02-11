@@ -3,23 +3,23 @@
 
 using Sealib::CompactGraph;
 
-CompactGraph::CompactGraph(uint32_t _A[]) {
-	this->A = std::unique_ptr<uint32_t[]>(_A);
+CompactGraph::CompactGraph(uint _A[]) {
+	this->A = std::unique_ptr<uint[]>(_A);
 }
 
-uint32_t CompactGraph::deg(uint32_t u) const {
+uint CompactGraph::deg(uint u) const {
 	// Fix index u = u+1
 	++u;
 	// Following node
 	if (A[u] == u) {
 		return 0;
 	}
-	uint32_t v = u + 1;
+	uint v = u + 1;
 	if (u != getOrder()) {
 		return A[v] - A[u];
 
 		/*
-		uint32_t skip = 0;
+		uint skip = 0;
 		while (A[v + skip] <= getOrder() && (v + skip) <= getOrder()) {
 			++skip;
 		}
@@ -34,14 +34,14 @@ uint32_t CompactGraph::deg(uint32_t u) const {
 	}
 }
 
-uint32_t CompactGraph::head(uint32_t u, uint32_t k) const {
+uint CompactGraph::head(uint u, uint k) const {
 	return A[A[u+1]+k];
 }
 
-uint32_t CompactGraph::getOrder() const {
+uint CompactGraph::getOrder() const {
 	return A[0];
 }
 
-uint32_t* CompactGraph::getData() {
+uint* CompactGraph::getData() {
 	return this->A.get();
 }

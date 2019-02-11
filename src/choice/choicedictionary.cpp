@@ -127,7 +127,7 @@ bool ChoiceDictionary::pointerIsValid(uint64_t nextPointer) {
         return false;
 }
 
-uint32_t ChoiceDictionary::getWordSize() { return wordSize; }
+uint ChoiceDictionary::getWordSize() { return wordSize; }
 
 uint64_t ChoiceDictionary::getSecondarySize() {
     return wordCount / (uint64_t)wordSize + 1;
