@@ -165,7 +165,7 @@ Sealib::Result<uint> ExtendedSegmentStack::getOutgoingEdge(uint u) {
             t.bc += 1;
             return x.second;
         } else {
-            return Sealib::Result<uint>();
+            return {};
         }
     } else {
         return retrieveEdge(u, edges.get(u));

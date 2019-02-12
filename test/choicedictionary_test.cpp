@@ -29,6 +29,7 @@ TEST(ChoiceDictionaryTest, choicedictionary_integrity) {
         if (c->get(i) == 1) nonZero.push_back(i);
     }
     ASSERT_EQ(nonZero.size(), 0);
+    ASSERT_FALSE(c->choice().ok());
 
     // insert into Choice Dictionary and test if choice() returns the correct
     c->insert(123UL);

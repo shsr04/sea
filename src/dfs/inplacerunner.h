@@ -78,7 +78,7 @@ class LinearTimeInplaceDFSRunner {
 
   inline Result<uint> name(uint i) {
     // Never access 0 or n + 1
-    assert(i == 0 || i == this->n + 1 || i > this->N);
+    assert(!(i == 0 || i == this->n + 1 || i > this->N));
 
     auto x = A[i];
 
