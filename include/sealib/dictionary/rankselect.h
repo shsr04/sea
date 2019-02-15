@@ -34,7 +34,9 @@ class RankSelect {
 
     uint64_t size() const;
 
-    const BlockBitset &getBitset() const;
+    const BlockBitset &getBitset() const {
+        return rankStructure.getBitset();
+    }
 };
 }  // namespace Sealib
 #endif  // SEALIB_DICTIONARY_RANKSELECT_H_

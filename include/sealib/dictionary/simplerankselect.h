@@ -1,7 +1,7 @@
 #ifndef SEALIB_DICTIONARY_SIMPLERANKSELECT_H_
 #define SEALIB_DICTIONARY_SIMPLERANKSELECT_H_
 
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 #include <memory>
 #include <vector>
 
@@ -12,7 +12,7 @@ namespace Sealib {
  */
 class SimpleRankSelect {
  private:
-    std::shared_ptr<const Bitset<uint8_t>> bitset;
+    std::shared_ptr<const BlockBitset> bitset;
     std::vector<uint64_t> ranks;
     std::vector<uint64_t> selects;
 
@@ -31,7 +31,7 @@ class SimpleRankSelect {
      */
     uint64_t rank(uint64_t k) const;
 
-    explicit SimpleRankSelect(std::shared_ptr<const Bitset<uint8_t>> bitset);
+    explicit SimpleRankSelect(std::shared_ptr<const BlockBitset> bitset);
 };
 }  // namespace Sealib
 #endif  // SEALIB_DICTIONARY_SIMPLERANKSELECT_H_

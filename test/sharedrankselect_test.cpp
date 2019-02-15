@@ -3,7 +3,7 @@
 #include <sealib/dictionary/sharedrankselect.h>
 
 TEST(SharedRankSelectTest, rankSelect) {
-    std::shared_ptr<Sealib::Bitset<uint8_t>> bits_(new Sealib::Bitset<uint8_t>(1));
+    std::shared_ptr<Sealib::BlockBitset> bits_(new Sealib::BlockBitset(1));
     (*bits_)[0] = 1;
 
     Sealib::SharedRankSelect rs(bits_);
@@ -19,10 +19,10 @@ TEST(SharedRankSelectTest, rankSelect) {
         uint8_t c2 = 0;
         do {
             for (uint32_t e = 0; e < 8; e++) {
-                std::shared_ptr<Sealib::Bitset<uint8_t>> bits(
-                    new Sealib::Bitset<uint8_t>(16 + e));
-                bits->setBlock(0, c1);
-                bits->setBlock(1, c2);
+                std::shared_ptr<Sealib::BlockBitset> bits(
+                    new Sealib::BlockBitset(16 + e));
+                bits->byte[0] = c1;
+                bits->byte[1] = c2;
                 for (uint32_t i = 0; i < e; i++) {
                     (*bits)[16 + i] = 1;
                 }
@@ -35,10 +35,10 @@ TEST(SharedRankSelectTest, rankSelect) {
                 }
             }
             for (uint32_t e = 0; e < 8; e++) {
-                std::shared_ptr<Sealib::Bitset<uint8_t>> bits(
-                    new Sealib::Bitset<uint8_t>(16 + e));
-                bits->setBlock(0, c1);
-                bits->setBlock(1, c2);
+                std::shared_ptr<Sealib::BlockBitset> bits(
+                    new Sealib::BlockBitset(16 + e));
+                bits->byte[0] = c1;
+                bits->byte[1] = c2;
                 for (uint32_t i = 0; i < e; i++) {
                     (*bits)[16 + i] = 0;
                 }

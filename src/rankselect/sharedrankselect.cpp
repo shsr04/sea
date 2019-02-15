@@ -4,7 +4,7 @@
 #include <utility>
 
 Sealib::SharedRankSelect::SharedRankSelect(
-    std::shared_ptr<const Sealib::Bitset<uint8_t>> bitset_) :
+    std::shared_ptr<const Sealib::BlockBitset> bitset_) :
     rankStructure(std::move(bitset_)),
     firstInSegment(generateFirstInBlockBitSet(rankStructure)) {
 }
@@ -18,7 +18,7 @@ uint64_t Sealib::SharedRankSelect::select(uint64_t k) const {
         return (uint64_t) -1;
     }
     uint64_t h = rankStructure.getNonEmptySegments()[firstInSegmentRank - 1];
-    uint8_t segment = rankStructure.getBitset().getBlock(h);
+    uint8_t segment = rankStructure.getBitset().byte[h];
     auto localIndex = static_cast<uint8_t>(k - rankStructure.setBefore(h) - 1);
     uint8_t localSelect = LocalSelectTable::getLocalSelect(segment, localIndex);
     return localSelect + rankStructure.getSegmentLength() * h + 1;
@@ -26,16 +26,16 @@ uint64_t Sealib::SharedRankSelect::select(uint64_t k) const {
 
 Sealib::SharedRankSelect::SharedRankSelect() = default;
 
-std::shared_ptr<const Sealib::Bitset<uint8_t>>
+std::shared_ptr<const Sealib::BlockBitset>
 Sealib::SharedRankSelect::generateFirstInBlockBitSet(const SharedRankStructure &rs) {
     uint64_t size = rs.rank(rs.size());
     if (size == (uint64_t) -1) {
         size = 0;
     }
-    std::shared_ptr<Bitset<uint8_t>> firstInBlockBitSet(new Bitset<uint8_t>(size));
+    std::shared_ptr<BlockBitset> firstInBlockBitSet(new BlockBitset(size));
 
     for (uint64_t i = 0; i < rs.getSegmentCount(); i++) {
-        uint8_t segment = rs.getBitset().getBlock(i);
+        uint8_t segment = rs.getBitset().byte[i];
         uint8_t localFirst = LocalSelectTable::getLocalSelect(segment, 0);
         if (localFirst != (uint8_t) -1) {  // has a local first, i.e. is not an empty segment
             // setBefore gives us the index in firstInBlockBitset

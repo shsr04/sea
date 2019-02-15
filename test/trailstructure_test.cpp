@@ -15,11 +15,13 @@ TEST(TrailStructureTest, enter) {
 }
 
 TEST(TrailStructureTest, leave) {
+    {
     TrailStructure ts = TrailStructure(5);
 
     ASSERT_EQ(ts.leave(), 0);
+    }
 
-    ts = TrailStructure(5);
+    TrailStructure ts = TrailStructure(5);
 
     ASSERT_EQ(ts.leave(), 0);
     ASSERT_EQ(ts.leave(), 1);
@@ -75,7 +77,7 @@ TEST(SimpleTrailStructureTest, allEvenPossibilities) {
     const uint64_t maxLen = 16;
     for (uint32_t len = 2; len < maxLen; len += 2) {
         Sealib::DyckWordLexicon lex(len);
-        for (const Sealib::Bitset<uint8_t> &word : lex.getLexicon()) {
+        for (const Sealib::BlockBitset &word : lex.getLexicon()) {
             std::vector<std::vector<uint64_t>> depths(len);
             for (uint32_t j = 0; j < len; j++) {
                 if (word[j]) {

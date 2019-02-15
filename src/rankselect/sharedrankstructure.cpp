@@ -9,13 +9,13 @@ uint64_t Sealib::SharedRankStructure::rank(uint64_t k) const {
         return (uint64_t) -1;
     }
     uint64_t segmentIdx = (k - 1) / segmentLength;
-    uint8_t segment = bitset->getBlock(segmentIdx);
+    uint8_t segment = bitset->byte[segmentIdx];
     auto localIdx = static_cast<uint8_t>((k - 1) % segmentLength);
     return setBefore(segmentIdx) + LocalRankTable::getLocalRank(segment, localIdx);
 }
 
 Sealib::SharedRankStructure::SharedRankStructure(
-    std::shared_ptr<const Sealib::Bitset<uint8_t>> bitset_) :
+    std::shared_ptr<const Sealib::BlockBitset> bitset_) :
     bitset(std::move(bitset_)),
     segmentCount(static_cast<uint32_t>(bitset->size() / segmentLength)) {
     auto lastSeg = static_cast<uint8_t>((bitset->size() % segmentLength));
@@ -30,7 +30,7 @@ Sealib::SharedRankStructure::SharedRankStructure(
     nonEmptySegments.reserve(segmentCount);
 
     for (uint32_t i = 0; i < segmentCount; i++) {
-        uint8_t segment = bitset->getBlock(i);
+        uint8_t segment = bitset->byte[i];
         if (LocalRankTable::getLocalRank(segment, 7) != 0) {
             nonEmptySegments.push_back(i);
         }
@@ -40,7 +40,7 @@ Sealib::SharedRankStructure::SharedRankStructure(
         setCountTable.reserve(segmentCount);
         uint32_t cnt = 0;
         for (uint64_t i = 0; i < segmentCount - 1; i++) {
-            uint8_t segment = bitset->getBlock(i);
+            uint8_t segment = bitset->byte[i];
             cnt += LocalRankTable::getLocalRank(segment, 7);
             setCountTable.push_back(cnt);
         }
@@ -65,7 +65,7 @@ uint8_t Sealib::SharedRankStructure::getSegmentLength() const {
 uint64_t Sealib::SharedRankStructure::size() const {
     return bitset->size();
 }
-const Sealib::Bitset<uint8_t> &Sealib::SharedRankStructure::getBitset() const {
+const Sealib::BlockBitset &Sealib::SharedRankStructure::getBitset() const {
     return (*bitset.get());
 }
 uint32_t Sealib::SharedRankStructure::getMaxRank() const {

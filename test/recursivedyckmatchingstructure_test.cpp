@@ -5,7 +5,7 @@
 TEST(RecursiveDyckMatchingStructureTest, testAllWordsLength10) {
     for (uint32_t i = 2; i < 23; i += 2) {
         Sealib::DyckWordLexicon lex(i);
-        for (const Sealib::Bitset<uint8_t> &word : lex.getLexicon()) {
+        for (const Sealib::BlockBitset &word : lex.getLexicon()) {
             Sealib::DyckMatchingStructure d(word);
             Sealib::RecursiveDyckMatchingStructure dRec(word);
             for (uint32_t j = 0; j < i; j++) {
@@ -20,17 +20,17 @@ TEST(RecursiveDyckMatchingStructureTest, testAllWordsLength10) {
 }
 
 TEST(RecursiveDyckMatchingStructureTest, testWords) {
-    Sealib::Bitset<uint8_t> word(16);
-    word.setBlock(0, (uint8_t) -1);
+    Sealib::BlockBitset word(16);
+    word.byte[0] = (uint8_t) -1;
 
-    Sealib::Bitset<uint8_t> word1(2);
+    Sealib::BlockBitset word1(2);
     word1[0] = 1;
     Sealib::RecursiveDyckMatchingStructure d1(word1);
 
     ASSERT_EQ(d1.getMatch(0), 1);
     ASSERT_EQ(d1.getMatch(1), 0);
 
-    Sealib::Bitset<uint8_t> word2(10);
+    Sealib::BlockBitset word2(10);
     for (uint32_t i = 0; i < 5; i++) {
         word2[i] = 1;
     }

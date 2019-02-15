@@ -11,7 +11,7 @@ uint64_t Sealib::SimpleRankSelect::rank(uint64_t k) const {
 }
 
 Sealib::SimpleRankSelect::SimpleRankSelect(
-    std::shared_ptr<const Sealib::Bitset<uint8_t>> bitset_) :
+    std::shared_ptr<const Sealib::BlockBitset> bitset_) :
     bitset(std::move(bitset_)),
     ranks(bitset->size()),
     selects(bitset->size(), (uint64_t) -1) {

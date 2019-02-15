@@ -1,7 +1,7 @@
 #ifndef SRC_DYCK_DYCKWORDLEXICON_H_
 #define SRC_DYCK_DYCKWORDLEXICON_H_
 
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 #include <vector>
 #include <ostream>
 
@@ -16,10 +16,10 @@ namespace Sealib {
  */
 class DyckWordLexicon {
  private:
-    std::vector<Sealib::Bitset<uint8_t>> lexicon;
+    std::vector<BlockBitset> lexicon;
 
     uint32_t wordLength;
-    void generateWords(Sealib::Bitset<uint8_t> word,
+    void generateWords(BlockBitset word,
                        uint32_t i,
                        uint32_t mOpen,
                        uint32_t mClosed);
@@ -36,7 +36,7 @@ class DyckWordLexicon {
     /**
      * @return const ref to the lexicon
      */
-    const std::vector<Sealib::Bitset<uint8_t>> &getLexicon();
+    const std::vector<BlockBitset> &getLexicon();
 
     /**
      * @return length of the generated words

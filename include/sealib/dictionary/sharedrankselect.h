@@ -2,7 +2,7 @@
 #define SEALIB_DICTIONARY_SHAREDRANKSELECT_H_
 
 #include <sealib/dictionary/sharedrankstructure.h>
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 
 namespace Sealib {
 /**
@@ -14,14 +14,14 @@ class SharedRankSelect {
  private:
     SharedRankStructure rankStructure;
     SharedRankStructure firstInSegment;
-    static std::shared_ptr<const Bitset<uint8_t>> generateFirstInBlockBitSet(
+    static std::shared_ptr<const BlockBitset> generateFirstInBlockBitSet(
         const SharedRankStructure &sharedRankStructure);
 
  public:
     /**
      * @param shared_ptr managing the Sealib::Bitset used for RankSelect
      */
-    explicit SharedRankSelect(std::shared_ptr<const Bitset<uint8_t> > bitset);
+    explicit SharedRankSelect(std::shared_ptr<const BlockBitset > bitset);
     SharedRankSelect();
 
     /**

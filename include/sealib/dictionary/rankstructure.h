@@ -35,7 +35,6 @@ class RankStructure {
     uint64_t rank(uint64_t k) const;
 
     explicit RankStructure(BlockBitset const &);
-    explicit RankStructure(BlockBitset &&);
 
     /**
      * @return segment length
@@ -52,7 +51,6 @@ class RankStructure {
      */
     const BlockBitset& getBitset() const;
 
-    ~RankStructure();
     uint32_t setBefore(uint64_t segment) const;
 };
 }  // namespace Sealib

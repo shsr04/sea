@@ -2,7 +2,7 @@
 #define SEALIB_DICTIONARY_SHAREDRANKSTRUCTURE_H_
 #define CHECK_BIT(var, pos) (((var)>>(pos)) & 1)
 
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 #include <memory>
 #include <vector>
 
@@ -15,7 +15,7 @@ namespace Sealib {
 class SharedRankStructure {
  protected:
     static const uint8_t segmentLength = 8;
-    std::shared_ptr<const Sealib::Bitset<uint8_t>> bitset;
+    std::shared_ptr<const Sealib::BlockBitset> bitset;
     uint32_t segmentCount;
     uint32_t maxRank;
 
@@ -37,7 +37,7 @@ class SharedRankStructure {
     /**
      * @param shared_ptr managing the Sealib::Bitset used for Rank
      */
-    explicit SharedRankStructure(std::shared_ptr<const Sealib::Bitset<uint8_t> > bitset);
+    explicit SharedRankStructure(std::shared_ptr<const Sealib::BlockBitset > bitset);
 
     /**
      * default empty constructor
@@ -62,7 +62,7 @@ class SharedRankStructure {
     /**
      * @return segment of the bitset
      */
-    const Sealib::Bitset<uint8_t>& getBitset() const;
+    const Sealib::BlockBitset& getBitset() const;
 
     ~SharedRankStructure();
     uint32_t setBefore(uint64_t segment) const;

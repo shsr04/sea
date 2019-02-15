@@ -3,7 +3,7 @@
 #include <sealib/dictionary/sharedrankselect.h>
 
 TEST(SimpleRankSelectTest, simpleRankSelect) {
-    std::shared_ptr<Sealib::Bitset<uint8_t>> bits(new Sealib::Bitset<uint8_t>(1));
+    std::shared_ptr<Sealib::BlockBitset> bits(new Sealib::BlockBitset(1));
     (*bits)[0] = 1;
 
     Sealib::SimpleRankSelect simpleRankSelect(bits);

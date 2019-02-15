@@ -21,7 +21,7 @@ Sealib::RankStructure::RankStructure(const BlockBitset &bitset_) :
     segmentCount(static_cast<uint32_t>(bitset.size() / segmentLength)) {
     auto lastSeg = static_cast<uint8_t>((bitset.size() % segmentLength));
 
-    if ((lastSeg != 0) && bitset.bit.size() != 0) {
+    if ((lastSeg != 0) && bitset.size() != 0) {
         segmentCount++;
     }
 
