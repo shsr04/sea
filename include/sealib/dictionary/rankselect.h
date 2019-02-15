@@ -2,7 +2,7 @@
 #define SEALIB_DICTIONARY_RANKSELECT_H_
 
 #include <sealib/dictionary/rankstructure.h>
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 
 namespace Sealib {
 /**
@@ -13,16 +13,10 @@ class RankSelect {
  private:
     RankStructure rankStructure;
     RankStructure firstInSegment;
-    const Bitset<uint8_t> generateFirstInBlockBitSet(
-        const RankStructure &RankStructure);
+    BlockBitset generateFirstInBlockBitSet(const RankStructure &);
 
  public:
-    /**
-     * @param Sealib::Bitset used for RankSelect
-     */
-    explicit RankSelect(const Bitset<uint8_t> &bitset);
-    explicit RankSelect(Bitset<uint8_t> &&bitset);
-    RankSelect();
+    explicit RankSelect(BlockBitset const &);
 
     /**
      * Selects the k-th set bit
@@ -40,8 +34,7 @@ class RankSelect {
 
     uint64_t size() const;
 
-    ~RankSelect();
-    const Bitset<uint8_t> &getBitset() const;
+    const BlockBitset &getBitset() const;
 };
 }  // namespace Sealib
 #endif  // SEALIB_DICTIONARY_RANKSELECT_H_

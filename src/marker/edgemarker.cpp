@@ -23,7 +23,7 @@ static std::vector<bool> makeEdges(UndirectedGraph const *g) {
     return bits;
 }
 
-static Bitset<uint8_t> makeOffset(UndirectedGraph const *g) {
+static BlockBitset makeOffset(UndirectedGraph const *g) {
     std::vector<bool> bits;
     for (uint u = 0; u < g->getOrder(); u++) {
         bits.push_back(1);
@@ -31,7 +31,7 @@ static Bitset<uint8_t> makeOffset(UndirectedGraph const *g) {
             bits.push_back(0);
         }
     }
-    return Bitset<uint8_t>(bits);
+    return BlockBitset(bits);
 }
 
 EdgeMarker::EdgeMarker(UndirectedGraph const *graph)

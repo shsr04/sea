@@ -1,6 +1,6 @@
 #include "sealib/legacy.h"
 #include <vector>
-#include "sealib/collection/bitset.h"
+#include "sealib/collection/blockbitset.h"
 #include "sealib/dictionary/rankselect.h"
 #include "sealib/graph/graphcreator.h"
 #include "sealib/iterator/choicedictionaryiterator.h"
@@ -62,20 +62,19 @@ uint64_t Sealib_ChoiceDictionaryIterator_next(void *self) {
     return static_cast<ChoiceDictionaryIterator *>(self)->next();
 }
 
-void *Sealib_Bitset_new(uint64_t size) { return new Bitset<uint8_t>(size); }
+void *Sealib_Bitset_new(uint64_t size) { return new BlockBitset(size); }
 void Sealib_Bitset_delete(void *self) {
-    delete static_cast<Bitset<uint8_t> *>(self);
+    delete static_cast<BlockBitset *>(self);
 }
 void Sealib_Bitset_set(void *self, uint64_t index) {
-    Bitset<uint8_t> &b = *static_cast<Bitset<uint8_t> *>(self);
-    b[index] = 1;
+    static_cast<BlockBitset *>(self)->bit[index]=1;
 }
 int Sealib_Bitset_get(void *self, uint64_t index) {
-    return static_cast<Bitset<uint8_t> *>(self)->get(index);
+    return static_cast<BlockBitset *>(self)->bit[index];
 }
 
 void *Sealib_RankSelect_new(void *bitset) {
-    return new RankSelect(*static_cast<Bitset<uint8_t> *>(bitset));
+    return new RankSelect(*static_cast<BlockBitset *>(bitset));
 }
 void Sealib_RankSelect_delete(void *self) {
     delete static_cast<RankSelect *>(self);

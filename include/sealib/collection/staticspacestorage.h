@@ -2,7 +2,7 @@
 #define SEALIB_COLLECTION_STATICSPACESTORAGE_H_
 #include <vector>
 #include "sealib/_types.h"
-#include "sealib/collection/bitset.h"
+#include "sealib/collection/blockbitset.h"
 #include "sealib/collection/sequence.h"
 #include "sealib/dictionary/rankselect.h"
 #include "sealib/graph/graph.h"
@@ -56,7 +56,7 @@ class StaticSpaceStorage : public Sequence<uint64_t> {
 
  private:
     const uint n;
-    const Bitset<uint8_t> pattern;
+    const BlockBitset pattern;
     const RankSelect rankSelect;
     std::vector<uint64_t> storage;
     const uint64_t bitsize = sizeof(uint64_t) * 8;

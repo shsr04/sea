@@ -2,7 +2,7 @@
 #define SEALIB_DICTIONARY_RANKSTRUCTURE_H_
 #define CHECK_BIT(var, pos) (((var)>>(pos)) & 1)
 
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 #include <memory>
 #include <vector>
 
@@ -14,7 +14,7 @@ namespace Sealib {
 class RankStructure {
  protected:
     static constexpr const uint8_t segmentLength = 8;
-    const Sealib::Bitset<uint8_t> bitset;
+    BlockBitset const &bitset;
     uint32_t segmentCount;
     uint32_t maxRank;
 
@@ -34,17 +34,8 @@ class RankStructure {
      */
     uint64_t rank(uint64_t k) const;
 
-    /**
-     * @param bitset used for Rank
-     */
-    explicit RankStructure(const Sealib::Bitset<uint8_t> &bitset);
-
-    explicit RankStructure(Sealib::Bitset<uint8_t> &&bitset);
-
-    /**
-     * default empty constructor
-     */
-    RankStructure();
+    explicit RankStructure(BlockBitset const &);
+    explicit RankStructure(BlockBitset &&);
 
     /**
      * @return segment length
@@ -59,7 +50,7 @@ class RankStructure {
     /**
      * @return segment of the bitset
      */
-    const Sealib::Bitset<uint8_t>& getBitset() const;
+    const BlockBitset& getBitset() const;
 
     ~RankStructure();
     uint32_t setBefore(uint64_t segment) const;

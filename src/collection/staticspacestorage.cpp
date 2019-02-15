@@ -22,7 +22,6 @@
 #define END }
 
 using Sealib::uint;
-using Sealib::Bitset;
 using Sealib::RankSelect;
 using Sealib::StaticSpaceStorage;
 
@@ -72,24 +71,11 @@ static inline uint countWhere(const std::vector<bool> *v, bool x) {
     return r;
 }
 
-static void checkSize(const std::vector<bool> *v, uint64_t maxBitsize) {
-    uint64_t bits = 0;
-    for (bool b : *v) {
-        if (b == 1)
-            bits = 0;
-        else
-            bits++;
-        assert(bits < maxBitsize);
-    }
-}
-
 StaticSpaceStorage::StaticSpaceStorage(const std::vector<bool> &bits)
     : n(countWhere(&bits, 1)),
       pattern(bits),
       rankSelect(pattern),
-      storage(countWhere(&bits, 0)) {
-    checkSize(&bits, bitsize);
-}
+      storage(countWhere(&bits, 0)) {}
 
 static std::vector<bool> makeBits(Sealib::Graph const *g) {
     std::vector<bool> bits;

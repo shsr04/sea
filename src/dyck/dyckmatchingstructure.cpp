@@ -1,8 +1,10 @@
 #include "dyckmatchingstructure.h"
 #include <iostream>
 
+namespace Sealib {
+
 uint64_t Sealib::DyckMatchingStructure::getMatchNaive(
-    const Sealib::Bitset<uint8_t> &word,
+    const BlockBitset &word,
     uint64_t idx) {
     uint32_t j = 0;
     uint32_t p = 0;
@@ -28,13 +30,13 @@ uint64_t Sealib::DyckMatchingStructure::getMatchNaive(
     return idx;;
 }
 
-const Sealib::Bitset<uint8_t> &Sealib::DyckMatchingStructure::getWord() const {
+const BlockBitset &Sealib::DyckMatchingStructure::getWord() const {
     return word;
 }
 
-Sealib::DyckMatchingStructure::DyckMatchingStructure(const Sealib::Bitset<uint8_t> &word_) :
+Sealib::DyckMatchingStructure::DyckMatchingStructure(const BlockBitset &word_) :
     word(word_) {}
-Sealib::DyckMatchingStructure::DyckMatchingStructure(Sealib::Bitset<uint8_t> &&word_) :
+Sealib::DyckMatchingStructure::DyckMatchingStructure(BlockBitset &&word_) :
     word(word_) {}
 
 Sealib::DyckMatchingStructure::~DyckMatchingStructure() = default;
@@ -42,3 +44,5 @@ Sealib::DyckMatchingStructure::~DyckMatchingStructure() = default;
 uint64_t Sealib::DyckMatchingStructure::getMatch(uint64_t idx) {
     return getMatchNaive(word, idx);
 }
+
+}  // namespace Sealib

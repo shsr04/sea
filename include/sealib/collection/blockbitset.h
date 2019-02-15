@@ -26,7 +26,24 @@ union BlockBitset {
      * @param size Number of bits in the bitset
      */
     BlockBitset(uint64_t size) : bit(size) {}
+    BlockBitset(std::vector<bool> const &v) : bit(v) {}
+    BlockBitset(BlockBitset const &p) : bit(p.bit) {}
     ~BlockBitset() { bit.~vector(); }
+
+    std::vector<bool>::reference operator[](uint64_t i) {
+        return bit[i];
+    }
+    bool operator[](uint64_t i) const { return bit[i]; }
+
+    size_t size() const { return bit.size(); }
+
+    uint8_t getShiftedBlock(uint64_t i) const {
+        uint8_t len = 32;
+        uint8_t b1 = bit[i/len];
+        uint8_t b2 = bit[(i+len-1)/len];
+        uint8_t bitIdx = static_cast<uint8_t>(i % len);
+        return static_cast<uint8_t>((b1 >> bitIdx) | (b2 << (len - bitIdx)));
+    }
 
     /**
      * Member that allows reading and writing specific bits.

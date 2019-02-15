@@ -1,7 +1,7 @@
 #ifndef SRC_DYCK_DYCKMATCHINGSTRUCTURE_H_
 #define SRC_DYCK_DYCKMATCHINGSTRUCTURE_H_
 
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 #include <iostream>
 
 namespace Sealib {
@@ -20,7 +20,7 @@ class DyckMatchingStructure {
      * @return match of word_(idx_), or idx_ if there is no match. (if word_ is not valid)
      */
     static uint64_t getMatchNaive(
-        const Sealib::Bitset<uint8_t> &word_,
+        const BlockBitset &word_,
         uint64_t idx);
 
     /**
@@ -35,8 +35,8 @@ class DyckMatchingStructure {
      * There is no test to check if word_ is a valid dyck word.
      * @param word_ - dyck word for the matching structure
      */
-    explicit DyckMatchingStructure(const Sealib::Bitset<uint8_t> &word_);
-    explicit DyckMatchingStructure(Sealib::Bitset<uint8_t> &&word_);
+    explicit DyckMatchingStructure(const BlockBitset &word_);
+    explicit DyckMatchingStructure(BlockBitset &&word_);
 
     /**
      * Default descructor.
@@ -44,13 +44,13 @@ class DyckMatchingStructure {
     virtual ~DyckMatchingStructure();
 
     /**
-     * @return Sealib::Bitset<uint8_t> word
+     * @return BlockBitset word
      */
-    const Sealib::Bitset<uint8_t> &getWord() const;
+    const BlockBitset &getWord() const;
 
 
  protected:
-    const Sealib::Bitset<uint8_t> word;
+    const BlockBitset &word;
     static constexpr const uint8_t mSegmentLength = 7;
 };
 }  // namespace Sealib
