@@ -23,7 +23,7 @@ class EulerTrail {
 
     uint32_t findStartingNode();
     std::vector<TrailStructureType> initializeTrail();
-    Sealib::Bitset<uint8_t> findTrailStarts();
+    BlockBitset findTrailStarts();
 
     /**
      * Iterator used for iterating over the created trails.

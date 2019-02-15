@@ -2,7 +2,6 @@
 #define SEALIB_COLLECTION_SUBGRAPHSTACK_H_
 
 #include <sealib/graph/undirectedgraph.h>
-#include <sealib/collection/bitset.h>
 #include <sealib/dictionary/rankselect.h>
 #include <memory>
 #include <utility>
@@ -54,10 +53,10 @@ class SubGraphStack {
      * @param v Bitsequence of length n_l
      * @param a Bitsequence of length 2m_l
      */
-    void push(const Sealib::Bitset<uint8_t> &v,
-              const Sealib::Bitset<uint8_t> &a);
-    void push(Sealib::Bitset<uint8_t> &&v,
-              Sealib::Bitset<uint8_t> &&a);
+    void push(const BlockBitset &v,
+              const BlockBitset &a);
+    void push(BlockBitset &&v,
+              BlockBitset &&a);
 
     /**
      * Pushes a new subgraph G_l+1 on G_l.
@@ -68,8 +67,8 @@ class SubGraphStack {
      * Each vertice that still has an outgoing arc will be set in the bitset v.
      * @param a Bitsequence of length 2m_l
      */
-    void push(const Sealib::Bitset<uint8_t> &a);
-    void push(Bitset<uint8_t> &&a);
+    void push(const BlockBitset &a);
+    void push(BlockBitset &&a);
 
     /**
      * Replaces the client list (G_0,...,G_l) with (G_0,...,G_l-1).

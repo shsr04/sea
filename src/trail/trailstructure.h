@@ -21,9 +21,9 @@ class TrailStructure {
     uint32_t lastClosed;
     uint32_t dyckStart;
 
-    Sealib::Bitset<uint8_t> inAndOut;
-    Sealib::Bitset<uint8_t> matched;
-    Sealib::Bitset<uint8_t> flags;
+    BlockBitset inAndOut;
+    BlockBitset matched;
+    BlockBitset flags;
 
     std::unique_ptr<DyckMatchingStructure> dyckMatchingStructure;
     std::unique_ptr<std::vector<uint32_t>> married;
@@ -50,17 +50,17 @@ class TrailStructure {
     /**
      * @return ref to inAndOut bitset
      */
-    const Sealib::Bitset<uint8_t> &getInAndOut() const;
+    const BlockBitset &getInAndOut() const;
 
     /**
      * @return ref to matched bitset
      */
-    const Sealib::Bitset<uint8_t> &getMatchedBitset() const;
+    const BlockBitset &getMatchedBitset() const;
 
     /**
      * @return ref to dyckWord
      */
-    const Sealib::Bitset<uint8_t> &getDyckWord() const;
+    const BlockBitset &getDyckWord() const;
 
     /**
      * Constructor for the TrailStructure object.

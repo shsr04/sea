@@ -3,6 +3,7 @@
 #include "trailstructure.h"
 
 using Sealib::EulerTrail;
+using Sealib::BlockBitset;
 
 template<class TrailStructureType>
 EulerTrail<TrailStructureType>::iterator::iterator(
@@ -144,9 +145,8 @@ EulerTrail<TrailStructureType>::initializeTrail() {
 }
 
 template<class TrailStructureType>
-Sealib::Bitset<uint8_t>
-EulerTrail<TrailStructureType>::findTrailStarts() {
-    Sealib::Bitset<uint8_t> bs(graph->getOrder());
+BlockBitset EulerTrail<TrailStructureType>::findTrailStarts() {
+    BlockBitset bs(graph->getOrder());
     for (uint32_t i = 0; i < graph->getOrder(); i++) {
         bool hasStarting = trail.at(i).hasStartingArc();
         if (hasStarting) {

@@ -1,6 +1,6 @@
 #ifndef SRC_SUBGRAPH_SUBGRAPH_H_
 #define SRC_SUBGRAPH_SUBGRAPH_H_
-#include <sealib/collection/bitset.h>
+#include <sealib/collection/blockbitset.h>
 #include <sealib/dictionary/rankselect.h>
 #include <sealib/collection/subgraphstack.h>
 #include <string>
@@ -11,7 +11,7 @@ class SubGraph {
     friend class BaseSubGraph;
     friend class RecursiveSubGraph;
  public:
-    typedef Sealib::Bitset<uint8_t> bitset_t;
+    typedef Sealib::BlockBitset bitset_t;
     typedef Sealib::RankSelect rankselect_t;
     typedef Sealib::SubGraphStack stack_t;
 

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cmath>
 
+namespace Sealib {
+
 Sealib::TrailStructure::TrailStructure(uint32_t _degree) :
     lastClosed((uint32_t) -1),
     dyckStart((uint32_t) -1),
@@ -156,7 +158,7 @@ inline void Sealib::TrailStructure::initDyckStructure() {
         if (matched[i]) cnt++;
     }
 
-    Sealib::Bitset<uint8_t> dyckWord(cnt);
+    BlockBitset dyckWord(cnt);
     dyckStart = lastClosed + 1 == inAndOut.size() ? 0 : lastClosed + 1;
 
     if (dyckWord.size() > 0) {
@@ -275,11 +277,11 @@ uint32_t Sealib::TrailStructure::getDegree() const {
     return static_cast<uint32_t>(inAndOut.size());
 }
 
-const Sealib::Bitset<uint8_t> &Sealib::TrailStructure::getInAndOut() const {
+const BlockBitset &Sealib::TrailStructure::getInAndOut() const {
     return inAndOut;
 }
 
-const Sealib::Bitset<uint8_t> &Sealib::TrailStructure::getMatchedBitset() const {
+const BlockBitset &Sealib::TrailStructure::getMatchedBitset() const {
     return matched;
 }
 
@@ -290,3 +292,5 @@ uint32_t Sealib::TrailStructure::getLastClosed() const {
 bool Sealib::TrailStructure::hasStartingArc() const {
     return flags[3];
 }
+
+}  // namespace Sealib

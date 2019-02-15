@@ -1,5 +1,6 @@
 #include <sealib/collection/subgraphstack.h>
 #include <iostream>
+#include <cassert>
 #include <utility>
 #include "./subgraph.h"
 #include "./recursivesubgraph.h"
@@ -9,6 +10,7 @@ using Sealib::SubGraph;
 using Sealib::BaseSubGraph;
 using Sealib::RecursiveSubGraph;
 using Sealib::SubGraphStack;
+using Sealib::BlockBitset;
 
 std::vector<uint64_t> SubGraphStack::refs = {0, 1, 3, 15, 65535, static_cast<uint64_t>(-1)};
 
@@ -32,8 +34,8 @@ SubGraphStack::~SubGraphStack() {
     if (tunedPsi) delete tunedPsi;
 }
 
-void Sealib::SubGraphStack::push(const Sealib::Bitset<uint8_t> &v,
-                                 const Sealib::Bitset<uint8_t> &a) {
+void Sealib::SubGraphStack::push(const BlockBitset &v,
+                                 const BlockBitset &a) {
     assert(currentRef+2 < SubGraphStack::refs.size());
     if (clientList.size() - 1 == Sealib::SubGraphStack::refs[currentRef + 1]) {
         currentRef++;
@@ -42,8 +44,8 @@ void Sealib::SubGraphStack::push(const Sealib::Bitset<uint8_t> &v,
     clientList.emplace_back(g);
 }
 
-void Sealib::SubGraphStack::push(Sealib::Bitset<uint8_t> &&v,
-                                 Sealib::Bitset<uint8_t> &&a) {
+void Sealib::SubGraphStack::push(BlockBitset &&v,
+                                 BlockBitset &&a) {
     assert(currentRef+2 < SubGraphStack::refs.size());
     if (clientList.size() - 1 == Sealib::SubGraphStack::refs[currentRef + 1]) {
         currentRef++;
@@ -173,8 +175,8 @@ uint64_t Sealib::SubGraphStack::psi(uint64_t i,
     }
 }
 
-void Sealib::SubGraphStack::push(const Sealib::Bitset<uint8_t> &a) {
-    Sealib::Bitset<uint8_t> v(clientList[clientList.size() - 1]->order());
+void Sealib::SubGraphStack::push(const BlockBitset &a) {
+    BlockBitset v(clientList[clientList.size() - 1]->order());
     for (uint64_t i = 0; i < a.size(); i++) {
         if (a[i]) {
             uint64_t vi = std::get<0>(clientList[clientList.size() - 1]->gInv(i + 1));
@@ -184,8 +186,8 @@ void Sealib::SubGraphStack::push(const Sealib::Bitset<uint8_t> &a) {
     push(v, a);
 }
 
-void Sealib::SubGraphStack::push(Sealib::Bitset<uint8_t> &&a) {
-    Sealib::Bitset<uint8_t> v(clientList[clientList.size() - 1]->order());
+void Sealib::SubGraphStack::push(BlockBitset &&a) {
+    BlockBitset v(clientList[clientList.size() - 1]->order());
     for (uint64_t i = 0; i < a.size(); i++) {
         if (a[i]) {
             uint64_t vi = std::get<0>(clientList[clientList.size() - 1]->gInv(i + 1));
@@ -209,7 +211,7 @@ void Sealib::SubGraphStack::tune(uint64_t i) {
 }
 
 void Sealib::SubGraphStack::tunephi0(uint64_t i) {
-    Sealib::Bitset<uint8_t> phi0bs(clientList[0]->order());
+    BlockBitset phi0bs(clientList[0]->order());
     for (uint64_t u = 1; u <= clientList[i]->order(); u++) {
         phi0bs[phi(i, u) - 1] = 1;
     }
@@ -218,7 +220,7 @@ void Sealib::SubGraphStack::tunephi0(uint64_t i) {
 }
 
 void Sealib::SubGraphStack::tunepsi0(uint64_t i) {
-    Sealib::Bitset<uint8_t> psi0bs(clientList[0]->gMax());
+    BlockBitset psi0bs(clientList[0]->gMax());
     for (uint64_t u = 1; u <= clientList[i]->gMax(); u++) {
         psi0bs[psi(i, u) - 1] = 1;
     }
@@ -227,7 +229,7 @@ void Sealib::SubGraphStack::tunepsi0(uint64_t i) {
 }
 
 void Sealib::SubGraphStack::tunephi(uint64_t i) {
-    Sealib::Bitset<uint8_t> phibs(clientList[i - 1]->order());
+    BlockBitset phibs(clientList[i - 1]->order());
     for (uint64_t u = 1; u <= clientList[i]->order(); u++) {
         phibs[phi(i, i - 1, u) - 1] = 1;
     }
@@ -236,7 +238,7 @@ void Sealib::SubGraphStack::tunephi(uint64_t i) {
 }
 
 void Sealib::SubGraphStack::tunepsi(uint64_t i) {
-    Sealib::Bitset<uint8_t> psibs(clientList[i - 1]->gMax());
+    BlockBitset psibs(clientList[i - 1]->gMax());
     for (uint64_t u = 1; u <= clientList[i]->gMax(); u++) {
         psibs[psi(i, i - 1, u) - 1] = 1;
     }
