@@ -1,10 +1,13 @@
 #include <gtest/gtest.h>
 #include <sealib/graph/graphcreator.h>
+#include <sealib/graph/virtualgraph.h>
 #include <stdlib.h>
 
+using Sealib::DirectedGraph;
+using Sealib::Graph;
 using Sealib::GraphCreator;
 using Sealib::UndirectedGraph;
-using Sealib::Graph;
+using Sealib::VirtualGraph;
 
 TEST(GraphTest, graph_integrity) {
     uint64_t order = 4;
@@ -65,4 +68,27 @@ TEST(GraphTest, graph_integrity) {
 
     ASSERT_EQ(g.getNode(3).getAdj()[0].second, 2);
     ASSERT_EQ(g.getNode(3).getAdj()[1].second, 1);
+}
+
+TEST(VirtualGraphTest, basicOperations) {
+    uint32_t n = 100, deg = 15;
+    DirectedGraph baseGraph = GraphCreator::kOutdegree(n, deg);
+    VirtualGraph g(baseGraph);
+    EXPECT_EQ(g.getOrder(), n);
+    for (uint32_t a = 0; a < n; a++) {
+        EXPECT_EQ(g.deg(a), deg);
+        for (uint b = 0; b < deg; b++) {
+            EXPECT_EQ(g.head(a, b), baseGraph.head(a, b));
+        }
+    }
+
+    g.removeEdge(3, g.head(3, 7));
+    ASSERT_EQ(g.deg(3), deg - 1);
+    for (uint a = 0; a < 7; a++) {
+        EXPECT_EQ(g.head(3, a), baseGraph.head(3, a)) << "failed at " << a;
+    }
+    for (uint a = 8; a < deg - 1; a++) {
+        EXPECT_EQ(g.head(3, a), baseGraph.head(3, a + 1)) << "failed at " << a;
+    }
+    EXPECT_EQ(g.head(3, deg - 1), Sealib::INVALID);
 }
