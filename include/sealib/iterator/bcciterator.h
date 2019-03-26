@@ -13,6 +13,8 @@ namespace Sealib {
  * undirected graph G. First, call init(x) to set the starting point of the BCC
  * iterator. After that, call more() and next() alternately to retrieve all the
  * vertices of the BCC.
+ *
+ * @author Simon Heuser
  */
 class BCCIterator : Iterator<std::pair<uint64_t, uint64_t>> {
  public:
@@ -89,6 +91,32 @@ class BCCIterator : Iterator<std::pair<uint64_t, uint64_t>> {
     bool gotRetreat = false;
     uint64_t tmp = 0;
 };
-}  // namespace Sealib
 
+class BCCOutput {
+ public:
+    /**
+     * Create a new BCC iterator from a given undirected graph.
+     * @param g undirected graph G=(V,E)
+     */
+    explicit BCCOutput(UndirectedGraph const &g);
+
+    /**
+     * Create a new BCC iterator from a given edge marker (allows recycling).
+     * @param e shared pointer to an EdgeMarker
+     */
+    explicit BCCOutput(std::shared_ptr<EdgeMarker> e);
+
+    void traverse(uint64_t u0, Consumer onVertex, BiConsumer onEdge);
+
+ private:
+    std::shared_ptr<EdgeMarker> e;
+    UndirectedGraph const &g;
+    uint64_t n;
+    CompactArray c;
+    StaticSpaceStorage parent;
+
+    void outputBackEdges(uint64_t v, BiConsumer onEdge);
+};
+
+}  // namespace Sealib
 #endif  // SEALIB_ITERATOR_BCCITERATOR_H_
