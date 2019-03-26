@@ -95,17 +95,23 @@ class BCCIterator : Iterator<std::pair<uint64_t, uint64_t>> {
 class BCCOutput {
  public:
     /**
-     * Create a new BCC iterator from a given undirected graph.
+     * Create a new BCC output from a given undirected graph.
      * @param g undirected graph G=(V,E)
      */
     explicit BCCOutput(UndirectedGraph const &g);
 
     /**
-     * Create a new BCC iterator from a given edge marker (allows recycling).
+     * Create a new BCC output from a given edge marker (allows recycling).
      * @param e shared pointer to an EdgeMarker
      */
     explicit BCCOutput(std::shared_ptr<EdgeMarker> e);
 
+    /**
+     * Traverse the entire BCC and execute the given functions for each vertex/edge in the BCC.
+     * @param u0 vertex to start the traversal at
+     * @param onVertex executed at each vertex u belonging to the BCC
+     * @param onEdge executed at each edge {u,v} belonging to the BCC
+     */
     void traverse(uint64_t u0, Consumer onVertex, BiConsumer onEdge);
 
  private:

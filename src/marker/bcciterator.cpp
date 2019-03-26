@@ -114,6 +114,14 @@ std::pair<uint64_t, uint64_t> BCCIterator::next() {
     return r;
 }
 
+BCCOutput::BCCOutput(UndirectedGraph const &graph)
+    : BCCOutput(std::shared_ptr<EdgeMarker>(new EdgeMarker(graph))) {
+    e->init();
+}
+
+BCCOutput::BCCOutput(std::shared_ptr<EdgeMarker> edges)
+    : e(edges), g(e->getGraph()), n(g.getOrder()), c(n, 3), parent(g) {}
+
 void BCCOutput::traverse(uint64_t u0, Consumer onVertex, BiConsumer onEdge) {
     c.insert(u0, DFS_GRAY);
     onVertex(u0);
@@ -121,25 +129,22 @@ void BCCOutput::traverse(uint64_t u0, Consumer onVertex, BiConsumer onEdge) {
     uint64_t u = u0, k = 0;
     while (u != u0 || c.get(u) != DFS_BLACK) {
         if (k < g.deg(u)) {
+            uint64_t v = g.head(u, k);
             if (e->isTreeEdge(u, k) &&
-                (e->isFullMarked(u, k) || !e->isParent(u, k))) {
-                uint64_t v = g.head(u, k);
-                if (c.get(v) == DFS_WHITE) {
-                    c.insert(v, DFS_GRAY);
-                    parent.insert(v, g.mate(u, k));
-                    onEdge(u, v);
-                    if (e->isFullMarked(u, k)) {
-                        outputBackEdges(v, onEdge);
-                    }
-                    onVertex(v);
-                    if (!e->isFullMarked(u, k)) {
-                        k = g.deg(u);  // retreat
-                    } else {
-                        u = v;
-                        k = 0;
-                    }
+                (e->isFullMarked(u, k) || !e->isParent(u, k)) &&
+                c.get(v) == DFS_WHITE) {
+                c.insert(v, DFS_GRAY);
+                parent.insert(v, g.mate(u, k));
+                onEdge(u, v);
+                if (e->isFullMarked(u, k)) {
+                    outputBackEdges(v, onEdge);
+                }
+                onVertex(v);
+                if (!e->isFullMarked(u, k)) {
+                    k = g.deg(u);  // retreat
                 } else {
-                    k++;
+                    u = v;
+                    k = 0;
                 }
             } else {
                 k++;
@@ -157,14 +162,6 @@ void BCCOutput::traverse(uint64_t u0, Consumer onVertex, BiConsumer onEdge) {
         }
     }
 }
-
-BCCOutput::BCCOutput(UndirectedGraph const &graph)
-    : BCCOutput(std::shared_ptr<EdgeMarker>(new EdgeMarker(graph))) {
-    e->init();
-}
-
-BCCOutput::BCCOutput(std::shared_ptr<EdgeMarker> edges)
-    : e(edges), g(e->getGraph()), n(g.getOrder()), c(n, 3), parent(g) {}
 
 void BCCOutput::outputBackEdges(uint64_t v, BiConsumer onEdge) {
     for (uint64_t l = 0; l < g.deg(v); l++) {
