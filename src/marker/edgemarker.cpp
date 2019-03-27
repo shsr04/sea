@@ -13,11 +13,22 @@ static std::vector<bool> makeOffset(UndirectedGraph const &g) {
     return bits;
 }
 
+static uint64_t numEdges(UndirectedGraph const &g) {
+    uint64_t m = 0;
+    for (uint64_t u = 0; u < g.getOrder(); u++) {
+        for (uint64_t k = 0; k < g.deg(u); k++) {
+            m++;
+        }
+    }
+    return m;
+}
+
 EdgeMarker::EdgeMarker(UndirectedGraph const &graph)
     : g(graph),
       n(g.getOrder()),
+      m(numEdges(g)),
       parent(g),
-      edges(g, 4, true),
+      edges(m, 16),
       offset(Bitset<uint8_t>(makeOffset(g))) {}
 
 void EdgeMarker::identifyEdges() {
