@@ -23,66 +23,101 @@ OuterplanarChecker::OuterplanarChecker(UndirectedGraph const &graph)
       virtualEdges(n),
       removedPaths(m) {}
 
-std::pair<std::pair<uint64_t, uint64_t>, std::pair<uint64_t, uint64_t>>
-OuterplanarChecker::chain(uint64_t u, Consumer action) {
-    std::pair<std::pair<uint64_t, uint64_t>, std::pair<uint64_t, uint64_t>> r(
-        {INVALID, INVALID}, {INVALID, INVALID});
-    if (g.deg(u) == 2) {
-        uint64_t v1 = g.head(u, 0), v2 = g.head(u, 1);
-        uint64_t p1 = u, p2 = u;
-        bool isCycle = false;
-        while (g.deg(v1) == 2 || g.deg(v2) == 2) {
-            if (v1 == u || v2 == u) {
-                // cycle detected (a cycle is a valid chain as long as the two
-                // chosen endpoints are adjacent)
-                isCycle = true;
-                break;
-            }
-            if (g.deg(v1) == 2) {
-                uint64_t next1 = g.head(v1, g.head(v1, 0) == p1);
-                p1 = v1;
-                v1 = next1;
-            }
-            if (g.deg(v2) == 2) {
-                uint64_t next2 = g.head(v2, g.head(v2, 0) == p2);
-                p2 = v2;
-                v2 = next2;
-            }
-        }
-        if (!isCycle) {
-            action(u);
-            while (g.deg(v1) == 2 || g.deg(v2) == 2) {
-                if (g.deg(v1) == 2) {
-                    uint64_t next = g.head(v1, g.head(v1, 0) == p1);
-                    action(v1);
-                    p1 = v1;
-                    v1 = next;
-                }
-                if (g.deg(v2) == 2) {
-                    uint64_t next = g.head(v2, g.head(v2, 0) == p2);
-                    action(v2);
-                    p2 = v2;
-                    v2 = next;
-                }
-            }
-        } else {
-            v1 = u;
-            p1 = g.head(u, 0);
-            do {
-                uint64_t next = g.head(v1, g.head(v1, 0) == p1);
-                action(v1);
-                p1 = v1;
-                v1 = next;
-            } while (v1 != u);
-            v2 = g.head(u, 0);
-            p2 = u;
-        }
-        r = {{v1, v2}, {p1, p2}};
+bool OuterplanarChecker::isOuterplanar() {
+    if (m > 2 * n - 3) {
+        return false;
     }
+    if (!removeClosedChains()) {
+        return false;
+    }
+    return true;
+}
+
+bool OuterplanarChecker::removeClosedChains() {
+    ChoiceDictionary d(n);
+    ChoiceDictionaryIterator di(d);
+    for (uint64_t round = 0; round < log2(log2(n)) + 1; round++) {
+        for (uint64_t u = 0; u < n; u++) {
+            if (g.deg(u) == 2) d.insert(u);
+        }
+        di.init();
+        if (!di.more()) {
+            return false;
+        }
+        while (di.more()) {
+            uint64_t u = di.next();
+            ChainData c = chain(u);
+            if (c.isClosed) {
+                bool repeat = false;
+                do {
+                    forEach(c, [this](uint64_t u) { g.removeVertex(u); });
+                    // if an endpoint becomes degree 2, repeat immediately
+                    if (g.deg(c.c1.first) == 2) {
+                        c = chain(c.c1.first);
+                        repeat = true;
+                    } else if (g.deg(c.c2.first) == 2) {
+                        c = chain(c.c2.first);
+                        repeat = true;
+                    } else {
+                        repeat = false;
+                    }
+                } while (repeat);
+            }
+        }
+    }
+    return true;
+}
+
+OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
+    ChainData r;
+    assert(g.deg(u) == 2);
+    uint64_t v1 = g.head(u, 0), v2 = g.head(u, 1);
+    uint64_t p1 = u, p2 = u;
+    uint64_t k1, k2;
+    while (g.deg(v1) == 2 || g.deg(v2) == 2) {
+        if (v1 == u || v2 == u) {
+            // cycle detected (a cycle is a valid chain as long as the two
+            // chosen endpoints are adjacent)
+            r.isCycle = true;
+            break;
+        }
+        if (g.deg(v1) == 2) {
+            k1 = g.head(v1, 0) == p1;
+            p1 = v1;
+            v1 = g.head(v1, k1);
+        }
+        if (g.deg(v2) == 2) {
+            k2 = g.head(v2, 0) == p2;
+            p2 = v2;
+            v2 = g.head(v2, k2);
+        }
+    }
+    r.c1 = {v1, k1}, r.c2 = {v2, k2};
+    uint64_t &va = g.deg(v1) < g.deg(v2) ? v1 : v2,
+             &vb = g.deg(v1) < g.deg(v2) ? v2 : v1;
+    for (uint64_t ka = 0; ka < g.deg(va); ka++) {
+        if (g.head(va, ka) == vb) {
+            r.isClosed = true;
+            break;
+        }
+    }
+    r.isGood = g.deg(v1) <= 4 || g.deg(v2) <= 4;
     return r;
 }
 
-bool OuterplanarChecker::isOuterplanar() {
+void OuterplanarChecker::forEach(OuterplanarChecker::ChainData const &c,
+                                 Consumer f) {
+    uint64_t u = g.head(c.c1.first, c.c1.second);
+    uint64_t p = c.c1.first;
+    while (u != c.c2.first) {
+        f(u);
+        uint64_t k = g.head(u, 0) == p;
+        p = u;
+        u = g.head(u, k);
+    }
+}
+
+/*bool OuterplanarChecker::isOuterplanar() {
     bool r = false;
     if (m <= 2 * n - 3) {
         double roundLimit = n * log2(log2(n));
@@ -162,6 +197,6 @@ bool OuterplanarChecker::isOuterplanar() {
         }
     }
     return r;
-}
+}*/
 
 }  // namespace Sealib

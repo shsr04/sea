@@ -6,6 +6,13 @@
 
 namespace Sealib {
 
+/**
+ * A virtual subgraph of a given directed or undirected graph. Vertices and
+ * edges can be deleted from the virtual graph. Adding new edges is not part of
+ * this class (it should be implemented in the using algorithm).
+ *
+ * @author Simon Heuser
+ */
 class VirtualGraph : Graph {
  public:
     /**
@@ -35,13 +42,26 @@ class VirtualGraph : Graph {
      */
     uint64_t getOrder() const override;
 
+    /**
+     * Remove the given vertex from the virtual graph.
+     * @param u vertex to be removed
+     */
+    void removeVertex(uint64_t u);
+
+    /**
+     * Remove the given edge (u,v) from the virtual graph.
+     * (Note: If you are using an underlying undirected graph, you need to
+     * remove both edges (u,v) and (v,u).)
+     * @param u first endpoint of the edge
+     * @param v second endpoint of the edge
+     */
     void removeEdge(uint64_t u, uint64_t v);
 
  private:
     Graph const &g;
     uint64_t n;
-    StaticSpaceStorage actualDegrees;
-    std::vector<std::vector<bool>> deletedAdjacencies;
+    std::vector<bool> presentVertices;
+    std::vector<std::vector<bool>> presentEdges;
 };
 
 }  // namespace Sealib

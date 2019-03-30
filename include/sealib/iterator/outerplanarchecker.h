@@ -1,6 +1,5 @@
 #ifndef SEALIB_ITERATOR_OUTERPLANARCHECKER_H_
 #define SEALIB_ITERATOR_OUTERPLANARCHECKER_H_
-#include <functional>
 #include <set>
 #include <vector>
 #include "sealib/_types.h"
@@ -12,7 +11,7 @@
 namespace Sealib {
 class OuterplanarChecker {
  public:
-    explicit OuterplanarChecker(UndirectedGraph const &g);
+    explicit OuterplanarChecker(UndirectedGraph const& g);
 
     bool isOuterplanar();
 
@@ -23,6 +22,8 @@ class OuterplanarChecker {
     ChoiceDictionary degreeTwo;
     std::vector<std::set<uint64_t>> virtualEdges;
     ChoiceDictionary removedPaths;
+
+    bool removeClosedChains();
 
     bool isGood(std::pair<uint64_t, uint64_t> p) const {
         return g.deg(p.first) <= 4 || g.deg(p.second) <= 4;
@@ -39,15 +40,19 @@ class OuterplanarChecker {
         return false;
     }
 
+    struct ChainData {
+        std::pair<uint64_t, uint64_t> c1, c2;
+        bool isClosed = false, isGood = false, isCycle = false;
+    };
+
     /**
      * Walk through the chain that contains u.
      * @param u Vertex in the interior of the chain
-     * @param action Optional action to perform for each vertex on the chain
-     * @return {E,P} Pair containing two pairs: 1) the endpoints of the chain,
-     * 2) the vertices in the interior adjacent to the respective endpoint
+     * @return data collected when iterating over the chain
      */
-    std::pair<std::pair<uint64_t, uint64_t>, std::pair<uint64_t, uint64_t>> chain(
-        uint64_t u, Consumer action = [](uint64_t) {});
+    ChainData chain(uint64_t u);
+
+    void forEach(ChainData const& c, Consumer f);
 };
 }  // namespace Sealib
 
