@@ -49,6 +49,13 @@ class VirtualGraph : Graph {
     void removeVertex(uint64_t u);
 
     /**
+     * Check if the given vertex is still present in the virtual graph.
+     * @param u vertex to check
+     * @return true if vertex u has not been removed (yet)
+     */
+    bool hasVertex(uint64_t u) const;
+
+    /**
      * Remove the given edge (u,v) from the virtual graph.
      * (Note: If you are using an underlying undirected graph, you need to
      * remove both edges (u,v) and (v,u).)

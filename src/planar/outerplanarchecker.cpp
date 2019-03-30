@@ -34,9 +34,12 @@ bool OuterplanarChecker::isOuterplanar() {
 }
 
 bool OuterplanarChecker::removeClosedChains() {
-    ChoiceDictionary d(n);
-    ChoiceDictionaryIterator di(d);
     for (uint64_t round = 0; round < log2(log2(n)) + 1; round++) {
+        ChoiceDictionary d(n);
+        ChoiceDictionaryIterator di(d);
+        if (g.getOrder() <= 3) {
+            return true;
+        }
         for (uint64_t u = 0; u < n; u++) {
             if (g.deg(u) == 2) d.insert(u);
         }
@@ -45,12 +48,18 @@ bool OuterplanarChecker::removeClosedChains() {
             return false;
         }
         while (di.more()) {
+            if (g.getOrder() <= 3) {
+                return true;
+            }
             uint64_t u = di.next();
             ChainData c = chain(u);
             if (c.isClosed) {
                 bool repeat = false;
                 do {
                     forEach(c, [this](uint64_t u) { g.removeVertex(u); });
+                    if (c.isCycle) {
+                        break;
+                    }
                     // if an endpoint becomes degree 2, repeat immediately
                     if (g.deg(c.c1.first) == 2) {
                         c = chain(c.c1.first);
@@ -92,21 +101,31 @@ OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
             v2 = g.head(v2, k2);
         }
     }
-    r.c1 = {v1, k1}, r.c2 = {v2, k2};
-    uint64_t &va = g.deg(v1) < g.deg(v2) ? v1 : v2,
-             &vb = g.deg(v1) < g.deg(v2) ? v2 : v1;
-    for (uint64_t ka = 0; ka < g.deg(va); ka++) {
-        if (g.head(va, ka) == vb) {
-            r.isClosed = true;
-            break;
+    if (r.isCycle) {
+        uint64_t a = g.head(u, 0);
+        r.c1 = {u, 1}, r.c2 = {a, g.head(a, 0) == u};
+        r.isClosed = true, r.isGood = true;
+    } else {
+        r.c1 = {v1, k1}, r.c2 = {v2, k2};
+        uint64_t &va = g.deg(v1) < g.deg(v2) ? v1 : v2,
+                 &vb = g.deg(v1) < g.deg(v2) ? v2 : v1;
+        for (uint64_t ka = 0; ka < g.deg(va); ka++) {
+            if (g.head(va, ka) == vb) {
+                r.isClosed = true;
+                break;
+            }
         }
+        r.isGood = g.deg(v1) <= 4 || g.deg(v2) <= 4;
     }
-    r.isGood = g.deg(v1) <= 4 || g.deg(v2) <= 4;
     return r;
 }
 
 void OuterplanarChecker::forEach(OuterplanarChecker::ChainData const &c,
                                  Consumer f) {
+    if (c.isCycle) {
+        f(c.c1.first);
+        f(c.c2.first);
+    }
     uint64_t u = g.head(c.c1.first, c.c1.second);
     uint64_t p = c.c1.first;
     while (u != c.c2.first) {

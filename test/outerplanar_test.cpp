@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <memory>
 #include "../src/planar/simpleouterplanarchecker.h"
 #include "sealib/graph/undirectedgraph.h"
 #include "sealib/iterator/outerplanarchecker.h"
@@ -15,8 +14,8 @@ TEST(OuterplanarCheckerTest, sample1) {
     UndirectedGraph g(nodes);
     SimpleOuterplanarChecker s(g);
     EXPECT_TRUE(s.isOuterplanar()) << "failed at 4-cycle";
-    // OuterplanarChecker o(g);
-    // EXPECT_TRUE(o.isOuterplanar()) << "failed at 4-cycle";
+    OuterplanarChecker o(g);
+    EXPECT_TRUE(o.isOuterplanar()) << "failed at 4-cycle";
 }
 TEST(OuterplanarCheckerTest, sample2) {
     std::vector<ExtendedNode> nodes(4);
@@ -29,8 +28,8 @@ TEST(OuterplanarCheckerTest, sample2) {
     UndirectedGraph g(nodes);
     SimpleOuterplanarChecker s(g);
     EXPECT_TRUE(s.isOuterplanar()) << "failed at 4/1-cycle";
-    // OuterplanarChecker o(g);
-    // EXPECT_TRUE(o.isOuterplanar()) << "failed at 4/1-cycle";
+    OuterplanarChecker o(g);
+    EXPECT_TRUE(o.isOuterplanar()) << "failed at 4/1-cycle";
 }
 TEST(OuterplanarCheckerTest, sample3) {
     std::vector<ExtendedNode> nodes(4);
@@ -45,8 +44,8 @@ TEST(OuterplanarCheckerTest, sample3) {
     UndirectedGraph g(nodes);
     SimpleOuterplanarChecker s(g);
     EXPECT_FALSE(s.isOuterplanar()) << "failed at 4/2-cycle";
-    // OuterplanarChecker o(g);
-    // EXPECT_TRUE(o.isOuterplanar()) << "failed at 4/2-cycle";
+    OuterplanarChecker o(g);
+    EXPECT_FALSE(o.isOuterplanar()) << "failed at 4/2-cycle";
 }
 TEST(OuterplanarCheckerTest, sample4) {
     std::vector<ExtendedNode> nodes(5);
@@ -62,8 +61,10 @@ TEST(OuterplanarCheckerTest, sample4) {
     UndirectedGraph g(nodes);
     SimpleOuterplanarChecker s(g);
     EXPECT_FALSE(s.isOuterplanar()) << "failed at 4(1)-cycle";
+    OuterplanarChecker o(g);
+    EXPECT_FALSE(o.isOuterplanar()) << "failed at 4(1)-cycle";
 }
-TEST(OuterplanarCheckerTest, sample6) {
+TEST(OuterplanarCheckerTest, sample5) {
     std::vector<ExtendedNode> nodes(5);
     nodes[0].addAdjacency({1, 0}), nodes[0].addAdjacency({3, 1}),
         nodes[0].addAdjacency({2, 2}), nodes[0].addAdjacency({4, 1});
@@ -76,6 +77,8 @@ TEST(OuterplanarCheckerTest, sample6) {
     UndirectedGraph g(nodes);
     SimpleOuterplanarChecker s(g);
     EXPECT_TRUE(s.isOuterplanar()) << "failed at 5/1-cycle";
+    OuterplanarChecker o(g);
+    EXPECT_TRUE(o.isOuterplanar()) << "failed at 5/1-cycle";
 }
 
 }  // namespace Sealib

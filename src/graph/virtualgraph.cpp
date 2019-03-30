@@ -3,7 +3,13 @@
 namespace Sealib {
 
 VirtualGraph::VirtualGraph(Graph const &graph)
-    : g(graph), n(g.getOrder()), presentVertices(n), presentEdges(n) {}
+    : g(graph), n(g.getOrder()), presentVertices(n), presentEdges(n) {
+    presentVertices.flip();
+    for (uint64_t u = 0; u < n; u++) {
+        presentEdges[u] = std::vector<bool>(g.deg(u));
+        presentEdges[u].flip();
+    }
+}
 
 uint64_t VirtualGraph::deg(uint64_t u) const {
     uint64_t r = 0;
@@ -27,7 +33,14 @@ uint64_t VirtualGraph::head(uint64_t u, uint64_t k) const {
     return INVALID;
 }
 
-void VirtualGraph::removeVertex(uint64_t u) { presentVertices[u] = 0; }
+void VirtualGraph::removeVertex(uint64_t u) {
+    presentVertices[u] = 0;
+    n--;
+}
+
+bool VirtualGraph::hasVertex(uint64_t u) const {
+    return presentVertices[u];
+}
 
 void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
     for (uint64_t a = 0; a < g.deg(u); a++) {
