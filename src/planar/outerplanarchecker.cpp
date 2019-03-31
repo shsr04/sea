@@ -34,15 +34,18 @@ bool OuterplanarChecker::isOuterplanar() {
 }
 
 bool OuterplanarChecker::removeClosedChains() {
+    std::vector<bool> blocked(n);
     for (uint64_t round = 0; round < log2(log2(n)) + 1; round++) {
-        ChoiceDictionary d(n);
-        ChoiceDictionaryIterator di(d);
         if (g.getOrder() <= 3) {
             return true;
         }
+        ChoiceDictionary d(n);
         for (uint64_t u = 0; u < n; u++) {
-            if (g.deg(u) == 2) d.insert(u);
+            if (g.deg(u) == 2 && !blocked[u]) {
+                d.insert(u);
+            }
         }
+        ChoiceDictionaryIterator di(d);
         di.init();
         if (!di.more()) {
             return false;
@@ -56,7 +59,10 @@ bool OuterplanarChecker::removeClosedChains() {
             if (c.isClosed) {
                 bool repeat = false;
                 do {
-                    forEach(c, [this](uint64_t u) { g.removeVertex(u); });
+                    forEach(c, [this, &d](uint64_t u) {
+                        g.removeVertex(u);
+                        d.remove(u);
+                    });
                     if (c.isCycle) {
                         break;
                     }
@@ -71,6 +77,9 @@ bool OuterplanarChecker::removeClosedChains() {
                         repeat = false;
                     }
                 } while (repeat);
+                di.init();  // re-init
+            } else {
+                forEach(c, [&blocked](uint64_t u) { blocked[u] = 1; });
             }
         }
     }
@@ -82,7 +91,6 @@ OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
     assert(g.deg(u) == 2);
     uint64_t v1 = g.head(u, 0), v2 = g.head(u, 1);
     uint64_t p1 = u, p2 = u;
-    uint64_t k1, k2;
     while (g.deg(v1) == 2 || g.deg(v2) == 2) {
         if (v1 == u || v2 == u) {
             // cycle detected (a cycle is a valid chain as long as the two
@@ -91,12 +99,12 @@ OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
             break;
         }
         if (g.deg(v1) == 2) {
-            k1 = g.head(v1, 0) == p1;
+            uint64_t k1 = g.head(v1, 0) == p1;
             p1 = v1;
             v1 = g.head(v1, k1);
         }
         if (g.deg(v2) == 2) {
-            k2 = g.head(v2, 0) == p2;
+            uint64_t k2 = g.head(v2, 0) == p2;
             p2 = v2;
             v2 = g.head(v2, k2);
         }
@@ -106,6 +114,21 @@ OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
         r.c1 = {u, 1}, r.c2 = {a, g.head(a, 0) == u};
         r.isClosed = true, r.isGood = true;
     } else {
+        // find edges pointing inwards
+        uint64_t k1 = INVALID, k2 = INVALID;
+        for (uint64_t k = 0; k < g.deg(v1); k++) {
+            if (g.head(v1, k) == p1) {
+                k1 = k;
+                break;
+            }
+        }
+        for (uint64_t k = 0; k < g.deg(v2); k++) {
+            if (g.head(v2, k) == p2) {
+                k2 = k;
+                break;
+            }
+        }
+        assert(k1 != INVALID && k2 != INVALID);
         r.c1 = {v1, k1}, r.c2 = {v2, k2};
         uint64_t &va = g.deg(v1) < g.deg(v2) ? v1 : v2,
                  &vb = g.deg(v1) < g.deg(v2) ? v2 : v1;
