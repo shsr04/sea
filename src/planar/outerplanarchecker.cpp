@@ -14,14 +14,24 @@ static uint64_t countEdges(UndirectedGraph const &g) {
     return r / 2;
 }
 
+static std::vector<bool> makeBits(UndirectedGraph const &g) {
+    std::vector<bool> r;
+    for (uint64_t u = 0; u < g.getOrder(); u++) {
+        r.push_back(1);
+        for (uint64_t k = 0; k < g.deg(u); k++) {
+            r.push_back(0);
+        }
+    }
+    return r;
+}
+
 OuterplanarChecker::OuterplanarChecker(UndirectedGraph const &graph)
     : g(graph),
       n(g.getOrder()),
       m(countEdges(graph)),
-      present(n),
-      degreeTwo(n),
-      virtualEdges(n),
-      removedPaths(m) {}
+      paths(2 * m, 3),
+      pathOffset(Bitset<uint8_t>(makeBits(graph))),
+      shortcuts(n) {}
 
 bool OuterplanarChecker::isOuterplanar() {
     if (m > 2 * n - 3) {
@@ -29,6 +39,8 @@ bool OuterplanarChecker::isOuterplanar() {
     }
     if (!removeClosedChains()) {
         return false;
+    }
+    if (!removeAllChains()) {
     }
     return true;
 }
@@ -82,6 +94,55 @@ bool OuterplanarChecker::removeClosedChains() {
                 forEach(c, [&blocked](uint64_t u) { blocked[u] = 1; });
             }
         }
+    }
+    return true;
+}
+
+bool OuterplanarChecker::removeAllChains() {
+    if (g.getOrder() <= 3) {
+        return true;
+    }
+    ChoiceDictionary d(n);
+    for (uint64_t u = 0; u < n; u++) {
+        if (g.deg(u) == 2) {
+            d.insert(u);
+        }
+    }
+    ChoiceDictionaryIterator di(d);
+    di.init();
+    if (!di.more()) {
+        return false;
+    }
+    while (di.more()) {
+        if (g.getOrder() <= 3) {
+            return true;
+        }
+        uint64_t u = di.next();
+        ChainData c = chain(u);
+        if (c.isGood) {
+            forEach(c, [this, &d](uint64_t u) {
+                g.removeVertex(u);
+                d.remove(u);
+            });
+            if (!c.isClosed) {
+                g.addVirtualEdge(c.c1.first, c.c2.first);
+            } else {
+                // check if an endpoint got degree 2
+                if (g.deg(c.c1.first) == 2) {
+                    d.insert(c.c1.first);
+                } else if (g.deg(c.c2.first) == 2) {
+                    d.insert(c.c2.first);
+                }
+            }
+        } else {
+            forEach(c, [&d](uint64_t u) { d.remove(u); });
+            if (c.c1.first < c.c2.first) {
+                shortcuts.insert(c.c1.first, c.c2.first);
+            } else {
+                shortcuts.insert(c.c2.first, c.c1.first);
+            }
+        }
+        di.init();
     }
     return true;
 }
@@ -158,87 +219,5 @@ void OuterplanarChecker::forEach(OuterplanarChecker::ChainData const &c,
         u = g.head(u, k);
     }
 }
-
-/*bool OuterplanarChecker::isOuterplanar() {
-    bool r = false;
-    if (m <= 2 * n - 3) {
-        double roundLimit = n * log2(log2(n));
-        for (uint64_t round = 0; round < roundLimit; round++) {
-            uint64_t actualOrder = 0;
-            ChoiceDictionary tried(n);
-            ChoiceDictionaryIterator presentI(present);
-            presentI.init();
-            while (presentI.more()) {
-                uint64_t u = presentI.next();
-                if (g.deg(u) == 2) {
-                    degreeTwo.insert(u);
-                }
-                actualOrder++;
-            }
-            if (actualOrder > 0) {
-                ChoiceDictionaryIterator degI(degreeTwo);
-                degI.init();
-                // run stages until D is empty
-                while (degI.more()) {
-                    uint64_t u = degI.next();
-                    bool stage = true;
-                    bool firstChain = true;
-                    while (stage) {
-                        auto cr = chain(u, [&tried, &stage](uint64_t v) {
-                            if (tried.get(v)) {
-                                stage = false;
-                            }
-                        });
-                        std::pair<uint64_t, uint64_t> c = cr.first;
-                        if (stage) {
-                            if (isClosed(c)) {
-                                chain(u, [this](uint64_t v) {
-                                    present.remove(v);
-                                    degreeTwo.remove(v);
-                                });
-                                g.removeEdge(c.first, cr.second.first);
-                                g.removeEdge(c.second, cr.second.second);
-                                if (g.deg(c.first) != 2 &&
-                                    degreeTwo.get(c.first)) {
-                                    degreeTwo.remove(c.first);
-                                }
-                                if (g.deg(c.second) != 2 &&
-                                    degreeTwo.get(c.second)) {
-                                    degreeTwo.remove(c.second);
-                                }
-                                if (g.deg(c.first) == 2 ||
-                                    g.deg(c.second) == 2) {
-                                    u = g.deg(c.first) == 2 ? c.first
-                                                            : c.second;
-                                    if (g.deg(c.first) == 2) {
-                                        degreeTwo.insert(c.first);
-                                    }
-                                    if (g.deg(c.second) == 2) {
-                                        degreeTwo.insert(c.second);
-                                    }
-                                } else {
-                                    stage = false;
-                                }
-                            } else {
-                                // if (!firstChain) {
-                                chain(u, [&tried](uint64_t v) {
-                                    tried.insert(v);
-                                });
-                                //}
-                                stage = false;
-                            }
-                            firstChain = false;
-                            degI.init();
-                        }
-                    }
-                }
-            } else {
-                r = true;
-                break;
-            }
-        }
-    }
-    return r;
-}*/
 
 }  // namespace Sealib

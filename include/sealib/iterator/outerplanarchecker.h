@@ -3,8 +3,9 @@
 #include <set>
 #include <vector>
 #include "sealib/_types.h"
-#include "sealib/collection/staticspacestorage.h"
-#include "sealib/dictionary/choicedictionary.h"
+#include "sealib/collection/compactarray.h"
+#include "sealib/dictionary/raggeddictionary.h"
+#include "sealib/dictionary/rankselect.h"
 #include "sealib/graph/undirectedgraph.h"
 #include "sealib/graph/virtualgraph.h"
 
@@ -18,12 +19,12 @@ class OuterplanarChecker {
  private:
     VirtualGraph g;
     uint64_t n, m;
-    ChoiceDictionary present;
-    ChoiceDictionary degreeTwo;
-    std::vector<std::set<uint64_t>> virtualEdges;
-    ChoiceDictionary removedPaths;
+    CompactArray paths;
+    RankSelect pathOffset;
+    RaggedDictionary shortcuts;
 
     bool removeClosedChains();
+    bool removeAllChains();
 
     bool isGood(std::pair<uint64_t, uint64_t> p) const {
         return g.deg(p.first) <= 4 || g.deg(p.second) <= 4;

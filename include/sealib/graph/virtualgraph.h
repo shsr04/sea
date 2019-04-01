@@ -1,15 +1,16 @@
 #ifndef SEALIB_GRAPH_VIRTUALGRAPH_H_
 #define SEALIB_GRAPH_VIRTUALGRAPH_H_
 #include <vector>
-#include "sealib/collection/staticspacestorage.h"
+#include "sealib/dictionary/raggeddictionary.h"
 #include "sealib/graph/graph.h"
 
 namespace Sealib {
 
 /**
  * A virtual subgraph of a given directed or undirected graph. Vertices and
- * edges can be deleted from the virtual graph. Adding new edges is not part of
- * this class (it should be implemented in the using algorithm).
+ * edges can be deleted from the virtual graph. Adding new edges is only
+ * supported in a rudimentary way (should be implemented in the using algorithm
+ * if necessary).
  *
  * @author Simon Heuser
  */
@@ -64,11 +65,34 @@ class VirtualGraph : Graph {
      */
     void removeEdge(uint64_t u, uint64_t v);
 
+    /**
+     * Adds a special, lightweight edge between the given vertices.
+     * Only up to n/log2(n) virtualEdges may be present at any time.
+     * @param u endpoint of the virtual edge
+     * @param v endpoint of the virtual edge
+     */
+    void addVirtualEdge(uint64_t u, uint64_t v);
+
+    /**
+     * Removes the virtual edge between the given vertices.
+     * @param u endpoint of the virtual edge
+     * @param v endpoint of the virtual edge
+     */
+    void removeVirtualEdge(uint64_t u, uint64_t v);
+
+    /**
+     * Gets the ragged dictionary used for the virtual edges.
+     * You may call member(k), get(k), someId() and allIds() on the dictionary.
+     * @return dictionary of virtual edges
+     */
+    RaggedDictionary const &getVirtualEdges() const;
+
  private:
     Graph const &g;
     uint64_t n;
     std::vector<bool> presentVertices;
     std::vector<std::vector<bool>> presentEdges;
+    RaggedDictionary virtualEdges;
 };
 
 }  // namespace Sealib
