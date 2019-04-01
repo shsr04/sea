@@ -11,10 +11,10 @@
 
 namespace Sealib {
 
-const uint64_t BFS_WHITE = 0, BFS_GRAY1 = 1, BFS_GRAY2 = 2, BFS_BLACK = 3;
-
-const Consumer BFS_NOP_PROCESS = [](uint64_t) {};
-const BiConsumer BFS_NOP_EXPLORE = [](uint64_t, uint64_t) {};
+static const uint64_t BFS_WHITE = 0, BFS_GRAY1 = 1, BFS_GRAY2 = 2,
+                      BFS_BLACK = 3;
+static Consumer BFS_NOP_PROCESS = [](uint64_t) {};
+static BiConsumer BFS_NOP_EXPLORE = [](uint64_t, uint64_t) {};
 
 /**
  * Run a breadth-first search over a given graph, while executing the two
@@ -34,9 +34,9 @@ class BFS : Iterator<std::pair<uint64_t, uint64_t>> {
     * @param preprocess to be executed before processing a node u
     * @param preexplore to be executed before exploring an edge (u,v)
     */
-    BFS(Graph const &g, Consumer pp, BiConsumer pe);
+    BFS(Graph const &g, Consumer preprocess, BiConsumer preexplore);
 
-    BFS(Graph const &g, CompactArray color, Consumer pp, BiConsumer pe);
+    BFS(Graph const &g, CompactArray color, Consumer preprocess, BiConsumer preexplore);
 
     /**
      * Initialize or reset the BFS to the beginning.
@@ -70,7 +70,12 @@ class BFS : Iterator<std::pair<uint64_t, uint64_t>> {
      * (init() before calling this method!)
      * @param f function to execute for each element
      */
-    void forEach(std::function<void(std::pair<uint64_t, uint64_t>)> f) override;
+    void forEach(
+        std::function<void(std::pair<uint64_t, uint64_t>)> f) override {
+        do {
+            while (more()) f(next());
+        } while (nextComponent());
+    }
 
  private:
     Graph const &g;
