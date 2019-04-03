@@ -16,8 +16,8 @@ typedef RankStructureBase<VariantBitset> VariantRankStructure;
 
 /**
  * Space efficient RankStructure implementation.
- * @param B Bitset type to use
  * @author Johannes Meintrup
+ * @tparam B Bitset type to use
  */
 template <class B>
 class RankStructureBase {

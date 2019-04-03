@@ -57,17 +57,45 @@ void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
 
 void VirtualGraph::addVirtualEdge(uint64_t u, uint64_t v) {
     if (u < v) {
-        virtualEdges.insert(u, v);
+        if (virtualEdges.member(u)) {
+            std::vector<uint64_t> *a =
+                reinterpret_cast<std::vector<uint64_t> *>(virtualEdges.get(u));
+            a->push_back(v);
+        } else {
+            std::vector<uint64_t> *a = new std::vector<uint64_t>{v};
+            virtualEdges.insert(u, reinterpret_cast<uint64_t>(a));
+        }
     } else {
-        virtualEdges.insert(v, u);
+        if (virtualEdges.member(v)) {
+            std::vector<uint64_t> *a =
+                reinterpret_cast<std::vector<uint64_t> *>(virtualEdges.get(v));
+            a->push_back(u);
+        } else {
+            std::vector<uint64_t> *a = new std::vector<uint64_t>{u};
+            virtualEdges.insert(v, reinterpret_cast<uint64_t>(a));
+        }
     }
 }
 
 void VirtualGraph::removeVirtualEdge(uint64_t u, uint64_t v) {
     if (u < v) {
-        virtualEdges.remove(u);
+        std::vector<uint64_t> *a =
+            reinterpret_cast<std::vector<uint64_t> *>(virtualEdges.get(u));
+        for(auto b=a->begin(); b<a->end(); b++) {
+            if(*b==v) {
+                a->erase(b);
+                break;
+            }
+        }
     } else {
-        virtualEdges.remove(v);
+        std::vector<uint64_t> *a =
+            reinterpret_cast<std::vector<uint64_t> *>(virtualEdges.get(v));
+        for (auto b = a->begin(); b < a->end(); b++) {
+            if (*b == u) {
+                a->erase(b);
+                break;
+            }
+        }
     }
 }
 

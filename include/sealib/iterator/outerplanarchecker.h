@@ -26,21 +26,6 @@ class OuterplanarChecker {
     bool removeClosedChains();
     bool removeAllChains();
 
-    bool isGood(std::pair<uint64_t, uint64_t> p) const {
-        return g.deg(p.first) <= 4 || g.deg(p.second) <= 4;
-    }
-    bool isClosed(std::pair<uint64_t, uint64_t> p) const {
-        uint64_t u = p.first, v = p.second;
-        if (g.deg(u) > g.deg(v)) {
-            u = p.second;
-            v = p.first;
-        }
-        for (uint64_t a = 0; a < g.deg(u); a++) {
-            if (g.head(u, a) == v) return true;
-        }
-        return false;
-    }
-
     struct ChainData {
         std::pair<uint64_t, uint64_t> c1, c2;
         bool isClosed = false, isGood = false, isCycle = false;

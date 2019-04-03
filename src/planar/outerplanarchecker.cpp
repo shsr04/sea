@@ -18,7 +18,7 @@ static std::vector<bool> makeBits(UndirectedGraph const &g) {
     std::vector<bool> r;
     for (uint64_t u = 0; u < g.getOrder(); u++) {
         r.push_back(1);
-        for (uint64_t k = 0; k < g.deg(u); k++) {
+        for (uint64_t k = 0; k < g.deg(u) + 2; k++) {
             r.push_back(0);
         }
     }
@@ -29,7 +29,7 @@ OuterplanarChecker::OuterplanarChecker(UndirectedGraph const &graph)
     : g(graph),
       n(g.getOrder()),
       m(countEdges(graph)),
-      paths(2 * m, 3),
+      paths(2 * m + 2 * n, 3),
       pathOffset(Bitset<uint8_t>(makeBits(graph))),
       shortcuts(n) {}
 
@@ -41,6 +41,7 @@ bool OuterplanarChecker::isOuterplanar() {
         return false;
     }
     if (!removeAllChains()) {
+        return false;
     }
     return true;
 }
