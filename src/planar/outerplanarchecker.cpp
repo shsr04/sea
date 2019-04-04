@@ -126,7 +126,7 @@ bool OuterplanarChecker::removeAllChains() {
                 d.remove(u);
             });
             if (!c.isClosed) {
-                g.addVirtualEdge(c.c1.first, c.c2.first);
+                g.addEdge(c.c1.first, c.c2.first);
             } else {
                 // check if an endpoint got degree 2
                 if (g.deg(c.c1.first) == 2) {

@@ -2,6 +2,8 @@
 #define SEALIB_GRAPH_VIRTUALGRAPH_H_
 #include <vector>
 #include "sealib/dictionary/raggeddictionary.h"
+#include "sealib/dictionary/choicedictionary.h"
+#include "sealib/collection/staticspacestorage.h"
 #include "sealib/graph/graph.h"
 
 namespace Sealib {
@@ -31,9 +33,9 @@ class VirtualGraph : Graph {
 
     /**
      * Returns the vertex v that u points at with its k-th edge.
-     * @param u Vertex u
+     * @param u vertex u
      * @param k index in the adjacency vector of node u
-     * @return Returns v that is the k-th neighbor of u.
+     * @return k-th neighbor of u
      */
     uint64_t head(uint64_t u, uint64_t k) const override;
 
@@ -57,41 +59,28 @@ class VirtualGraph : Graph {
     bool hasVertex(uint64_t u) const;
 
     /**
-     * Remove the given edge (u,v) from the virtual graph.
-     * (Note: If you are using an underlying undirected graph, you need to
-     * remove both edges (u,v) and (v,u).)
+     * Remove the given outgoing edge from the virtual graph.
+     * EFFICIENCY: O(deg(u) ~ log(log(n))) time
      * @param u first endpoint of the edge
      * @param v second endpoint of the edge
      */
     void removeEdge(uint64_t u, uint64_t v);
 
     /**
-     * Adds a special, lightweight edge between the given vertices.
-     * Only up to n/log2(n) virtualEdges may be present at any time.
+     * Adds a virtual edge between the given vertices.
+     * Only up to n/log2(n) virtual edges may be present at any time.
+     * EFFICIENCY: O(log(log(n))) time
      * @param u endpoint of the virtual edge
      * @param v endpoint of the virtual edge
      */
-    void addVirtualEdge(uint64_t u, uint64_t v);
-
-    /**
-     * Removes the virtual edge between the given vertices.
-     * @param u endpoint of the virtual edge
-     * @param v endpoint of the virtual edge
-     */
-    void removeVirtualEdge(uint64_t u, uint64_t v);
-
-    /**
-     * Gets the ragged dictionary used for the virtual edges.
-     * You may call member(k), get(k), someId() and allIds() on the dictionary.
-     * @return dictionary of virtual edges
-     */
-    RaggedDictionary const &getVirtualEdges() const;
+    void addEdge(uint64_t u, uint64_t v);
 
  private:
     Graph const &g;
     uint64_t n;
-    std::vector<bool> presentVertices;
-    std::vector<std::vector<bool>> presentEdges;
+    ChoiceDictionary presentVertices;
+    std::vector<ChoiceDictionary> presentEdges;
+    StaticSpaceStorage actualDegree;
     RaggedDictionary virtualEdges;
 };
 
