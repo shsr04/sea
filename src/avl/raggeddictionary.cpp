@@ -16,7 +16,7 @@ T RaggedDictionaryBase<T>::get(uint64_t i) const {
     if (present.get(i)) {
         return t[i / l].search(i);
     } else {
-        return t[i / l].invalidValue();
+        return AVLTreeBase<T>::invalidValue();
     }
 }
 

@@ -59,9 +59,20 @@ void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
     }
     if (!done) {
         if (virtualEdges.member(u) && virtualEdges.member(v)) {
-            // if v.length=1:
-            virtualEdges.remove(u);
-            virtualEdges.remove(v);
+            std::pair<uint64_t, uint64_t> pu = virtualEdges.get(u),
+                                          pv = virtualEdges.get(v);
+            if (pu.second != INVALID) {
+                virtualEdges.insert(
+                    u, {pu.first == v ? pu.first : pu.second, INVALID});
+            } else {
+                virtualEdges.remove(u);
+            }
+            if (pv.second != INVALID) {
+                virtualEdges.insert(
+                    v, {pv.first == u ? pv.first : pv.second, INVALID});
+            } else {
+                virtualEdges.remove(v);
+            }
             done = true;
         }
     }
@@ -73,10 +84,14 @@ void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
 
 void VirtualGraph::addEdge(uint64_t u, uint64_t v) {
     if (virtualEdges.member(u)) {
-        virtualEdges.insert(u, /*+*/ v);
+        virtualEdges.insert(u, {virtualEdges.get(u).first, v});
+    } else {
+        virtualEdges.insert(u, {v, INVALID});
     }
     if (virtualEdges.member(v)) {
-        virtualEdges.insert(v, /*+*/ u);
+        virtualEdges.insert(v, {virtualEdges.get(v).first, u});
+    } else {
+        virtualEdges.insert(v, {u, INVALID});
     }
     actualDegree.insert(u, actualDegree.get(u) + 1);
     actualDegree.insert(v, actualDegree.get(v) + 1);

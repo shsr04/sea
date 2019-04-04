@@ -81,7 +81,7 @@ class VirtualGraph : Graph {
     ChoiceDictionary presentVertices;
     std::vector<ChoiceDictionary> presentEdges;
     StaticSpaceStorage actualDegree;
-    RaggedDictionary virtualEdges;
+    RaggedPairDictionary virtualEdges;
 };
 
 }  // namespace Sealib

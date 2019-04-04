@@ -342,13 +342,13 @@ AVLTreeBase<T>::~AVLTreeBase() {
 }
 
 template <>
-uint64_t AVLTreeBase<uint64_t>::invalidValue() const {
+uint64_t AVLTreeBase<uint64_t>::invalidValue() {
     return INVALID;
 }
 
 template <>
 std::pair<uint64_t, uint64_t>
-AVLTreeBase<std::pair<uint64_t, uint64_t>>::invalidValue() const {
+AVLTreeBase<std::pair<uint64_t, uint64_t>>::invalidValue() {
     return {INVALID, INVALID};
 }
 

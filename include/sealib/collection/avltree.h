@@ -57,7 +57,7 @@ class AVLTreeBase {
      * Gets the "invalid" value used by the search function.
      * @return Value indicating invalid state (= not found)
      */
-    T invalidValue() const;
+    static T invalidValue();
 
  private:
     struct Cell {
