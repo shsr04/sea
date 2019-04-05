@@ -28,7 +28,7 @@ class AVLTreeBase {
     /**
      * Search for data stored at the given node.
      * @param key The key to search for
-     * @return Data stored at the node, or INVALID if the node was not found
+     * @return Data stored at the node, or invalidValue() if the node was not found
      */
     T search(uint64_t key) const;
 

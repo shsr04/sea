@@ -8,9 +8,11 @@
 
 namespace Sealib {
 
-template<class T> class RaggedDictionaryBase;
+template <class T>
+class RaggedDictionaryBase;
 typedef RaggedDictionaryBase<uint64_t> RaggedDictionary;
-typedef RaggedDictionaryBase<std::pair<uint64_t, uint64_t>> RaggedPairDictionary;
+typedef RaggedDictionaryBase<std::pair<uint64_t, uint64_t>>
+    RaggedPairDictionary;
 
 /**
  * A dictionary that holds up to n/log2(n) key-value pairs and supports the
@@ -27,7 +29,7 @@ typedef RaggedDictionaryBase<std::pair<uint64_t, uint64_t>> RaggedPairDictionary
  * @author Simon Heuser
  * @tparam T value type
  */
-template<class T>
+template <class T>
 class RaggedDictionaryBase {
  public:
     /**

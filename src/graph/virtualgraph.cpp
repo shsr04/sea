@@ -8,7 +8,7 @@ VirtualGraph::VirtualGraph(Graph const &graph)
       presentVertices(n),
       presentEdges(),
       actualDegree(g),
-      virtualEdges(n) {
+      virtualEdges(4 * n) {
     for (uint64_t u = 0; u < n; u++) {
         presentVertices.insert(u);
         presentEdges.emplace_back(ChoiceDictionary(g.deg(u)));
@@ -23,12 +23,22 @@ uint64_t VirtualGraph::deg(uint64_t u) const { return actualDegree.get(u); }
 
 uint64_t VirtualGraph::head(uint64_t u, uint64_t k) const {
     ChoiceDictionaryIterator c(presentEdges[u]);
+    c.init();
     uint64_t a = 0;
     while (c.more()) {
+        uint64_t v = g.head(u, c.next());
         if (a == k) {
-            return c.next();
+            return v;
         }
         a++;
+    }
+    if (virtualEdges.member(u) && a >= k - 1) {
+        std::pair<uint64_t, uint64_t> p = virtualEdges.get(u);
+        if (a == k) {
+            return p.first;
+        } else if (a == k - 1) {
+            return p.second;
+        }
     }
     return INVALID;
 }
@@ -47,9 +57,10 @@ bool VirtualGraph::hasVertex(uint64_t u) const {
 void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
     bool done = false;
     ChoiceDictionaryIterator c(presentEdges[u]);
+    c.init();
     uint64_t b = 0;
     while (c.more()) {
-        uint64_t a = c.next();
+        uint64_t a = g.head(u, c.next());
         if (a == v) {
             presentEdges[u].remove(b);
             done = true;
@@ -59,17 +70,18 @@ void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
     }
     if (!done) {
         if (virtualEdges.member(u) && virtualEdges.member(v)) {
+            // search virtual edge {u,v}
             std::pair<uint64_t, uint64_t> pu = virtualEdges.get(u),
                                           pv = virtualEdges.get(v);
             if (pu.second != INVALID) {
                 virtualEdges.insert(
-                    u, {pu.first == v ? pu.first : pu.second, INVALID});
+                    u, {pu.first == v ? pu.second : pu.first, INVALID});
             } else {
                 virtualEdges.remove(u);
             }
             if (pv.second != INVALID) {
                 virtualEdges.insert(
-                    v, {pv.first == u ? pv.first : pv.second, INVALID});
+                    v, {pv.first == u ? pv.second : pv.first, INVALID});
             } else {
                 virtualEdges.remove(v);
             }
@@ -84,8 +96,10 @@ void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
 
 void VirtualGraph::addEdge(uint64_t u, uint64_t v) {
     if (virtualEdges.member(u)) {
+        // update with second edge
         virtualEdges.insert(u, {virtualEdges.get(u).first, v});
     } else {
+        // add first edge
         virtualEdges.insert(u, {v, INVALID});
     }
     if (virtualEdges.member(v)) {
