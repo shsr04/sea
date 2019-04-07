@@ -31,7 +31,7 @@ OuterplanarChecker::OuterplanarChecker(UndirectedGraph const &graph)
       m(countEdges(graph)),
       paths(2 * m + 2 * n, 3),
       pathOffset(Bitset<uint8_t>(makeBits(graph))),
-      shortcuts(n) {}
+      shortcuts(2 * n) {}
 
 bool OuterplanarChecker::isOuterplanar() {
     if (m > 2 * n - 3) {
@@ -53,7 +53,10 @@ bool OuterplanarChecker::removeClosedChains() {
             return true;
         }
         ChoiceDictionary d(n);
-        for (uint64_t u = 0; u < n; u++) {
+        ChoiceDictionaryIterator vertices = g.vertices();
+        vertices.init();
+        while (vertices.more()) {
+            uint64_t u = vertices.next();
             if (g.deg(u) == 2 && !blocked[u]) {
                 d.insert(u);
             }
@@ -104,9 +107,18 @@ bool OuterplanarChecker::removeAllChains() {
         return true;
     }
     ChoiceDictionary d(n);
-    for (uint64_t u = 0; u < n; u++) {
+    ChoiceDictionaryIterator vertices = g.vertices();
+    // insert one vertex for each good closed chain
+    std::vector<bool> done(n);
+    while (vertices.more()) {
+        uint64_t u = vertices.next();
         if (g.deg(u) == 2) {
-            d.insert(u);
+            ChainData c = chain(u);
+            if (c.isClosed && c.isGood &&
+                !done[g.head(c.c1.first, c.c2.first)]) {
+                done[g.head(c.c1.first, c.c2.second)] = 1;
+                d.insert(g.head(c.c1.first, c.c2.second));
+            }
         }
     }
     ChoiceDictionaryIterator di(d);
@@ -121,32 +133,37 @@ bool OuterplanarChecker::removeAllChains() {
         uint64_t u = di.next();
         ChainData c = chain(u);
         if (c.isGood) {
-            forEach(c, [this, &d](uint64_t u) {
-                g.removeVertex(u);
-                d.remove(u);
-            });
+            d.remove(u);
+            forEach(c, [this, &d](uint64_t u) { g.removeVertex(u); });
             if (!c.isClosed) {
                 g.addEdge(c.c1.first, c.c2.first);
             } else {
-                // check if an endpoint got degree 2
-                if (g.deg(c.c1.first) == 2) {
-                    d.insert(c.c1.first);
-                } else if (g.deg(c.c2.first) == 2) {
-                    d.insert(c.c2.first);
+                // check if an endpoint got degree 2 or 4
+                for (uint64_t e : {c.c1.first, c.c2.first}) {
+                    if (g.deg(e) == 2) {
+                        d.insert(e);
+                    } else if (g.deg(e) == 4) {
+                        for (uint64_t k = 0; k < g.deg(e); k++) {
+                            if (g.deg(g.head(e, k)) == 2) {
+                                d.insert(g.head(e, k));
+                            }
+                        }
+                    }
                 }
             }
         } else {
-            forEach(c, [&d](uint64_t u) { d.remove(u); });
-            if (c.c1.first < c.c2.first) {
-                shortcuts.insert(c.c1.first, c.c2.first);
-            } else {
-                shortcuts.insert(c.c2.first, c.c1.first);
-            }
+            forEach(c, [&d](uint64_t u) {
+                if (d.get(u)) {
+                    d.remove(u);
+                }
+            });
+            shortcuts.insert(u, g.head(c.c2.first, c.c2.second));
+            shortcuts.insert(g.head(c.c2.first, c.c2.second), u);
         }
         di.init();
     }
     return true;
-}
+}  // namespace Sealib
 
 OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
     ChainData r;

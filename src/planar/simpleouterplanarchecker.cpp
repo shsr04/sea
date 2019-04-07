@@ -55,7 +55,7 @@ uint64_t SimpleOuterplanarChecker::outerIndex(uint64_t u, uint64_t v) {
         if (g.head(u, b) == v) return b;
     }
     for (uint64_t a = 0; a < virtualAdj[u].size(); a++) {
-        if (virtualAdj[u][a] == v) return b+a;
+        if (virtualAdj[u][a] == v) return b + a;
     }
     return INVALID;
 }
@@ -89,7 +89,7 @@ bool SimpleOuterplanarChecker::isOuterplanar() {
     }
 
     while (actualOrder > 3) {
-        if(degTwo.empty()) return false;
+        if (degTwo.empty()) return false;
         uint64_t u = degTwo.front();
         degTwo.pop();
         present[u] = 0;

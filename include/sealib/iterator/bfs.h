@@ -36,7 +36,8 @@ class BFS : Iterator<std::pair<uint64_t, uint64_t>> {
     */
     BFS(Graph const &g, Consumer preprocess, BiConsumer preexplore);
 
-    BFS(Graph const &g, CompactArray color, Consumer preprocess, BiConsumer preexplore);
+    BFS(Graph const &g, CompactArray color, Consumer preprocess,
+        BiConsumer preexplore);
 
     /**
      * Initialize or reset the BFS to the beginning.

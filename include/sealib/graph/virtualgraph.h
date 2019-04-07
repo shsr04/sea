@@ -59,6 +59,12 @@ class VirtualGraph : Graph {
     bool hasVertex(uint64_t u) const;
 
     /**
+     * Get an iterator over all present vertices.
+     * @return CD iterator over the vertices present in the graph
+     */
+    ChoiceDictionaryIterator vertices() const;
+
+    /**
      * Remove the given outgoing edge from the virtual graph.
      * EFFICIENCY: O(deg(u) ~ log(log(n))) time
      * @param u first endpoint of the edge

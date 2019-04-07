@@ -54,6 +54,10 @@ bool VirtualGraph::hasVertex(uint64_t u) const {
     return presentVertices.get(u);
 }
 
+ChoiceDictionaryIterator VirtualGraph::vertices() const {
+    return ChoiceDictionaryIterator(presentVertices);
+}
+
 void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
     bool done = false;
     ChoiceDictionaryIterator c(presentEdges[u]);
