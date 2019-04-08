@@ -75,15 +75,22 @@ bool OuterplanarChecker::removeClosedChains() {
             if (c.isClosed) {
                 bool repeat = false, doTried = false;
                 do {
-                    bool gotTried = false;
-                    forEach(c, [this, &d, &gotTried](uint64_t u, uint64_t) {
+                    bool gotTried = false, tooManyPaths = false;
+                    forEach(c, [&](uint64_t u, uint64_t k) {
                         if (tried[u]) {
                             gotTried = true;
                         }
                         g.removeVertex(u);
                         d.remove(u);
+                        // TODO: mate!
+                        if (!incrementPaths(u, k) ||
+                            !incrementPaths(g.head(u, k), g.mate(u, k))) {
+                            tooManyPaths = true;
+                        }
                     });
-                    if (c.isCycle || gotTried) {
+                    if (tooManyPaths) {
+                        return false;
+                    } else if (c.isCycle || gotTried) {
                         break;
                     }
                     // if an endpoint becomes degree 2, repeat immediately
@@ -145,7 +152,16 @@ bool OuterplanarChecker::removeAllChains() {
         ChainData c = chain(u);
         if (c.isGood) {
             d.remove(u);
-            forEach(c, [this](uint64_t u, uint64_t) { g.removeVertex(u); });
+            bool tooManyPaths = false;
+            forEach(c, [&](uint64_t u, uint64_t k) {
+                g.removeVertex(u);
+                if (!incrementPaths(u, k)) {
+                    tooManyPaths = true;
+                }
+            });
+            if (tooManyPaths) {
+                return false;
+            }
             if (!c.isClosed) {
                 g.addEdge(c.c1.first, c.c2.first);
             } else {
@@ -179,6 +195,12 @@ bool OuterplanarChecker::removeAllChains() {
         di.init();
     }
     return true;
+}
+
+bool OuterplanarChecker::incrementPaths(uint64_t u, uint64_t k) {
+    uint64_t a = (pathOffset.select(u + 1) - u - 1U) + k;
+    paths.insert(a, paths.get(a) + 1);
+    return paths.get(a) <= 2;
 }
 
 OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {

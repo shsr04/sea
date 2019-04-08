@@ -1,9 +1,9 @@
 #ifndef SEALIB_GRAPH_VIRTUALGRAPH_H_
 #define SEALIB_GRAPH_VIRTUALGRAPH_H_
 #include <vector>
-#include "sealib/dictionary/raggeddictionary.h"
-#include "sealib/dictionary/choicedictionary.h"
 #include "sealib/collection/staticspacestorage.h"
+#include "sealib/dictionary/choicedictionary.h"
+#include "sealib/dictionary/raggeddictionary.h"
 #include "sealib/graph/graph.h"
 
 namespace Sealib {
