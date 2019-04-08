@@ -29,6 +29,7 @@ OuterplanarChecker::OuterplanarChecker(UndirectedGraph const &graph)
     : g(graph),
       n(g.getOrder()),
       m(countEdges(graph)),
+      tried(n),
       paths(2 * m + 2 * n, 3),
       pathOffset(Bitset<uint8_t>(makeBits(graph))),
       shortcuts(2 * n) {}
@@ -47,7 +48,6 @@ bool OuterplanarChecker::isOuterplanar() {
 }
 
 bool OuterplanarChecker::removeClosedChains() {
-    std::vector<bool> blocked(n);
     for (uint64_t round = 0; round < log2(log2(n)) + 1; round++) {
         if (g.getOrder() <= 3) {
             return true;
@@ -57,7 +57,7 @@ bool OuterplanarChecker::removeClosedChains() {
         vertices.init();
         while (vertices.more()) {
             uint64_t u = vertices.next();
-            if (g.deg(u) == 2 && !blocked[u]) {
+            if (g.deg(u) == 2) {
                 d.insert(u);
             }
         }
@@ -73,31 +73,43 @@ bool OuterplanarChecker::removeClosedChains() {
             uint64_t u = di.next();
             ChainData c = chain(u);
             if (c.isClosed) {
-                bool repeat = false;
+                bool repeat = false, doTried = false;
                 do {
-                    forEach(c, [this, &d](uint64_t u) {
+                    bool gotTried = false;
+                    forEach(c, [this, &d, &gotTried](uint64_t u, uint64_t) {
+                        if (tried[u]) {
+                            gotTried = true;
+                        }
                         g.removeVertex(u);
                         d.remove(u);
                     });
-                    if (c.isCycle) {
+                    if (c.isCycle || gotTried) {
                         break;
                     }
                     // if an endpoint becomes degree 2, repeat immediately
                     if (g.deg(c.c1.first) == 2) {
                         c = chain(c.c1.first);
-                        repeat = true;
+                        if (c.isClosed) {
+                            repeat = true;
+                        }
+                        doTried = true;
                     } else if (g.deg(c.c2.first) == 2) {
                         c = chain(c.c2.first);
-                        repeat = true;
+                        if (c.isClosed) {
+                            repeat = true;
+                        }
+                        doTried = true;
                     } else {
                         repeat = false;
                     }
                 } while (repeat);
+                if (doTried) {
+                    forEach(c, [this](uint64_t u, uint64_t) { tried[u] = 1; });
+                }
                 di.init();  // re-init
-            } else {
-                forEach(c, [&blocked](uint64_t u) { blocked[u] = 1; });
             }
         }
+        tried.assign(tried.size(), 0);
     }
     return true;
 }
@@ -108,16 +120,15 @@ bool OuterplanarChecker::removeAllChains() {
     }
     ChoiceDictionary d(n);
     ChoiceDictionaryIterator vertices = g.vertices();
+    vertices.init();
     // insert one vertex for each good closed chain
-    std::vector<bool> done(n);
     while (vertices.more()) {
         uint64_t u = vertices.next();
         if (g.deg(u) == 2) {
             ChainData c = chain(u);
             if (c.isClosed && c.isGood &&
-                !done[g.head(c.c1.first, c.c2.first)]) {
-                done[g.head(c.c1.first, c.c2.second)] = 1;
-                d.insert(g.head(c.c1.first, c.c2.second));
+                !d.get(g.head(c.c1.first, c.c1.second))) {
+                d.insert(g.head(c.c1.first, c.c1.second));
             }
         }
     }
@@ -134,7 +145,7 @@ bool OuterplanarChecker::removeAllChains() {
         ChainData c = chain(u);
         if (c.isGood) {
             d.remove(u);
-            forEach(c, [this, &d](uint64_t u) { g.removeVertex(u); });
+            forEach(c, [this](uint64_t u, uint64_t) { g.removeVertex(u); });
             if (!c.isClosed) {
                 g.addEdge(c.c1.first, c.c2.first);
             } else {
@@ -152,9 +163,14 @@ bool OuterplanarChecker::removeAllChains() {
                 }
             }
         } else {
-            forEach(c, [&d](uint64_t u) {
+            forEach(c, [this, &d](uint64_t u, uint64_t) {
+                // clear old deg. 2 vertices and shortcuts
                 if (d.get(u)) {
                     d.remove(u);
+                }
+                if (shortcuts.get(u)) {
+                    shortcuts.remove(shortcuts.get(u));
+                    shortcuts.remove(u);
                 }
             });
             shortcuts.insert(u, g.head(c.c2.first, c.c2.second));
@@ -163,7 +179,7 @@ bool OuterplanarChecker::removeAllChains() {
         di.init();
     }
     return true;
-}  // namespace Sealib
+}
 
 OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
     ChainData r;
@@ -223,18 +239,14 @@ OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
 }
 
 void OuterplanarChecker::forEach(OuterplanarChecker::ChainData const &c,
-                                 Consumer f) {
-    if (c.isCycle) {
-        f(c.c1.first);
-        f(c.c2.first);
-    }
-    uint64_t u = g.head(c.c1.first, c.c1.second);
-    uint64_t p = c.c1.first;
+                                 BiConsumer f) {
+    uint64_t u = c.c1.first, k = c.c1.second;
+    uint64_t p;
     while (u != c.c2.first) {
-        f(u);
-        uint64_t k = g.head(u, 0) == p;
+        f(u, k);
         p = u;
         u = g.head(u, k);
+        k = g.head(u, 0) == p;
     }
 }
 

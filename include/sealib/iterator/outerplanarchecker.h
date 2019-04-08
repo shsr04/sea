@@ -19,6 +19,7 @@ class OuterplanarChecker {
  private:
     VirtualGraph g;
     uint64_t n, m;
+    std::vector<bool> tried;
     CompactArray paths;
     RankSelect pathOffset;
     RaggedDictionary shortcuts;
@@ -38,7 +39,7 @@ class OuterplanarChecker {
      */
     ChainData chain(uint64_t u);
 
-    void forEach(ChainData const& c, Consumer f);
+    void forEach(ChainData const& c, BiConsumer f);
 };
 }  // namespace Sealib
 
