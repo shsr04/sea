@@ -68,7 +68,7 @@ TEST(GraphTest, graph_integrity) {
 
 TEST(VirtualGraphTest, basicOperations) {
     uint32_t n = 100, deg = 15;
-    DirectedGraph baseGraph = GraphCreator::kOutdegree(n, deg);
+    UndirectedGraph baseGraph = GraphCreator::kRegular(n, deg);
     VirtualGraph g(baseGraph);
     EXPECT_EQ(g.getOrder(), n);
     for (uint32_t a = 0; a < n; a++) {
@@ -87,6 +87,33 @@ TEST(VirtualGraphTest, basicOperations) {
         EXPECT_EQ(g.head(3, a), baseGraph.head(3, a + 1)) << "failed at " << a;
     }
     EXPECT_EQ(g.head(3, deg - 1), INVALID);
+}
+
+TEST(VirtualGraphTest, mate) {
+    uint64_t n = 100, deg = 8;
+    UndirectedGraph baseGraph = GraphCreator::kRegular(n, deg);
+    VirtualGraph g(baseGraph);
+    for (uint64_t u = 0; u < n; u++) {
+        for (uint64_t k = 0; k < g.deg(u); k++) {
+            ASSERT_EQ(g.mate(u, k), baseGraph.mate(u, k));
+        }
+    }
+
+    g.addEdge(20, 30);
+    g.addEdge(40, 20);
+    EXPECT_EQ(g.mate(20, deg), deg);
+    EXPECT_EQ(g.mate(30, deg), deg);
+    EXPECT_EQ(g.mate(20, deg + 1), deg);
+    EXPECT_EQ(g.mate(40, deg), deg + 1);
+
+    g.removeEdge(30, 20);
+    EXPECT_EQ(g.mate(20, deg), deg);
+    EXPECT_EQ(g.mate(40, deg), deg);
+
+    g.removeEdge(20, 40);
+    EXPECT_EQ(g.mate(20, deg), INVALID);
+    EXPECT_EQ(g.mate(30, deg), INVALID);
+    EXPECT_EQ(g.mate(40, deg), INVALID);
 }
 
 TEST(VirtualGraphTest, virtualEdges) {
@@ -113,7 +140,7 @@ TEST(VirtualGraphTest, virtualEdges) {
     ASSERT_EQ(g.deg(0), baseGraph.deg(0));
     ASSERT_EQ(g.deg(20), baseGraph.deg(20));
 
-    for (uint64_t u = 0; u < g.getOrder()/log2(g.getOrder()); u++) {
+    for (uint64_t u = 0; u < g.getOrder() / log2(g.getOrder()); u++) {
         g.addEdge(u, u + 1);
     }
 }

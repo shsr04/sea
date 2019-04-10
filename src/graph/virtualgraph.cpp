@@ -2,8 +2,9 @@
 
 namespace Sealib {
 
-VirtualGraph::VirtualGraph(Graph const &graph)
-    : g(graph),
+VirtualGraph::VirtualGraph(UndirectedGraph const &graph)
+    : UndirectedGraph(0),
+      g(graph),
       n(g.getOrder()),
       presentVertices(n),
       presentEdges(),
@@ -43,6 +44,26 @@ uint64_t VirtualGraph::head(uint64_t u, uint64_t k) const {
     return INVALID;
 }
 
+uint64_t VirtualGraph::mate(uint64_t u, uint64_t k) const {
+    ChoiceDictionaryIterator c(presentEdges[u]);
+    c.init();
+    uint64_t a = 0;
+    while (c.more()) {
+        uint64_t r = g.mate(u, c.next());
+        if (a == k) {
+            return r;
+        }
+        a++;
+    }
+    if (virtualEdges.member(u) && a >= k - 1) {
+        std::pair<uint64_t, uint64_t> q = virtualEdges.get(head(u, k));
+        assert(q.first == u || q.second == u);
+        return q.first == u && q.second != INVALID ? deg(head(u, k)) - 2
+                                                   : deg(head(u, k)) - 1;
+    }
+    return INVALID;
+}
+
 uint64_t VirtualGraph::getOrder() const { return n; }
 
 void VirtualGraph::removeVertex(uint64_t u) {
@@ -60,17 +81,20 @@ ChoiceDictionaryIterator VirtualGraph::vertices() const {
 
 void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
     bool done = false;
-    ChoiceDictionaryIterator c(presentEdges[u]);
-    c.init();
-    uint64_t b = 0;
-    while (c.more()) {
-        uint64_t a = g.head(u, c.next());
-        if (a == v) {
-            presentEdges[u].remove(b);
-            done = true;
-            break;
+    // delete edge between u and v
+    for (uint64_t e : {u, v}) {
+        ChoiceDictionaryIterator c(presentEdges[e]);
+        c.init();
+        uint64_t b = 0, f = e == u ? v : u;
+        while (c.more()) {
+            uint64_t a = g.head(e, c.next());
+            if (a == f) {
+                presentEdges[e].remove(b);
+                done = true;
+                break;
+            }
+            b++;
         }
-        b++;
     }
     if (!done) {
         if (virtualEdges.member(u) && virtualEdges.member(v)) {

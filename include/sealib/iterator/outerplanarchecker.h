@@ -27,6 +27,8 @@ class OuterplanarChecker {
     bool removeClosedChains();
     bool removeAllChains();
 
+    bool incrementPaths(uint64_t u, uint64_t k);
+
     struct ChainData {
         std::pair<uint64_t, uint64_t> c1, c2;
         bool isClosed = false, isGood = false, isCycle = false;

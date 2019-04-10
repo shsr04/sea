@@ -4,25 +4,25 @@
 #include "sealib/collection/staticspacestorage.h"
 #include "sealib/dictionary/choicedictionary.h"
 #include "sealib/dictionary/raggeddictionary.h"
-#include "sealib/graph/graph.h"
+#include "sealib/graph/undirectedgraph.h"
 
 namespace Sealib {
 
 /**
- * A virtual subgraph of a given directed or undirected graph. Vertices and
+ * A virtual subgraph of a given undirected graph. Vertices and
  * edges can be deleted from the virtual graph. Adding new edges is only
  * supported in a rudimentary way (should be implemented in the using algorithm
  * if necessary).
  *
  * @author Simon Heuser
  */
-class VirtualGraph : Graph {
+class VirtualGraph : UndirectedGraph {
  public:
     /**
      * Creates a new virtual graph.
      * @param g Graph
      */
-    explicit VirtualGraph(Graph const &g);
+    explicit VirtualGraph(UndirectedGraph const &g);
 
     /**
      * Returns the degree of the given vertex.
@@ -38,6 +38,14 @@ class VirtualGraph : Graph {
      * @return k-th neighbor of u
      */
     uint64_t head(uint64_t u, uint64_t k) const override;
+
+    /**
+     * Get the cross index of the given outgoing edge.
+     * @param u vertex
+     * @param k outgoing edge
+     * @return index k' of the edge leading back to u
+     */
+    uint64_t mate(uint64_t u, uint64_t k) const override;
 
     /**
      * @return Returns the order of the graph, i.e, the total number of
@@ -65,7 +73,7 @@ class VirtualGraph : Graph {
     ChoiceDictionaryIterator vertices() const;
 
     /**
-     * Remove the given outgoing edge from the virtual graph.
+     * Remove the given edge {u,v} from the virtual graph.
      * EFFICIENCY: O(deg(u) ~ log(log(n))) time
      * @param u first endpoint of the edge
      * @param v second endpoint of the edge
@@ -74,7 +82,8 @@ class VirtualGraph : Graph {
 
     /**
      * Adds a virtual edge between the given vertices.
-     * Only up to n/log2(n) virtual edges may be present at any time.
+     * (Note: Only up to O(n/log(n)) virtual edges may be present at any time.)
+     * 
      * EFFICIENCY: O(log(log(n))) time
      * @param u endpoint of the virtual edge
      * @param v endpoint of the virtual edge
@@ -82,7 +91,7 @@ class VirtualGraph : Graph {
     void addEdge(uint64_t u, uint64_t v);
 
  private:
-    Graph const &g;
+    UndirectedGraph const &g;
     uint64_t n;
     ChoiceDictionary presentVertices;
     std::vector<ChoiceDictionary> presentEdges;
