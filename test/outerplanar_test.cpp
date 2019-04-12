@@ -1,9 +1,27 @@
 #include <gtest/gtest.h>
 #include "../src/planar/simpleouterplanarchecker.h"
+#include "sealib/graph/graphcreator.h"
+#include "sealib/graph/graphio.h"
 #include "sealib/graph/undirectedgraph.h"
+#include "sealib/iterator/cutvertexiterator.h"
 #include "sealib/iterator/outerplanarchecker.h"
 
 namespace Sealib {
+
+TEST(OuterplanarCheckerTest, random) {
+    for (uint64_t a = 0; a < 10000; a++) {
+        UndirectedGraph g = GraphCreator::kRegular(8, 1);
+        // UndirectedGraph
+        // g=GraphImporter::importGML<UndirectedGraph>("opg-fail1.gml");
+        SimpleOuterplanarChecker s1(g);
+        OuterplanarChecker s2(g);
+        bool r1 = s1.isOuterplanar(), r2 = s2.isOuterplanar();
+        if (r1 != r2) {
+            GraphExporter::exportGML(g, false, "opg-fail1.gml");
+        }
+        EXPECT_EQ(r1, r2);
+    }
+}
 
 TEST(OuterplanarCheckerTest, sample1) {
     std::vector<ExtendedNode> nodes(4);

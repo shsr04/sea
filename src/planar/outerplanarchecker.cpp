@@ -73,7 +73,7 @@ bool OuterplanarChecker::removeClosedChains() {
             uint64_t u = di.next();
             ChainData c = chain(u);
             if (c.isClosed) {
-                bool repeat = false, doTried = false;
+                bool repeat = false, repeatedOnce = false;
                 do {
                     bool gotTried = false, tooManyPaths = false;
                     forEach(c, [&](uint64_t u, uint64_t k) {
@@ -82,7 +82,6 @@ bool OuterplanarChecker::removeClosedChains() {
                         }
                         g.removeVertex(u);
                         d.remove(u);
-                        // TODO: mate!
                         if (!incrementPaths(u, k) ||
                             !incrementPaths(g.head(u, k), g.mate(u, k))) {
                             tooManyPaths = true;
@@ -94,23 +93,19 @@ bool OuterplanarChecker::removeClosedChains() {
                         break;
                     }
                     // if an endpoint becomes degree 2, repeat immediately
-                    if (g.deg(c.c1.first) == 2) {
-                        c = chain(c.c1.first);
-                        if (c.isClosed) {
-                            repeat = true;
+                    repeat = false;
+                    for (uint64_t e : {c.c1.first, c.c2.first}) {
+                        if (g.deg(e) == 2) {
+                            c = chain(e);
+                            if (c.isClosed) {
+                                repeat = true;
+                                repeatedOnce = true;
+                            }
                         }
-                        doTried = true;
-                    } else if (g.deg(c.c2.first) == 2) {
-                        c = chain(c.c2.first);
-                        if (c.isClosed) {
-                            repeat = true;
-                        }
-                        doTried = true;
-                    } else {
-                        repeat = false;
                     }
                 } while (repeat);
-                if (doTried) {
+                if (repeatedOnce) {
+                    // if repeated at least once
                     forEach(c, [this](uint64_t u, uint64_t) { tried[u] = 1; });
                 }
                 di.init();  // re-init

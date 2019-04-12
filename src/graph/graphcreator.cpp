@@ -161,9 +161,11 @@ UndirectedGraph GraphCreator::sparseUndirected(uint64_t order) {
 }
 
 UndirectedGraph GraphCreator::kRegular(uint64_t order, uint64_t degreePerNode) {
+    assert("--- Cannot create a k-regular graph with odd number of vertices! ---" &&
+           order % 2 == 0);
     UndirectedGraph g(order);
     for (uint64_t k = 0; k < degreePerNode; k++) {
-        std::deque<uint64_t> u;
+        std::vector<uint64_t> u;
         for (uint64_t a = 0; a < order; a++) {
             u.emplace_back(a);
         }

@@ -44,9 +44,10 @@ class GraphCreator {
     /**
      * Create a random k-regular graph.
      * Complexity: O(n*k) time
-     * @param order number of nodes to generate
+     * @param order number of nodes to generate (should be an even number!)
      * @param k the degree of each node
      * @return the resulting undirected graph G (n = order, m = k*order)
+     * (Note: if order is an odd number, G will have order+1 vertices)
      * @author Simon Heuser
      */
     static UndirectedGraph kRegular(uint64_t order, uint64_t k);

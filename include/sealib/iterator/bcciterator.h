@@ -62,7 +62,7 @@ class BCCIterator : Iterator<std::pair<uint64_t, uint64_t>> {
 
     /**
      * Execute a given operation for each found pair (u,?).
-     * (init() and start() before calling this method!)
+     * (init() before calling this method!)
      * @param f function to execute for each element
      */
     void forEach(
