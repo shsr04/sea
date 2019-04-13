@@ -10,7 +10,7 @@ namespace Sealib {
 
 TEST(OuterplanarCheckerTest, random) {
     for (uint64_t a = 0; a < 10000; a++) {
-        UndirectedGraph g = GraphCreator::kRegular(8, 1);
+        UndirectedGraph g = GraphCreator::kRegular(4, 2);
         // UndirectedGraph
         // g=GraphImporter::importGML<UndirectedGraph>("opg-fail1.gml");
         SimpleOuterplanarChecker s1(g);
@@ -18,8 +18,31 @@ TEST(OuterplanarCheckerTest, random) {
         bool r1 = s1.isOuterplanar(), r2 = s2.isOuterplanar();
         if (r1 != r2) {
             GraphExporter::exportGML(g, false, "opg-fail1.gml");
+        } else if (r1 && r2) {
+            GraphExporter::exportGML(g, false, "opg-true1.gml");
         }
         EXPECT_EQ(r1, r2);
+    }
+}
+
+TEST(OuterplanarCheckerTest, triangulated) {
+    UndirectedGraph g = GraphCreator::triangulated(5000);
+    {
+        // triangle graph => BOP
+        SimpleOuterplanarChecker s1(g);
+        OuterplanarChecker s2(g);
+        bool r1 = s1.isOuterplanar(), r2 = s2.isOuterplanar();
+        EXPECT_TRUE(r1 && r2);
+    }
+
+    {
+        // triangle graph with one bad edge => not BOP
+        g.getNode(1).addAdjacency({g.getOrder() - 2, 3});
+        g.getNode(g.getOrder() - 2).addAdjacency({1, 3});
+        SimpleOuterplanarChecker s1(g);
+        OuterplanarChecker s2(g);
+        bool r1 = s1.isOuterplanar(), r2 = s2.isOuterplanar();
+        EXPECT_FALSE(r1 || r2);
     }
 }
 

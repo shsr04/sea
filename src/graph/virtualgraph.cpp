@@ -85,15 +85,14 @@ void VirtualGraph::removeEdge(uint64_t u, uint64_t v) {
     for (uint64_t e : {u, v}) {
         ChoiceDictionaryIterator c(presentEdges[e]);
         c.init();
-        uint64_t b = 0, f = e == u ? v : u;
+        uint64_t f = e == u ? v : u;
         while (c.more()) {
-            uint64_t a = g.head(e, c.next());
-            if (a == f) {
+            uint64_t b = c.next();
+            if (g.head(e, b) == f) {
                 presentEdges[e].remove(b);
                 done = true;
                 break;
             }
-            b++;
         }
     }
     if (!done) {

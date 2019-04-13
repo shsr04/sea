@@ -80,13 +80,20 @@ bool OuterplanarChecker::removeClosedChains() {
                         if (tried[u]) {
                             gotTried = true;
                         }
-                        g.removeVertex(u);
-                        d.remove(u);
+                        if (g.hasVertex(u)) {
+                            g.removeVertex(u);
+                        }
+                        if (d.get(u)) {
+                            d.remove(u);
+                        }
                         if (!incrementPaths(u, k) ||
                             !incrementPaths(g.head(u, k), g.mate(u, k))) {
                             tooManyPaths = true;
                         }
                     });
+                    for (std::pair<uint64_t, uint64_t> e : {c.c1, c.c2}) {
+                        g.removeEdge(e.first, g.head(e.first, e.second));
+                    }
                     if (tooManyPaths) {
                         return false;
                     } else if (c.isCycle || gotTried) {
@@ -96,14 +103,18 @@ bool OuterplanarChecker::removeClosedChains() {
                     repeat = false;
                     for (uint64_t e : {c.c1.first, c.c2.first}) {
                         if (g.deg(e) == 2) {
-                            c = chain(e);
-                            if (c.isClosed) {
+                            if (chain(e).isClosed) {
+                                c = chain(e);
                                 repeat = true;
                                 repeatedOnce = true;
+                                break;
                             }
                         }
                     }
                 } while (repeat);
+                if (g.getOrder() <= 3) {
+                    return true;
+                }
                 if (repeatedOnce) {
                     // if repeated at least once
                     forEach(c, [this](uint64_t u, uint64_t) { tried[u] = 1; });
@@ -257,7 +268,9 @@ OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
 
 void OuterplanarChecker::forEach(OuterplanarChecker::ChainData const &c,
                                  BiConsumer f) {
-    uint64_t u = c.c1.first, k = c.c1.second;
+    uint64_t u = g.head(c.c1.first, c.c1.second),
+             k = g.head(u, 0) == c.c1.first;
+    f(u, g.head(u, 0) != c.c1.first);
     uint64_t p;
     while (u != c.c2.first) {
         f(u, k);

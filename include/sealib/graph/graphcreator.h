@@ -127,6 +127,15 @@ class GraphCreator {
      * @return transposed input graph
      */
     static DirectedGraph transpose(DirectedGraph const &g);
+
+    /**
+     * Create a triangulated graph with the given number of vertices. A number
+     * of triangles is joined together so that the resulting graph is
+     * biconnected and maximally outerplanar.
+     * @param order number of vertices
+     * @return triangulated graph (n=order, m=2*n-3)
+     */
+    static UndirectedGraph triangulated(uint64_t order);
 };
 }  // namespace Sealib
 #endif  // SEALIB_GRAPH_GRAPHCREATOR_H_

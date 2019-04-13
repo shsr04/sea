@@ -54,10 +54,10 @@ class VirtualGraph : UndirectedGraph {
     uint64_t getOrder() const override;
 
     /**
-     * Remove the given vertex from the virtual graph.
-     * @param u vertex to be removed
+     * Get an iterator over all present vertices.
+     * @return CD iterator over the vertices present in the graph
      */
-    void removeVertex(uint64_t u);
+    ChoiceDictionaryIterator vertices() const;
 
     /**
      * Check if the given vertex is still present in the virtual graph.
@@ -67,10 +67,10 @@ class VirtualGraph : UndirectedGraph {
     bool hasVertex(uint64_t u) const;
 
     /**
-     * Get an iterator over all present vertices.
-     * @return CD iterator over the vertices present in the graph
+     * Remove the given vertex from the virtual graph.
+     * @param u vertex to be removed
      */
-    ChoiceDictionaryIterator vertices() const;
+    void removeVertex(uint64_t u);
 
     /**
      * Remove the given edge {u,v} from the virtual graph.
