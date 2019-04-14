@@ -107,9 +107,9 @@ class EdgeMarker {
     static const uint8_t PARENT = 0x1;
 
     UndirectedGraph const &g;
-    uint64_t n;
+    uint64_t n, m;
     StaticSpaceStorage parent;
-    StaticSpaceStorage edges;
+    CompactArray edges;
     RankSelect offset;
 
     void markParents(uint64_t w, uint64_t u);

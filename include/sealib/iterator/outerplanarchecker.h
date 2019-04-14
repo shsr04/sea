@@ -11,7 +11,9 @@
 
 namespace Sealib {
 /**
- * Recognizes if a given biconnected input graph is outerplanar.
+ * Recognizes if a given biconnected graph is outerplanar.
+ * (Note: You can use the BCC iterator to make a biconnected subgraph from an
+ * arbitrary graph.)
  * EFFICIENCY: O(n*log(log(n))) time, O(n) bits
  *
  * @author Simon Heuser
@@ -25,7 +27,8 @@ class OuterplanarChecker {
     explicit OuterplanarChecker(UndirectedGraph const& g);
 
     /**
-     * Run the algorithm to check if the given input graph is outerplanar.
+     * Run the algorithm to check if the given biconnected graph G is
+     * outerplanar.
      * @return true if G is outerplanar, false otherwise
      */
     bool isOuterplanar();

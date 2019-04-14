@@ -3,15 +3,22 @@
 #include "sealib/graph/graphcreator.h"
 #include "sealib/graph/graphio.h"
 #include "sealib/graph/undirectedgraph.h"
-#include "sealib/iterator/cutvertexiterator.h"
+#include "sealib/iterator/bcciterator.h"
 #include "sealib/iterator/outerplanarchecker.h"
 
 namespace Sealib {
 
 TEST(OuterplanarCheckerTest, random) {
-    for (uint64_t a = 0; a < 10000; a++) {
-        UndirectedGraph g = GraphCreator::kRegular(4, 2);
-        // UndirectedGraph
+    for (uint64_t a = 0; a < 1000; a++) {
+        BCCOutput b(GraphCreator::kRegular(1000, 3));
+        std::vector<ExtendedNode> nodes(1000);
+        b.traverse(0, [](uint64_t) {},
+                   [&nodes](uint64_t u, uint64_t v) {
+                       nodes[u].addAdjacency({v, nodes[v].getDegree()});
+                       nodes[v].addAdjacency({u, nodes[u].getDegree() - 1});
+                   });
+        UndirectedGraph g(std::move(nodes));
+        
         // g=GraphImporter::importGML<UndirectedGraph>("opg-fail1.gml");
         SimpleOuterplanarChecker s1(g);
         OuterplanarChecker s2(g);

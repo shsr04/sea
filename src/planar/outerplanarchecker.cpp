@@ -92,6 +92,9 @@ bool OuterplanarChecker::removeClosedChains() {
                         }
                     });
                     for (std::pair<uint64_t, uint64_t> e : {c.c1, c.c2}) {
+                        if (g.deg(e.first) < e.second + 1) {
+                            return false;
+                        }
                         g.removeEdge(e.first, g.head(e.first, e.second));
                     }
                     if (tooManyPaths) {
