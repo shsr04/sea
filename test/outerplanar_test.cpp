@@ -32,7 +32,8 @@ TEST(OuterplanarCheckerTest, triangulated) {
         SimpleOuterplanarChecker s1(g);
         OuterplanarChecker s2(g);
         bool r1 = s1.isOuterplanar(), r2 = s2.isOuterplanar();
-        EXPECT_TRUE(r1 && r2);
+        EXPECT_TRUE(r1);
+        EXPECT_TRUE(r2);
     }
 
     {
@@ -42,7 +43,40 @@ TEST(OuterplanarCheckerTest, triangulated) {
         SimpleOuterplanarChecker s1(g);
         OuterplanarChecker s2(g);
         bool r1 = s1.isOuterplanar(), r2 = s2.isOuterplanar();
-        EXPECT_FALSE(r1 || r2);
+        EXPECT_FALSE(r1);
+        EXPECT_FALSE(r2);
+    }
+}
+
+TEST(OuterplanarCheckerTest, cycle) {
+    UndirectedGraph g = GraphCreator::cycle(10);
+    {
+        SimpleOuterplanarChecker s1(g);
+        OuterplanarChecker s2(g);
+        EXPECT_TRUE(s1.isOuterplanar());
+        EXPECT_TRUE(s2.isOuterplanar());
+    }
+
+    // first chord: OK
+    g.getNode(0).addAdjacency({g.getOrder() / 2, 2});
+    g.getNode(g.getOrder() / 2).addAdjacency({0, 2});
+
+    {
+        SimpleOuterplanarChecker s1(g);
+        OuterplanarChecker s2(g);
+        EXPECT_TRUE(s1.isOuterplanar());
+        EXPECT_TRUE(s2.isOuterplanar());
+    }
+
+    // add chord that intersects first chord => not BOP
+    g.getNode(g.getOrder() / 4).addAdjacency({3 * g.getOrder() / 4, 2});
+    g.getNode(3 * g.getOrder() / 4).addAdjacency({g.getOrder() / 4, 2});
+
+    {
+        SimpleOuterplanarChecker s1(g);
+        OuterplanarChecker s2(g);
+        EXPECT_FALSE(s1.isOuterplanar());
+        EXPECT_FALSE(s2.isOuterplanar());
     }
 }
 

@@ -237,6 +237,17 @@ UndirectedGraph GraphCreator::triangulated(uint64_t order) {
     return UndirectedGraph(nodes);
 }
 
+UndirectedGraph GraphCreator::cycle(uint64_t order) {
+    std::vector<ExtendedNode> nodes;
+    uint64_t n = 0;
+    while (nodes.size() < order) {
+        nodes.emplace_back(ExtendedNode({{n == 0 ? order - 1 : n - 1, 1},
+                                         {n == order - 1 ? 0 : n + 1, 0}}));
+        n++;
+    }
+    return UndirectedGraph(nodes);
+}
+
 static uint64_t *generateRawGilbertGraph(uint64_t order, double p,
                                          std::mt19937_64 *gen) {
     uint64_t size = 0;

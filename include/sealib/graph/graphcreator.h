@@ -136,6 +136,13 @@ class GraphCreator {
      * @return triangulated graph (n=order, m=2*n-3)
      */
     static UndirectedGraph triangulated(uint64_t order);
+
+    /**
+     * Create the cycle graph C^n.
+     * @param order number of vertices
+     * @return cycle graph G (n=order, m=n)
+     */
+    static UndirectedGraph cycle(uint64_t order);
 };
 }  // namespace Sealib
 #endif  // SEALIB_GRAPH_GRAPHCREATOR_H_

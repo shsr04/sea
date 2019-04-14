@@ -13,7 +13,7 @@ namespace Sealib {
 /**
  * Recognizes if a given biconnected input graph is outerplanar.
  * EFFICIENCY: O(n*log(log(n))) time, O(n) bits
- * 
+ *
  * @author Simon Heuser
  */
 class OuterplanarChecker {
@@ -43,9 +43,18 @@ class OuterplanarChecker {
 
     bool incrementPaths(uint64_t u, uint64_t k);
 
+    /**
+     * Data referring to a chain. A chain is a path where each vertex has degree
+     * 2 except two endpoints which have degree > 2.
+     */
     struct ChainData {
-        std::pair<uint64_t, uint64_t> c1, c2;
-        bool isClosed = false, isGood = false, isCycle = false;
+        std::pair<uint64_t, uint64_t>
+            c1,  ///< endpoint u1 + outgoing edge k1 pointing into the chain
+            c2;  ///< endpoint u2 + outgoing edge k2 pointing into the chain
+        bool isClosed =
+                 false,      ///< true if the endpoints are connected by an edge
+            isGood = false,  ///< true if one of the endpoints has degree < 4
+            isCycle = false;  ///< true if the chain has only degree 2 vertices
     };
 
     /**
