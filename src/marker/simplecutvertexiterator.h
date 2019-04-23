@@ -8,14 +8,14 @@
 namespace Sealib {
 class SimpleCutVertexIterator : Iterator<uint64_t> {
  public:
-    explicit SimpleCutVertexIterator(UndirectedGraph const &graph)
-        : g(graph), n(g.getOrder()), number(n, INVALID), lowpt(n), parent(n) {}
+    explicit SimpleCutVertexIterator(UndirectedGraph const &graph);
 
     void init() override;
 
     bool more() override;
 
     uint64_t next() override;
+    uint64_t next(BiConsumer onEdge);
 
  private:
     UndirectedGraph const &g;
@@ -24,6 +24,7 @@ class SimpleCutVertexIterator : Iterator<uint64_t> {
     std::vector<uint64_t> lowpt;
     std::vector<uint64_t> parent;
     std::stack<std::pair<uint64_t, uint64_t>> s;
+    std::stack<std::pair<uint64_t, uint64_t>> edges;
     std::deque<uint64_t> cut;
     uint64_t i = 0;
 

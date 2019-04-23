@@ -2,6 +2,9 @@
 
 namespace Sealib {
 
+SimpleCutVertexIterator::SimpleCutVertexIterator(UndirectedGraph const& graph)
+    : g(graph), n(g.getOrder()), number(n, INVALID), lowpt(n), parent(n) {}
+
 void SimpleCutVertexIterator::init() {
     for (uint64_t a = 0; a < n; a++) {
         if (number[a] == INVALID) {
@@ -18,19 +21,23 @@ void SimpleCutVertexIterator::findLowpt(uint64_t u0) {
         std::pair<uint64_t, uint64_t> p = s.top();
         s.pop();
         uint64_t u = p.first, k = p.second;
+        if (number[u] == INVALID) {
+            number[u] = lowpt[u] = i;
+            i++;
+        }
         if (k < g.deg(u)) {
-            if (number[u] == INVALID) {
-                number[u] = lowpt[u] = i;
-                i++;
-            }
             s.push({u, k + 1});
             uint64_t v = g.head(u, k);
             if (number[v] == INVALID) {
                 s.push({v, 0});
                 parent[v] = u;
-            } else if (number[v] < number[u] && number[v] < lowpt[u]) {
+                edges.push({v, u});
+            } else if (number[v] < number[u]) {
                 // back edge u->v
-                lowpt[u] = number[v];
+                edges.push({u, v});
+                if (number[v] < lowpt[u]) {
+                    lowpt[u] = number[v];
+                }
             }
         } else {
             // we are back to u after computing lowpts of neighbors
@@ -61,6 +68,19 @@ bool SimpleCutVertexIterator::more() { return !cut.empty(); }
 
 uint64_t SimpleCutVertexIterator::next() {
     uint64_t r = cut.front();
+    cut.pop_front();
+    return r;
+}
+
+uint64_t SimpleCutVertexIterator::next(BiConsumer onEdge) {
+    uint64_t r = cut.front();
+    while (number[edges.top().first] <= r) {
+        onEdge(edges.top().first, edges.top().second);
+        edges.pop();
+    }
+    // edge {u,v}
+    onEdge(edges.top().first, edges.top().second);
+    edges.pop();
     cut.pop_front();
     return r;
 }
