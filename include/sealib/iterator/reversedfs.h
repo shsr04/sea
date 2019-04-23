@@ -47,7 +47,7 @@ struct UserCall {
  *
  * EFFICIENCY: O(n+m) time, O(n log(log(n))) bits
  */
-class ReverseDFS : Iterator<UserCall>, DFS {
+class ReverseDFS : public Iterator<UserCall>, DFS {
  public:
     explicit ReverseDFS(Graph const &);
 

@@ -16,7 +16,7 @@ namespace Sealib {
  *
  * @author Simon Heuser
  */
-class BCCIterator : Iterator<std::pair<uint64_t, uint64_t>> {
+class BCCIterator : public Iterator<std::pair<uint64_t, uint64_t>> {
  public:
     /**
      * Create a new BCC iterator from a given undirected graph.
@@ -61,16 +61,6 @@ class BCCIterator : Iterator<std::pair<uint64_t, uint64_t>> {
      * @return next vertex or edge
      */
     std::pair<uint64_t, uint64_t> next() override;
-
-    /**
-     * Execute a given operation for each found pair (u,?).
-     * (init() before calling this method!)
-     * @param f function to execute for each element
-     */
-    void forEach(
-        std::function<void(std::pair<uint64_t, uint64_t>)> f) override {
-        Iterator::forEach(f);
-    }
 
  private:
     std::shared_ptr<EdgeMarker> e;

@@ -8,7 +8,7 @@ namespace Sealib {
  * normal DFS in reverse order, with an optional filter to select only one type
  * of user call.
  */
-class SimpleReverseDFS : Iterator<UserCall> {
+class SimpleReverseDFS : public Iterator<UserCall> {
  public:
     /**
      * Create a new reverse DFS iterator.

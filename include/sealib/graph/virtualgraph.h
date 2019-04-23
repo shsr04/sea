@@ -48,6 +48,14 @@ class VirtualGraph : UndirectedGraph {
     uint64_t mate(uint64_t u, uint64_t k) const override;
 
     /**
+     * Get the original edge index of the given outgoing edge.
+     * @param u vertex
+     * @param k outgoing edge index of the virtual graph
+     * @return k^0: the index of the edge in the original adjacency list of u
+     */
+    uint64_t index(uint64_t u,uint64_t k) const;
+
+    /**
      * @return Returns the order of the graph, i.e, the total number of
      * vertices.
      */

@@ -64,6 +64,26 @@ uint64_t VirtualGraph::mate(uint64_t u, uint64_t k) const {
     return INVALID;
 }
 
+uint64_t VirtualGraph::index(uint64_t u, uint64_t k) const {
+    ChoiceDictionaryIterator c(presentEdges[u]);
+    c.init();
+    uint64_t a = 0;
+    while (c.more()) {
+        if (a == k) {
+            return c.next();
+        }
+        a++;
+    }
+    if (virtualEdges.member(u) && (a == k || a == k - 1)) {
+        if (a == k) {
+            return g.deg(u) - 2;
+        } else if (a == k - 1) {
+            return g.deg(u) - 1;
+        }
+    }
+    return INVALID;
+}
+
 uint64_t VirtualGraph::getOrder() const { return n; }
 
 void VirtualGraph::removeVertex(uint64_t u) {

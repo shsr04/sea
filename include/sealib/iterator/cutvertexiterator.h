@@ -14,7 +14,7 @@ namespace Sealib {
  * order. There is also the possibility to check if a specific vertex is a cut
  * vertex.
  */
-class CutVertexIterator : Iterator<uint64_t> {
+class CutVertexIterator : public Iterator<uint64_t> {
  public:
     /**
      * Create a new cut-vertex iterator for an undirected graph G.

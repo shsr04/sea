@@ -13,7 +13,7 @@ namespace Sealib {
  *
  * @author Dennis Appel
  */
-class ChoiceDictionaryIterator : Iterator<uint64_t> {
+class ChoiceDictionaryIterator : public Iterator<uint64_t> {
  public:
     /**
      * Creates an Iterator for a choice dictionary.

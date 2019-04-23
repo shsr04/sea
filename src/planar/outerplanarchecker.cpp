@@ -53,14 +53,11 @@ bool OuterplanarChecker::removeClosedChains() {
             return true;
         }
         ChoiceDictionary d(n);
-        ChoiceDictionaryIterator vertices = g.vertices();
-        vertices.init();
-        while (vertices.more()) {
-            uint64_t u = vertices.next();
+        g.vertices().forEach([&](uint64_t u){
             if (g.deg(u) == 2) {
                 d.insert(u);
             }
-        }
+        });
         ChoiceDictionaryIterator di(d);
         di.init();
         if (!di.more()) {
@@ -135,11 +132,8 @@ bool OuterplanarChecker::removeAllChains() {
         return true;
     }
     ChoiceDictionary d(n);
-    ChoiceDictionaryIterator vertices = g.vertices();
-    vertices.init();
     // insert one vertex for each good closed chain
-    while (vertices.more()) {
-        uint64_t u = vertices.next();
+    g.vertices().forEach([&](uint64_t u){
         if (g.deg(u) == 2) {
             ChainData c = chain(u);
             if (c.isClosed && c.isGood &&
@@ -147,7 +141,7 @@ bool OuterplanarChecker::removeAllChains() {
                 d.insert(g.head(c.c1.first, c.c1.second));
             }
         }
-    }
+    });
     ChoiceDictionaryIterator di(d);
     di.init();
     if (!di.more()) {
@@ -174,11 +168,11 @@ bool OuterplanarChecker::removeAllChains() {
             if (!c.isClosed) {
                 g.addEdge(c.c1.first, c.c2.first);
             } else {
-                // check if an endpoint got degree 2 or 4
+                // check if an endpoint got degree 2, 3 or 4
                 for (uint64_t e : {c.c1.first, c.c2.first}) {
                     if (g.deg(e) == 2) {
                         d.insert(e);
-                    } else if (g.deg(e) == 4) {
+                    } else if (g.deg(e) == 3 || g.deg(e) == 4) {
                         for (uint64_t k = 0; k < g.deg(e); k++) {
                             if (g.deg(g.head(e, k)) == 2) {
                                 d.insert(g.head(e, k));
@@ -207,7 +201,7 @@ bool OuterplanarChecker::removeAllChains() {
 }
 
 bool OuterplanarChecker::incrementPaths(uint64_t u, uint64_t k) {
-    uint64_t a = (pathOffset.select(u + 1) - u - 1U) + k;
+    uint64_t a = (pathOffset.select(u + 1) - u - 1U) + g.index(u, k);
     paths.insert(a, paths.get(a) + 1);
     return paths.get(a) <= 2;
 }
