@@ -237,13 +237,21 @@ UndirectedGraph GraphCreator::triangulated(uint64_t order) {
     return UndirectedGraph(nodes);
 }
 
-UndirectedGraph GraphCreator::cycle(uint64_t order) {
+UndirectedGraph GraphCreator::cycle(uint64_t order, uint64_t chords) {
     std::vector<ExtendedNode> nodes;
     uint64_t n = 0;
     while (nodes.size() < order) {
         nodes.emplace_back(ExtendedNode({{n == 0 ? order - 1 : n - 1, 1},
                                          {n == order - 1 ? 0 : n + 1, 0}}));
         n++;
+    }
+    if (chords > 0) {
+        uint64_t l = n / chords, u = 0;
+        while (u + l / 2 < n) {
+            nodes[u].addAdjacency({u + l / 2, 2});
+            nodes[u + l / 2].addAdjacency({u, 2});
+            u += l;
+        }
     }
     return UndirectedGraph(nodes);
 }

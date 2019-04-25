@@ -18,7 +18,7 @@ TEST(OuterplanarCheckerTest, random) {
                        nodes[v].addAdjacency({u, nodes[u].getDegree() - 1});
                    });
         UndirectedGraph g(std::move(nodes));
-        
+
         // g=GraphImporter::importGML<UndirectedGraph>("opg-fail1.gml");
         SimpleOuterplanarChecker s1(g);
         OuterplanarChecker s2(g);
@@ -56,34 +56,16 @@ TEST(OuterplanarCheckerTest, triangulated) {
 }
 
 TEST(OuterplanarCheckerTest, cycle) {
-    UndirectedGraph g = GraphCreator::cycle(10);
-    {
-        SimpleOuterplanarChecker s1(g);
-        OuterplanarChecker s2(g);
-        EXPECT_TRUE(s1.isOuterplanar());
-        EXPECT_TRUE(s2.isOuterplanar());
-    }
+    for (uint64_t k = 1; k < 20; k++) {
+        UndirectedGraph g = GraphCreator::cycle(500, k);
+        EXPECT_TRUE(SimpleOuterplanarChecker(g).isOuterplanar()) << k;
+        EXPECT_TRUE(OuterplanarChecker(g).isOuterplanar()) << k;
 
-    // first chord: OK
-    g.getNode(0).addAdjacency({g.getOrder() / 2, 2});
-    g.getNode(g.getOrder() / 2).addAdjacency({0, 2});
-
-    {
-        SimpleOuterplanarChecker s1(g);
-        OuterplanarChecker s2(g);
-        EXPECT_TRUE(s1.isOuterplanar());
-        EXPECT_TRUE(s2.isOuterplanar());
-    }
-
-    // add chord that intersects first chord => not BOP
-    g.getNode(g.getOrder() / 4).addAdjacency({3 * g.getOrder() / 4, 2});
-    g.getNode(3 * g.getOrder() / 4).addAdjacency({g.getOrder() / 4, 2});
-
-    {
-        SimpleOuterplanarChecker s1(g);
-        OuterplanarChecker s2(g);
-        EXPECT_FALSE(s1.isOuterplanar());
-        EXPECT_FALSE(s2.isOuterplanar());
+        // add chord that intersects first chord => not BOP
+        g.getNode(1).addAdjacency({g.getOrder() / 2 + 1, 2});
+        g.getNode(g.getOrder() / 2 + 1).addAdjacency({1, 2});
+        EXPECT_FALSE(SimpleOuterplanarChecker(g).isOuterplanar()) << k;
+        EXPECT_FALSE(OuterplanarChecker(g).isOuterplanar()) << k;
     }
 }
 

@@ -53,9 +53,12 @@ bool OuterplanarChecker::removeClosedChains() {
             return true;
         }
         ChoiceDictionary d(n);
-        g.vertices().forEach([&](uint64_t u){
+        g.vertices().forEach([&](uint64_t u) {
             if (g.deg(u) == 2) {
-                d.insert(u);
+                ChainData c = chain(u);
+                if (!d.get(g.head(c.c1.first, c.c1.second))) {
+                    d.insert(g.head(c.c1.first, c.c1.second));
+                }
             }
         });
         ChoiceDictionaryIterator di(d);
@@ -68,6 +71,7 @@ bool OuterplanarChecker::removeClosedChains() {
                 return true;
             }
             uint64_t u = di.next();
+            d.remove(u);
             ChainData c = chain(u);
             if (c.isClosed) {
                 bool repeat = false, repeatedOnce = false;
@@ -88,6 +92,7 @@ bool OuterplanarChecker::removeClosedChains() {
                             tooManyPaths = true;
                         }
                     });
+                    // remove edges leading into the chain
                     for (std::pair<uint64_t, uint64_t> e : {c.c1, c.c2}) {
                         if (g.deg(e.first) < e.second + 1) {
                             return false;
@@ -116,11 +121,11 @@ bool OuterplanarChecker::removeClosedChains() {
                     return true;
                 }
                 if (repeatedOnce) {
-                    // if repeated at least once
+                    // if chain could not be reduced further
                     forEach(c, [this](uint64_t u, uint64_t) { tried[u] = 1; });
                 }
-                di.init();  // re-init
             }
+            di.init();  // re-init
         }
         tried.assign(tried.size(), 0);
     }
@@ -133,7 +138,7 @@ bool OuterplanarChecker::removeAllChains() {
     }
     ChoiceDictionary d(n);
     // insert one vertex for each good closed chain
-    g.vertices().forEach([&](uint64_t u){
+    g.vertices().forEach([&](uint64_t u) {
         if (g.deg(u) == 2) {
             ChainData c = chain(u);
             if (c.isClosed && c.isGood &&
@@ -158,7 +163,8 @@ bool OuterplanarChecker::removeAllChains() {
             bool tooManyPaths = false;
             forEach(c, [&](uint64_t u, uint64_t k) {
                 g.removeVertex(u);
-                if (!incrementPaths(u, k)) {
+                if (!incrementPaths(u, k) ||
+                    !incrementPaths(g.head(u, k), g.mate(u, k))) {
                     tooManyPaths = true;
                 }
             });

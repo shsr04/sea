@@ -140,9 +140,10 @@ class GraphCreator {
     /**
      * Create the cycle graph C^n.
      * @param order number of vertices
-     * @return cycle graph G (n=order, m=n)
+     * @param chords number of chords inside the cycle
+     * @return outerplanar cycle graph G (n=order, m=order+chords)
      */
-    static UndirectedGraph cycle(uint64_t order);
+    static UndirectedGraph cycle(uint64_t order, uint64_t chords = 0);
 };
 }  // namespace Sealib
 #endif  // SEALIB_GRAPH_GRAPHCREATOR_H_
