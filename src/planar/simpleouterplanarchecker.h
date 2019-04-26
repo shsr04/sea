@@ -36,7 +36,7 @@ class SimpleOuterplanarChecker {
     std::vector<std::vector<bool>> isOuter;
 
     uint64_t actualDeg(uint64_t u);
-    uint64_t actualSize();
+    uint64_t actualHead(uint64_t u,uint64_t k);
     bool edgeBetween(uint64_t u, uint64_t v);
     uint64_t outerIndex(uint64_t u, uint64_t v);
     void connectNeighbours(uint64_t u);

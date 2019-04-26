@@ -77,21 +77,21 @@ bool OuterplanarChecker::removeClosedChains() {
                 bool repeat = false, repeatedOnce = false;
                 do {
                     bool gotTried = false, tooManyPaths = false;
-                    forEach(c, [&](uint64_t u, uint64_t k) {
-                        if (tried[u]) {
-                            gotTried = true;
-                        }
-                        if (g.hasVertex(u)) {
-                            g.removeVertex(u);
-                        }
-                        if (d.get(u)) {
-                            d.remove(u);
-                        }
-                        if (!incrementPaths(u, k) ||
-                            !incrementPaths(g.head(u, k), g.mate(u, k))) {
-                            tooManyPaths = true;
-                        }
-                    });
+                    forEach(c,
+                            [&](uint64_t u) {
+                                if (tried[u]) {
+                                    gotTried = true;
+                                }
+                                g.removeVertex(u);
+                                if (d.get(u)) {
+                                    d.remove(u);
+                                }
+                            },
+                            [&](uint64_t u, uint64_t k) {
+                                if (!incrementPaths(u, k)) {
+                                    tooManyPaths = true;
+                                }
+                            });
                     // remove edges leading into the chain
                     for (std::pair<uint64_t, uint64_t> e : {c.c1, c.c2}) {
                         if (g.deg(e.first) < e.second + 1) {
@@ -122,7 +122,8 @@ bool OuterplanarChecker::removeClosedChains() {
                 }
                 if (repeatedOnce) {
                     // if chain could not be reduced further
-                    forEach(c, [this](uint64_t u, uint64_t) { tried[u] = 1; });
+                    forEach(c, [this](uint64_t u) { tried[u] = 1; },
+                            [](uint64_t, uint64_t) {});
                 }
             }
             di.init();  // re-init
@@ -161,13 +162,12 @@ bool OuterplanarChecker::removeAllChains() {
         if (c.isGood) {
             d.remove(u);
             bool tooManyPaths = false;
-            forEach(c, [&](uint64_t u, uint64_t k) {
-                g.removeVertex(u);
-                if (!incrementPaths(u, k) ||
-                    !incrementPaths(g.head(u, k), g.mate(u, k))) {
-                    tooManyPaths = true;
-                }
-            });
+            forEach(c, [&](uint64_t u) { g.removeVertex(u); },
+                    [&](uint64_t u, uint64_t k) {
+                        if (!incrementPaths(u, k)) {
+                            tooManyPaths = true;
+                        }
+                    });
             if (tooManyPaths) {
                 return false;
             }
@@ -188,18 +188,18 @@ bool OuterplanarChecker::removeAllChains() {
                 }
             }
         } else {
-            forEach(c, [this, &d](uint64_t u, uint64_t) {
-                // clear old deg. 2 vertices and shortcuts
+            // clear old deg. 2 vertices and make shortcut
+            forEach(c, [this, &d](uint64_t u) {
                 if (d.get(u)) {
                     d.remove(u);
                 }
-                if (shortcuts.get(u)) {
-                    shortcuts.remove(shortcuts.get(u));
-                    shortcuts.remove(u);
-                }
+                // if (shortcuts.get(u)) {
+                //    shortcuts.remove(shortcuts.get(u));
+                //    shortcuts.remove(u);
+                //}
             });
-            shortcuts.insert(u, g.head(c.c2.first, c.c2.second));
-            shortcuts.insert(g.head(c.c2.first, c.c2.second), u);
+            // shortcuts.insert(u, g.head(c.c2.first, c.c2.second));
+            // shortcuts.insert(g.head(c.c2.first, c.c2.second), u);
         }
         di.init();
     }
@@ -207,7 +207,7 @@ bool OuterplanarChecker::removeAllChains() {
 }
 
 bool OuterplanarChecker::incrementPaths(uint64_t u, uint64_t k) {
-    uint64_t a = (pathOffset.select(u + 1) - u - 1U) + g.index(u, k);
+    uint64_t a = (pathOffset.select(u + 1) - u) + g.index(u, k);
     paths.insert(a, paths.get(a) + 1);
     return paths.get(a) <= 2;
 }
@@ -270,16 +270,19 @@ OuterplanarChecker::ChainData OuterplanarChecker::chain(uint64_t u) {
 }
 
 void OuterplanarChecker::forEach(OuterplanarChecker::ChainData const &c,
-                                 BiConsumer f) {
+                                 Consumer v, BiConsumer e) {
     uint64_t u = g.head(c.c1.first, c.c1.second),
              k = g.head(u, 0) == c.c1.first;
-    f(u, g.head(u, 0) != c.c1.first);
-    uint64_t p;
+    e(c.c1.first, c.c1.second);
+    e(u, g.head(u, 0) != c.c1.first);
+    uint64_t p = c.c1.first;
     while (u != c.c2.first) {
-        f(u, k);
+        v(u);
+        e(u, g.head(u, 0) == p);  // forward edge
         p = u;
         u = g.head(u, k);
         k = g.head(u, 0) == p;
+        e(u, g.head(u, 0) != p);  // backward edge
     }
 }
 

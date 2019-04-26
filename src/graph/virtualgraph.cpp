@@ -69,8 +69,9 @@ uint64_t VirtualGraph::index(uint64_t u, uint64_t k) const {
     c.init();
     uint64_t a = 0;
     while (c.more()) {
+        uint64_t b = c.next();
         if (a == k) {
-            return c.next();
+            return b;
         }
         a++;
     }

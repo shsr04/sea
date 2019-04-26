@@ -67,7 +67,8 @@ class OuterplanarChecker {
      */
     ChainData chain(uint64_t u);
 
-    void forEach(ChainData const& c, BiConsumer f);
+    void forEach(ChainData const& c, Consumer v,
+                 BiConsumer e = [](uint64_t, uint64_t) {});
 };
 }  // namespace Sealib
 
