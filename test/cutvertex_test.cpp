@@ -51,12 +51,22 @@ TEST(CutVertexIteratorTest, lineGraph) {
     EXPECT_FALSE(c.isCutVertex(n - 1));
 }
 
-TEST(CutVertexIteratorTest, stability) {
-    UndirectedGraph g = GraphCreator::sparseUndirected(2000);
-    CutVertexIterator c(g);
-    c.init();
-    while (c.more()) c.next();
-    SUCCEED();
+TEST(CutVertexIteratorTest, cycle) {
+    for (uint64_t k = 0; k < 100; k++) {
+        UndirectedGraph g = GraphCreator::cycle(500, k);
+        CutVertexIterator c(g);
+        c.init();
+        EXPECT_FALSE(c.more());
+    }
+}
+
+TEST(SimpleCutVertexIteratorTest, cycle) {
+    for (uint64_t k = 0; k < 100; k++) {
+        UndirectedGraph g = GraphCreator::cycle(500, k);
+        SimpleCutVertexIterator c(g);
+        c.init();
+        EXPECT_FALSE(c.more());
+    }
 }
 
 }  // namespace Sealib
