@@ -107,7 +107,8 @@ class BCCOutput {
     explicit BCCOutput(std::shared_ptr<EdgeMarker> e);
 
     /**
-     * Traverse the entire BCC and execute the given functions for each vertex/edge in the BCC.
+     * Traverse the entire BCC and execute the given functions for each
+     * vertex/edge in the BCC.
      * @param u0 vertex to start the traversal at
      * @param onVertex executed at each vertex u belonging to the BCC
      * @param onEdge executed at each edge {u,v} belonging to the BCC

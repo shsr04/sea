@@ -32,7 +32,7 @@ void SimpleCutVertexIterator::findLowpt(uint64_t u0) {
                 s.push({v, 0});
                 parent[v] = u;
                 edges.push({v, u});
-            } else if (number[v] < number[u]) {
+            } else if (number[v] < number[u] && parent[u] != v) {
                 // back edge u->v
                 edges.push({u, v});
                 if (number[v] < lowpt[u]) {

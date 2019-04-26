@@ -126,12 +126,13 @@ void BCCOutput::traverse(uint64_t u0, Consumer onVertex, BiConsumer onEdge) {
     c.insert(u0, DFS_GRAY);
     onVertex(u0);
     outputBackEdges(u0, onEdge);
+    uint8_t rootOutgoing = 0;
     uint64_t u = u0, k = 0;
     while (u != u0 || c.get(u) != DFS_BLACK) {
         if (k < g.deg(u)) {
             uint64_t v = g.head(u, k);
             if (e->isTreeEdge(u, k) &&
-                (e->isFullMarked(u, k) || !e->isParent(u, k)) &&
+                (e->isFullMarked(u, k) || e->isParent(u, k)) &&
                 c.get(v) == DFS_WHITE) {
                 c.insert(v, DFS_GRAY);
                 parent.insert(v, g.mate(u, k));
@@ -140,9 +141,10 @@ void BCCOutput::traverse(uint64_t u0, Consumer onVertex, BiConsumer onEdge) {
                     outputBackEdges(v, onEdge);
                 }
                 onVertex(v);
-                if (!e->isFullMarked(u, k)) {
+                if (!e->isFullMarked(u, k) && (u != u0 || rootOutgoing > 0)) {
                     k = g.deg(u);  // retreat
                 } else {
+                    if (u == u0) rootOutgoing++;
                     u = v;
                     k = 0;
                 }

@@ -95,9 +95,8 @@ class EdgeMarker {
 
     /** Edge data: (4 bits)
      *      TTTP
-     *  T: edge type (0: uninitialized, 1: cross/forward edge, 2: back edge, 3:
-     * unmarked tree
-     * edge, 4: half-marked tree edge, 5: full-marked tree edge)
+     *  T: edge type (0: uninitialized, 1: back edge, 2: unmarked tree edge, 3:
+     * half marked tree edge, 4: fully marked tree edge)
      *  P: parent (0: further away from root, 1: closer to root)
      */
     static const uint8_t TYPE_MASK = 0xe,  // 0b1110

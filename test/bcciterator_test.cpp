@@ -87,4 +87,13 @@ TEST(BCCIteratorTest, stability) {
     SUCCEED();
 }
 
+TEST(BCCOutput, cycle) {
+    UndirectedGraph g = GraphCreator::cycle(1000);
+    BCCOutput b(g);
+    uint64_t n = 0, m = 0;
+    b.traverse(0, [&n](uint64_t) { n++; }, [&m](uint64_t, uint64_t) { m++; });
+    EXPECT_EQ(n, 1000);
+    EXPECT_EQ(m, 1000);
+}
+
 }  // namespace Sealib
