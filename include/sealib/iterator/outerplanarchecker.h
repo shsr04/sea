@@ -36,7 +36,10 @@ class OuterplanarChecker {
  private:
     VirtualGraph g;
     uint64_t n, m;
+    ChoiceDictionary d;
+    ChoiceDictionaryIterator di;
     std::vector<bool> tried;
+    std::vector<bool> token;
     CompactArray paths;
     RankSelect pathOffset;
 

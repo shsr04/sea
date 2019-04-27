@@ -29,7 +29,10 @@ OuterplanarChecker::OuterplanarChecker(UndirectedGraph const &graph)
     : g(graph),
       n(g.getOrder()),
       m(countEdges(graph)),
+      d(n),
+      di(d),
       tried(n),
+      token(n),
       paths(2 * m + 2 * n, 3),
       pathOffset(Bitset<uint8_t>(makeBits(graph))) {}
 
@@ -51,8 +54,7 @@ bool OuterplanarChecker::removeClosedChains() {
         if (g.getOrder() <= 3) {
             return true;
         }
-        ChoiceDictionary d(n);
-        g.vertices().forEach([this, &d](uint64_t u) {
+        g.vertices().forEach([this](uint64_t u) {
             if (g.deg(u) == 2) {
                 ChainData c = chain(u);
                 if (!d.get(g.head(c.c1.first, c.c1.second))) {
@@ -60,7 +62,6 @@ bool OuterplanarChecker::removeClosedChains() {
                 }
             }
         });
-        ChoiceDictionaryIterator di(d);
         di.init();
         if (!di.more()) {
             return false;
@@ -77,7 +78,7 @@ bool OuterplanarChecker::removeClosedChains() {
                 do {
                     bool gotTried = false, tooManyPaths = false;
                     forEach(c,
-                            [this, &d, &gotTried](uint64_t u) {
+                            [this, &gotTried](uint64_t u) {
                                 if (tried[u]) {
                                     gotTried = true;
                                 }
@@ -135,9 +136,8 @@ bool OuterplanarChecker::removeAllChains() {
     if (g.getOrder() <= 3) {
         return true;
     }
-    ChoiceDictionary d(n);
     // insert one vertex for each good closed chain
-    g.vertices().forEach([this, &d](uint64_t u) {
+    g.vertices().forEach([this](uint64_t u) {
         if (g.deg(u) == 2) {
             ChainData c = chain(u);
             if (c.isClosed && c.isGood &&
@@ -146,7 +146,6 @@ bool OuterplanarChecker::removeAllChains() {
             }
         }
     });
-    ChoiceDictionaryIterator di(d);
     di.init();
     if (!di.more()) {
         return false;
@@ -185,7 +184,17 @@ bool OuterplanarChecker::removeAllChains() {
                     } else if (g.deg(e) == 3 || g.deg(e) == 4) {
                         for (uint64_t k = 0; k < g.deg(e); k++) {
                             if (g.deg(g.head(e, k)) == 2) {
-                                d.insert(g.head(e, k));
+                                if (token[g.head(e, k)]) {
+                                    assert(next == INVALID &&
+                                           "Cannot prioritize two chains at "
+                                           "the same time");
+                                    next = g.head(e, k);
+                                    // we need not set token[]=false because the
+                                    // vertices are deleted anyway in the next
+                                    // iteration
+                                } else {
+                                    d.insert(g.head(e, k));
+                                }
                             }
                         }
                     }
@@ -195,11 +204,14 @@ bool OuterplanarChecker::removeAllChains() {
             }
         } else {
             // remove obsolete vertices from D
-            forEach(c, [&d](uint64_t u) {
+            forEach(c, [this](uint64_t u) {
                 if (d.get(u)) {
                     d.remove(u);
                 }
             });
+            for (std::pair<uint64_t, uint64_t> e : {c.c1, c.c2}) {
+                token[g.head(e.first, e.second)] = true;
+            }
         }
         di.init();
     }
