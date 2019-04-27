@@ -39,7 +39,6 @@ class OuterplanarChecker {
     std::vector<bool> tried;
     CompactArray paths;
     RankSelect pathOffset;
-    RaggedDictionary shortcuts;
 
     bool removeClosedChains();
     bool removeAllChains();

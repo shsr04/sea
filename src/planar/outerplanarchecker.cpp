@@ -31,8 +31,7 @@ OuterplanarChecker::OuterplanarChecker(UndirectedGraph const &graph)
       m(countEdges(graph)),
       tried(n),
       paths(2 * m + 2 * n, 3),
-      pathOffset(Bitset<uint8_t>(makeBits(graph))),
-      shortcuts(2 * n) {}
+      pathOffset(Bitset<uint8_t>(makeBits(graph))) {}
 
 bool OuterplanarChecker::isOuterplanar() {
     if (m > 2 * n - 3) {
@@ -53,7 +52,7 @@ bool OuterplanarChecker::removeClosedChains() {
             return true;
         }
         ChoiceDictionary d(n);
-        g.vertices().forEach([&](uint64_t u) {
+        g.vertices().forEach([this, &d](uint64_t u) {
             if (g.deg(u) == 2) {
                 ChainData c = chain(u);
                 if (!d.get(g.head(c.c1.first, c.c1.second))) {
@@ -78,7 +77,7 @@ bool OuterplanarChecker::removeClosedChains() {
                 do {
                     bool gotTried = false, tooManyPaths = false;
                     forEach(c,
-                            [&](uint64_t u) {
+                            [this, &d, &gotTried](uint64_t u) {
                                 if (tried[u]) {
                                     gotTried = true;
                                 }
@@ -87,7 +86,7 @@ bool OuterplanarChecker::removeClosedChains() {
                                     d.remove(u);
                                 }
                             },
-                            [&](uint64_t u, uint64_t k) {
+                            [this, &tooManyPaths](uint64_t u, uint64_t k) {
                                 if (!incrementPaths(u, k)) {
                                     tooManyPaths = true;
                                 }
@@ -99,7 +98,9 @@ bool OuterplanarChecker::removeClosedChains() {
                         }
                         g.removeEdge(e.first, g.head(e.first, e.second));
                     }
-                    if (tooManyPaths) {
+                    if (g.getOrder() <= 3) {
+                        return true;
+                    } else if (tooManyPaths) {
                         return false;
                     } else if (c.isCycle || gotTried) {
                         break;
@@ -117,9 +118,6 @@ bool OuterplanarChecker::removeClosedChains() {
                         }
                     }
                 } while (repeat);
-                if (g.getOrder() <= 3) {
-                    return true;
-                }
                 if (repeatedOnce) {
                     // if chain could not be reduced further
                     forEach(c, [this](uint64_t u) { tried[u] = 1; },
@@ -139,7 +137,7 @@ bool OuterplanarChecker::removeAllChains() {
     }
     ChoiceDictionary d(n);
     // insert one vertex for each good closed chain
-    g.vertices().forEach([&](uint64_t u) {
+    g.vertices().forEach([this, &d](uint64_t u) {
         if (g.deg(u) == 2) {
             ChainData c = chain(u);
             if (c.isClosed && c.isGood &&
@@ -153,17 +151,24 @@ bool OuterplanarChecker::removeAllChains() {
     if (!di.more()) {
         return false;
     }
+    uint64_t next = INVALID;
     while (di.more()) {
         if (g.getOrder() <= 3) {
             return true;
         }
-        uint64_t u = di.next();
+        uint64_t u;
+        if (next == INVALID) {
+            u = di.next();
+            d.remove(u);
+        } else {
+            u = next;
+            next = INVALID;
+        }
         ChainData c = chain(u);
         if (c.isGood) {
-            d.remove(u);
             bool tooManyPaths = false;
-            forEach(c, [&](uint64_t u) { g.removeVertex(u); },
-                    [&](uint64_t u, uint64_t k) {
+            forEach(c, [this](uint64_t u) { g.removeVertex(u); },
+                    [this, &tooManyPaths](uint64_t u, uint64_t k) {
                         if (!incrementPaths(u, k)) {
                             tooManyPaths = true;
                         }
@@ -171,13 +176,12 @@ bool OuterplanarChecker::removeAllChains() {
             if (tooManyPaths) {
                 return false;
             }
-            if (!c.isClosed) {
-                g.addEdge(c.c1.first, c.c2.first);
-            } else {
+            if (c.isClosed) {
                 // check if an endpoint got degree 2, 3 or 4
                 for (uint64_t e : {c.c1.first, c.c2.first}) {
                     if (g.deg(e) == 2) {
-                        d.insert(e);
+                        // force evaluation of resulting chain
+                        next = e;
                     } else if (g.deg(e) == 3 || g.deg(e) == 4) {
                         for (uint64_t k = 0; k < g.deg(e); k++) {
                             if (g.deg(g.head(e, k)) == 2) {
@@ -186,20 +190,16 @@ bool OuterplanarChecker::removeAllChains() {
                         }
                     }
                 }
+            } else {
+                g.addEdge(c.c1.first, c.c2.first);
             }
         } else {
-            // clear old deg. 2 vertices and make shortcut
-            forEach(c, [this, &d](uint64_t u) {
+            // remove obsolete vertices from D
+            forEach(c, [&d](uint64_t u) {
                 if (d.get(u)) {
                     d.remove(u);
                 }
-                // if (shortcuts.get(u)) {
-                //    shortcuts.remove(shortcuts.get(u));
-                //    shortcuts.remove(u);
-                //}
             });
-            // shortcuts.insert(u, g.head(c.c2.first, c.c2.second));
-            // shortcuts.insert(g.head(c.c2.first, c.c2.second), u);
         }
         di.init();
     }
