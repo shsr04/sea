@@ -59,7 +59,8 @@ class OuterplanarChecker {
         bool isClosed =
                  false,      ///< true if the endpoints are connected by an edge
             isGood = false,  ///< true if one of the endpoints has degree < 4
-            isCycle = false;  ///< true if the chain has only degree 2 vertices
+            isCycle = false,  ///< true if the chain has only degree 2 vertices
+            isTried = false;  ///< true if an inner vertex is tried
     };
 
     /**
@@ -68,6 +69,10 @@ class OuterplanarChecker {
      * @return data collected when iterating over the chain
      */
     ChainData chain(uint64_t u);
+    bool removeChain(ChainData const& c);
+
+    void forEdge(uint64_t v1, uint64_t v2,
+                 std::function<void(uint64_t, uint64_t)> f);
 
     void forEach(ChainData const& c, Consumer v,
                  BiConsumer e = [](uint64_t, uint64_t) {});
